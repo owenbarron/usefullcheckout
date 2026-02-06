@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>USEFULL Checkout Kiosk</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="workspace">
+    <section class="device-frame">
+      <div class="device-screen">
+        <div id="app" class="app">
+          <header class="topbar">
+            <div class="topbar__logo">
+              <img src="Branding/Logo Registered/Logo/USEFULL-Logo-Registered_KnockOut.svg" alt="USEFULL" />
+            </div>
+            <div class="topbar__right">
+              <img class="topbar__nau" src="Branding/NAU logo.png" alt="Northern Arizona University" />
+            </div>
+            <div id="adminHotspot" class="admin-hotspot" aria-hidden="true"></div>
+          </header>
+
+          <main class="screen" id="screen">
+            <!-- Screen content rendered by app.js -->
+          </main>
+          <footer class="footer-bar" id="footer">
+            <div class="footer-bar__text">Use your campus ID or Mobile ID — no app needed.</div>
+          </footer>
+
+          <div id="adminOverlay" class="admin-overlay" hidden>
+            <div class="admin-panel">
+              <div class="admin-panel__header">
+                <div>Simulation Controls</div>
+                <button id="adminClose" class="btn btn-ghost" type="button">Close</button>
+              </div>
+              <div class="admin-panel__grid">
+                <button class="btn" data-sim="scan">Simulate Container Scan</button>
+                <button class="btn" data-sim="returning">Simulate ID Tap → Returning User</button>
+                <button class="btn" data-sim="new">Simulate ID Tap → New User</button>
+                <button class="btn" data-sim="campus_not_found">Simulate ID Tap → Campus User Not Found</button>
+                <button class="btn" data-sim="frozen">Simulate ID Tap → Account Frozen</button>
+                <button class="btn btn-outline" data-sim="reset">Reset Session</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="sim-panel">
+      <div class="sim-panel__header">
+        <div>
+          <h2>Simulation Controls</h2>
+          <p>Use these while viewing the iPad mockup.</p>
+        </div>
+      </div>
+      <div class="sim-panel__grid">
+        <button class="btn" data-sim="scan">Simulate Container Scan</button>
+        <button class="btn" data-sim="returning">Simulate ID Tap → Returning User</button>
+        <button class="btn" data-sim="new">Simulate ID Tap → New User</button>
+        <button class="btn" data-sim="campus_not_found">Simulate ID Tap → Campus User Not Found</button>
+        <button class="btn" data-sim="frozen">Simulate ID Tap → Account Frozen</button>
+        <button class="btn btn-outline" data-sim="reset">Reset Session</button>
+      </div>
+      <div class="sim-panel__note">
+        Tip: Long‑press the top-right corner of the iPad for the hidden overlay.
+      </div>
+    </aside>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
