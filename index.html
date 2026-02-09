@@ -4,69 +4,184 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>USEFULL Checkout Kiosk</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="workspace">
-    <section class="device-frame">
-      <div class="device-screen">
-        <div id="app" class="app">
-          <header class="topbar">
-            <div class="topbar__logo">
-              <img src="Branding/Logo Registered/Logo/USEFULL-Logo-Registered_KnockOut.svg" alt="USEFULL" />
-            </div>
-            <div class="topbar__right">
-              <img class="topbar__nau" src="Branding/NAU logo.png" alt="Northern Arizona University" />
-            </div>
-            <div id="adminHotspot" class="admin-hotspot" aria-hidden="true"></div>
-          </header>
+  <div id="app" class="app">
+    <header class="topbar">
+      <div class="topbar__logo">
+        <img src="Branding/Logo Registered/Logo/USEFULL-Logo-Registered_KnockOut.svg" alt="USEFULL" />
+      </div>
+      <div class="topbar__right">
+        <img class="topbar__nau" src="Branding/NAU logo.png" alt="Northern Arizona University" />
+      </div>
+    </header>
 
-          <main class="screen" id="screen">
-            <!-- Screen content rendered by app.js -->
-          </main>
-          <footer class="footer-bar" id="footer">
-            <div class="footer-bar__text">Use your campus ID or Mobile ID — no app needed.</div>
-          </footer>
+    <main class="screen" id="screen">
+      <!-- Screen content rendered by app.js -->
+    </main>
 
-          <div id="adminOverlay" class="admin-overlay" hidden>
-            <div class="admin-panel">
-              <div class="admin-panel__header">
-                <div>Simulation Controls</div>
-                <button id="adminClose" class="btn btn-ghost" type="button">Close</button>
-              </div>
-              <div class="admin-panel__grid">
-                <button class="btn" data-sim="scan">Simulate Container Scan</button>
-                <button class="btn" data-sim="returning">Simulate ID Tap → Returning User</button>
-                <button class="btn" data-sim="new">Simulate ID Tap → New User</button>
-                <button class="btn" data-sim="campus_not_found">Simulate ID Tap → Campus User Not Found</button>
-                <button class="btn" data-sim="frozen">Simulate ID Tap → Account Frozen</button>
-                <button class="btn btn-outline" data-sim="reset">Reset Session</button>
-              </div>
+    <footer class="footer-bar" id="footer">
+      <button class="footer-bar__link footer-bar__link--left" id="demoSettingsBtn" type="button">Demo settings</button>
+      <div class="footer-bar__center">
+        <div class="footer-bar__text" id="footerScanText">Use your campus ID or Mobile ID — no app needed.</div>
+        <button class="footer-bar__link footer-bar__link--center" id="footerTermsBtn" type="button">View Terms &amp; Conditions</button>
+      </div>
+    </footer>
+
+    <div id="demoModal" class="admin-overlay" hidden>
+      <div class="admin-panel">
+        <div class="admin-panel__header">
+          <div>Demo Settings</div>
+          <button id="demoClose" class="btn btn-ghost" type="button">Close</button>
+        </div>
+        <div class="admin-panel__grid">
+          <button class="btn btn-outline" data-outcome="returning_user">ID Tap → Returning User</button>
+          <button class="btn btn-outline" data-outcome="new_user">ID Tap → New User</button>
+          <button class="btn btn-outline" data-outcome="campus_user_not_found">ID Tap → Campus User Not Found</button>
+          <button class="btn btn-outline" data-outcome="account_frozen">ID Tap → Account Frozen</button>
+          <button class="btn" data-action="reset">Reset Session</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="termsModal" class="terms-overlay" hidden>
+      <div class="terms-panel">
+        <div class="terms-panel__header">
+          <div>
+            <h2>USEFULL Terms &amp; Conditions</h2>
+            <p>Review the full agreement below</p>
+          </div>
+          <button id="termsClose" class="terms-close" type="button" aria-label="Close terms">×</button>
+        </div>
+        <div class="terms-panel__body">
+          <div class="terms-panel__text">
+            <div class="terms-panel__label">Full Terms</div>
+            <div class="terms-tabs">
+              <button class="terms-tab is-active" type="button" data-terms-tab="summary">Summary</button>
+              <button class="terms-tab" type="button" data-terms-tab="full">Full Terms</button>
+            </div>
+            <div class="terms-panel__scroll terms-content" id="termsSummary">
+              <p><strong>Service &amp; rental:</strong> USEFULL provides reusable cups and bowls through a sharing program. You rent containers and ownership stays with USEFULL.</p>
+              <p><strong>Eligibility &amp; payment:</strong> A valid credit/debit card, Apple Pay, Google Pay, or campus account is required. Users must be 18+; ages 13–17 may participate with parent/guardian supervision.</p>
+              <p><strong>Changes to terms:</strong> USEFULL may update the agreement; continued participation or re‑acceptance means you agree to changes.</p>
+              <p><strong>Rental period:</strong> The program is for short‑term use and a single checkout should not exceed a continuous 14‑day rental period.</p>
+              <p><strong>Fees &amp; billing:</strong> Subscription fees depend on the community program. Late fees apply after the free period ($1/day up to day 14). If not returned by day 14, loss fees apply; total late + loss fees are $17 per cup and $25 per bowl. Charges are billed to your payment method or campus account, and accounts may be frozen for nonpayment.</p>
+              <p><strong>Returns &amp; care:</strong> You are responsible for care, inspection, and returning containers; damaged or lost items must be reported.</p>
+              <p><strong>No warranty &amp; availability:</strong> Containers and the program are provided as‑is; availability is not guaranteed and service may be limited or paused.</p>
+              <p><strong>Use restrictions:</strong> Containers are for partner locations only, cannot be transferred to others, and must not be modified or misused.</p>
+              <p><strong>Liability &amp; arbitration:</strong> The agreement includes assumption of risk, release of liability, and binding arbitration with a waiver of class actions; remedies are limited as described in the agreement.</p>
+              <p><strong>Termination:</strong> USEFULL may terminate participation; you may terminate but may still owe applicable fees.</p>
+            </div>
+            <div class="terms-panel__scroll terms-content terms-content--full" id="termsFull" hidden>
+              <pre class="terms-pre">Terms of Service
+Rental Agreement and Liability Waiver and Release
+Welcome to USEFULL!   We hope you love participating in our sustainable cup and bowl program. Please read through these Terms and Conditions carefully as they contain important information that you should consider before using our USEFULL Cups and Bowls.
+​These terms and conditions are a legal agreement between You (“You,” “you,” or “your,”) and USEFULL Inc. (“USEFULL,“  “our,” “we,” or “us”), establishing terms and conditions under which you will submit information to, rent reusable cups and bowls (“USEFULL Cups and Bowls”) from, and participate in a sharing program operated by, us.
+THIS AGREEMENT CONTAINS RELEASES, DISCLAIMERS, AND ASSUMPTION-OF-RISK PROVISIONS AND A BINDING ARBITRATION AGREEMENT THAT LIMITS YOUR LEGAL RIGHTS AND REMEDIES. FOR MORE DETAILS, PLEASE REFER TO SECTIONS 7 and 9 BELOW.
+1.	THE SERVICE.
+USEFULL offers high-quality reusable returnable cups and bowls (“USEFULL Cups and Bowls”), and actively distributes, tracks, and maintains them so that they are available to subscribers at partner cafes, restaurants, workplaces and/or campuses (the “USEFULL Sharing Program”).
+As a condition to your participation in the Program, USEFULL requires that you agree to all the terms and conditions in this Rental Agreement, Liability Waiver, and Release (collectively, this “Rental Agreement”). You agree and acknowledge that you are renting the USEFULL Cups and Bowls and that ownership of the USEFULL Cups and Bowls remains with us at all times. 
+A valid credit card, debit card, Apple Pay, Google Pay, or campus account card is required to subscribe to the USEFULL Sharing Program and rent USEFULL Cups and Bowls. The USEFULL Cups and Bowls may only be rented by persons 18 years of age or older. If you are between the ages of 13 and 18, you may rent a USEFULL Cup and/or USEFULL Bowl under the supervision of a parent or guardian who agrees to be bound by these Terms of Service. If you falsify or misrepresent your age, you and your legal guardian will bear full responsibility for all Claims (as defined below) related to such misrepresentation.
+2. MODIFICATIONS TO AGREEMENT. 
+We reserve the right, in our sole discretion, to unilaterally amend, modify, or change this Rental Agreement (each a “Modification”), at any time and from time to time. Whenever a Modification is made to this Rental Agreement, we will post an updated version on www.usefull.us (the “Website(s)”) and, where the change is material, we will require you to accept the new terms before continuing to participate in the Program. 
+By accepting new terms or continuing to participate in the Program after any Modification is posted, you agree to be bound by such Modification. You agree to carefully review this Rental Agreement on the Website from time to time in order to maintain awareness of all Modifications, and agree that each time you rent a USEFULL Cup and/or USEFULL Bowl, the then-current version of this Rental Agreement as posted on the Website will apply.
+3. RENTAL; PURPOSE OF SERVICE.
+3.1 Rental agreement. We agree to rent to you, and you agree to rent from us, USEFULL Cups and Bowls through the Program subject to the terms and conditions of this Rental Agreement including but not limited to the payments of the rental fees published on the Website, which are exclusive of any applicable sales taxes and other local government charges where required by law.  These rental fees may be modified from time to time at our sole discretion through a Modification. 
+3.2 Purpose of service. You understand and agree that the purpose of the Program is to provide short-term access to USEFULL Cups and Bowls and that your use of any one USEFULL Cup or USEFULL Bowl shall not exceed a continuous fourteen (14) day period (the “Rental Period”).
+4. RENTAL FEES; RETURN OF USEFULL CUPS AND BOWLS; CREDIT OR DEBIT CARD AUTHORIZATIONS.
+4.1 Fees and charges. All amounts due and payable to us will be charged to the credit card, debit card, Apple Pay, Google Pay, or campus account card associated with your account. In the event that the charges are not paid to us, other collection procedures will be employed and your account may be frozen until payment is received. You agree to pay all of our costs of collection, including without limitation reasonable attorneys’ fees, if you do not pay amounts owed hereunder when due.
+1.	Subscription Fees. Subscription fees apply based on the community program and membership level chosen when creating your account. There are different monthly fee amounts associated with each community program and their membership levels, including a free option in all communities. You will agree to pay the monthly subscription amount shown during account registration. Rental periods and other constraints (e.g. number of units that can be checked out at a given time) are determined by the campus or community partner.
+2.	Late and Lost fees. Late fees and lost fees apply regardless of the subscription program level. As a Subscriber to USEFULL, a $1.00 USD per day late fee will apply after the last day of your free rental period to 14 days after checkout. If a USEFULL Cup is not returned within the fourteen (14) day rental period, a loss fee will be assessed. The late fees + lost fees = $17.00 / cup. If a USEFULL Bowl is not returned within the fourteen (14) day rental period, a loss fee will be assessed. The late fees + lost fee = $25/bowl.
+You hereby authorize us to charge the credit card, debit card, Apple Pay, Google Pay, or campus account card associated with your account for all fees incurred by you as well as such amounts due in connection with any overdue, damaged, stolen, or lost USEFULL Cups and Bowls, and we may, at our sole discretion, place an authorization hold on your credit card, debit card, Apple Pay, Google Pay, or campus account card to cover any such amounts. If you dispute any charge on your account, then you must contact us within ten (10) business days of your receipt of your statement containing the disputed charge.
+4.2 Return of USEFULL Cups and Bowls. With any USEFULL Cup and/or USEFULL Bowl not returned prior to the expiration of the Rental Period will be deemed damaged, lost or stolen. You assume full responsibility for the care of each USEFULL Cup and/or USEFULL Bowl during its Rental Period. 
+5. NO WARRANTIES; AVAILABILITY OF SERVICE.
+5.1 No Warranty. The USEFULL Cups and Bowls are rented to you AS IS and the Program is provided AS AVAILABLE without any warranty, express or implied, including warranties of merchantability or fitness for any particular purpose.
+5.2 Availability of Service. We do not guarantee that the Program will be available at all times, as use of the USEFULL Cups and Bowls by other members of the Program, repairs, force majeure events, or other circumstances might prevent us from running the Program at any time. Access to USEFULL Cups and Bowls is conditional upon their availability. Members should use the Website or our mobile application (“Mobile Application”) to check the availability of USEFULL products. We do not guarantee, represent, or warrant the availability of the Program. We may suspend all or part of the Program, may discontinue the Program at certain locations (with respect to both those cafes, restaurants, workplaces and/or campuses offering USEFULL Cups and Bowls and those locations designated as USEFULL Cups and Bowls return centers), may reduce the number of USEFULL Cups and Bowls available for rent, and otherwise operate the Program in our sole discretion. 
+6. USE OF SERVICE.
+6.1  Use of the USEFULL Products; Inspection of USEFULL Cups and Bowls. You agree to treat the USEFULL Cups and Bowls with due care. You are responsible for loss or damage to the USEFULL Cups and/or USEFULL Bowls rented by you due to theft, disappearance for known or unknown reasons, or any other cause, other than ordinary wear and tear. Before using a USEFULL Cup and/or USEFULL Bowl, you are required to inspect such Cup or Bowl for defects and report to us via the Mobile Application any such defect prior to the commencement of your rental, including but not limited to, any signs of damage, or unusual or excessive wear.  If you notice a USEFULL Cup or Bowl has a defect that in any way may impair your ability to use it safely, you are required to return such USEFULL Cup or Bowl immediately.
+6.2      Damaged; Stolen; or Lost USEFULL Cup and/or Bowl During Rental Period.  If a USEFULL Cup or Bowl is damaged, stolen, or lost during the Rental Period, you are required to immediately return any such damaged USEFULL Cup or Bowl and/or report any such stolen or lost USEFULL Cup or Bowl to USEFULL via the Mobile Application.
+6.3  Returning USEFULL Products. On or before the expiration of the Rental Period, you agree to return each USEFULL Cup and/or Bowl to one of the locations listed on the Mobile Application or the receptacle with a partner cafe, restaurant, workplace and/or campus. You agree to refer to the Website for further requirements for returning USEFULL Cups and Bowls and to comply with any and all such requirements and instructions.
+6.4 Restricted Uses. You shall not do any of the following acts, or similar acts that may result in a risk, an incident, or damage to you, the USEFULL Cups and/or Bowls, or others (“Restricted Uses”):
+•	Use any USEFULL Cup and/or USEFULL Bowl if you are younger than 13 years of age.
+•	Use any USEFULL Cup and/or USEFULL Bowl if you are between the age of 13 and 18 without supervision of a parent or legal guardian.
+•	Use any USEFULL Cup and/or USEFULL Bowl for food and/or beverage purchases at any location other than at the partners listed on the Mobile Application.
+•	Allow any other person to use a USEFULL Cup and/or USEFULL Bowl checked out under your account.
+•	Remove, dismantle, write on, deface, misuse, or modify any accessories, parts, or components of any USEFULL Cup and/or USEFULL Bowl.
+•	Use a USEFULL Cup and/or USEFULL Bowl without reading and agreeing to the Liability Waiver and Release.
+6.5      Denial of Participation in Program.  You understand that we reserve the right, at our sole and complete discretion, to deny your participation in the Program.
+7. ASSUMPTION OF RISK; RELEASE AND WAIVER OF LIABILITY; INDEMNITY.
+7.1  Assumption of Risk.  You hereby acknowledge and assume all risks of participation in the Program. You understand that you will be participating in the Program at your own risk, that you are responsible for the risks of participation in the Program, and that your participation in the Program is fully voluntary.  
+7.2  Waiver and Release.  In consideration for being allowed to participate in the Program, you hereby waive, release and forever discharge USEFULL, and its affiliates and business associates who participate in the operation of the Program, and each of their respective officers, directors, associates, agents, employees, attorneys, shareholders, successors and assigns, past present and future (collectively, the “Released Parties” and each individually a “Released Party”) from any and all Claims (as defined below) that may arise out of, or result from, your participation in the Program, EVEN IF SUCH CLAIMS ARE CAUSED BY THE NEGLIGENT ACTS, OMISSIONS, OR THE CARELESSNESS OF THE RELEASED PARTIES AND EVEN IF THE RELEASED PARTIES HAVE BEEN ADVISED OF THE POSSIBILITY OF SUCH CLAIMS.
+“Claims” means claims, costs, expenses, fees, liabilities of every kind, demands, damages (including without limitation, direct, indirect, incidental, consequential and punitive), losses and causes of action (whether known, unknown, asserted, unasserted, fixed, conditional, or contingent), of any kind or nature (including without limitation, those based in contract, tort, statutory, or other grounds), which you have or may have in the future including those arising from death or personal injury or property damages of any kind.
+The provisions of this Section 7.2 shall bind your successors, executors and administrators, legal personal representatives, insurers and anyone claiming through or on behalf of you.​
+You acknowledge that you may hereafter discover facts different from, or in addition to, those which you now believe to be true with respect to any claims released in this Section 7.2 and no such additional fact shall affect the validity or enforceability of the releases contained in this Section 7.2.
+Any such release is intended to be a complete and general release of all Claims. The Released Parties may plead such releases as a complete and sufficient defense to any Claim, as direct or intended third party beneficiaries of such releases.
+7.3  Covenant Not To Sue.  You further covenant and agree not to sue any of the Released Parties for any of the Claims that you have waived, released, or discharged herein.
+7.4  Indemnity.  You agree to indemnify, defend and hold harmless the Released Parties from any and all expenses incurred, Claims made by you or third parties, for liabilities assessed against the Released Parties, including but not limited to court costs, attorneys’ fees, and litigation expenses, arising out of or resulting from, directly or indirectly, in whole or in part, your breach or failure to abide by any part of this Waiver, by your breach or failure to abide by the rules of the Program and/or your actions or inactions which cause injury or damage to yourself or any third party.
+FOR THE AVOIDANCE OF DOUBT, YOU DO HEREBY ACKNOWLEDGE AND AGREE THAT IF WE, OR ANY RELEASED PARTY, ARE FOUND TO BE LIABLE FOR ANY CLAIMS ON ANY BASIS, SUCH LIABILITY SHALL BE LIMITED TO THE GREATER OF (A) THE TOTAL FEES PAID BY YOU HEREUNDER OR (B) ONE HUNDRED US DOLLARS ($100).
+8. TERMINATION.  
+We may unilaterally terminate your right to participate in the Program, in our sole discretion and without any notice or cause. You may terminate your participation in the Program at any time; provided, however, that (i) no refund will be provided by us and (ii) you may still be charged any applicable additional fees arising under this Agreement. Sections 5 and 7 through 14 shall survive any termination or expiration of this Agreement.
+9. ARBITRATION.​
+By agreeing to the Rental Agreement, you agree that you are required to resolve any claim that you may have against us or our affiliates, on an individual basis in arbitration, as set forth in this Section 9. This will preclude you from bringing any class, collective, or representative action against us or our affiliates, and also preclude you from participating in or recovering relief under any current or future class, collective, consolidated, or representative action brought against us by someone else.
+9.1      Agreement to Binding Arbitration.  You and USEFULL agree that any dispute, claim or controversy arising out of or relating to (a) this Rental Agreement or the existence, breach, termination, enforcement, interpretation or validity thereof, or (b) your access to or participation in the Program at any time, whether before or after the date you agreed to this Rental Agreement, will be settled by binding arbitration between you and USEFULL and not in a court of law.
+You acknowledge and agree that you and USEFULL are each waiving the right to a trial by jury or to participate as a plaintiff or class member in any purported class action or representative proceeding. Unless both you and USEFULL otherwise agree in writing, any arbitration will be conducted only on an individual basis and not in a class, collective, consolidated, or representative proceeding. 
+However, you and USEFULL each retain the right to bring an individual action in small claims court and the right to seek injunctive or other equitable relief in a court of competent jurisdiction to prevent the actual or threatened infringement, misappropriation or violation of a party’s copyrights, trademarks, trade secrets, patents or other intellectual property rights.
+9.2       Rules and Governing Law.  The arbitration will be administered by the American Arbitration Association (“AAA”) in accordance with the AAA’s Consumer Arbitration Rules and the Supplementary Procedures for Consumer Related Disputes (the “AAA Rules”) then in effect, except as modified by this Arbitration Agreement. The AAA Rules are available at adr.org or by calling the AAA at 1-800-778-7879.
+The parties agree that the arbitrator (“Arbitrator”), and not any federal, state, or local court or agency, shall have exclusive authority to resolve any disputes relating to the interpretation, applicability, enforceability or formation of these arbitration provisions, including any claim that all or any part of these arbitration provisions are void or voidable. The Arbitrator shall also be responsible for determining all threshold arbitrability issues, including issues relating to whether this Rental Agreement is unconscionable or illusory and any defense to arbitration, including waiver, delay, laches, or estoppel.
+Notwithstanding any choice of law or other provision in this Rental Agreement, the parties agree and acknowledge that these arbitration provisions evidence a transaction involving interstate commerce and that the Federal Arbitration Act, 9 U.S.C. § 1 et seq. (“FAA”), will govern its interpretation and enforcement and proceedings pursuant thereto. 
+It is the intent of the parties that the FAA and AAA Rules shall preempt all state laws to the fullest extent permitted by law. If the FAA and AAA Rules are found to not apply to any issue that arises under these arbitration provisions or the enforcement thereof, then that issue shall be resolved under the laws of the Commonwealth of Massachusetts.
+​9.3  Process.  A party who desires to initiate arbitration must provide the other party with a written Demand for Arbitration as specified in the AAA Rules. (The AAA provides a form Demand for Arbitration – Consumer Arbitration Rules at www.adr.org or by calling the AAA at 1-800-778-7879). 
+The Arbitrator will be either (1) a retired judge or (2) an attorney specifically licensed to practice law in the Commonwealth of Massachusetts and will be selected by the parties from the AAA’s roster of consumer dispute arbitrators. If the parties are unable to agree upon an Arbitrator within seven (7) days of delivery of the Demand for Arbitration, then the AAA will appoint the Arbitrator in accordance with the AAA Rules.
+9.4  Location and Procedure.  Unless you and USEFULL otherwise agreement, the arbitration will be conducted in Boston, Massachusetts. 
+If your claim does not exceed $10,000, then the arbitration will be conducted solely on the basis of documents you and USEFULL submit to the Arbitrator, unless you request a hearing or the Arbitrator determines that a hearing is necessary. 
+If your claim exceeds $10,000, your right to a hearing will be determined by the AAA Rules. Subject to the AAA Rules, the Arbitrator will have the discretion to direct a reasonable exchange of information by the parties, consistent with the expedited nature of the arbitration.
+9.5  Arbitrator’s Decision.  The Arbitrator will render an award within the time frame specified in the AAA Rules. Judgment on the arbitration award may be entered in any court having competent jurisdiction to do so. The Arbitrator may award declaratory or injunctive relief only in favor of the claimant and only to the extent necessary to provide relief warranted by the claimant’s individual claim. An Arbitrator’s decision shall be final and binding on all parties. An Arbitrator’s decision and judgment thereon shall have no precedential or collateral estoppel effect. If you prevail in arbitration you will be entitled to an award of attorneys’ fees and expenses, to the extent provided under applicable law. USEFULL will not seek, and hereby waives all rights USEFULL may have under applicable law to recover, attorneys’ fees and expenses if USEFULL prevails in arbitration.
+9.6  Fees.  Your responsibility to pay any AAA filing, administrative and arbitrator fees will be solely as set forth in the AAA Rules. However, if your claim for damages does not exceed $75,000, USEFULL will pay all such fees, unless the Arbitrator finds that either the substance of your claim or the relief sought in your Demand for Arbitration was frivolous or was brought for an improper purpose (as measured by the standards set forth in Federal Rule of Civil Procedure 11(b)).
+9.7  Changes.  Notwithstanding the provisions in Section 2 above, regarding consent to be bound by amendments to this Rental Agreement, if USEFULL changes these arbitration provisions after the date you first agreed to this Rental Contract (or to any subsequent changes to this Rental Agreement), You may reject any such change by providing USEFULL written notice of such rejection within 30 days of the date such change became effective, as indicated in the “Effective” date above. This written notice must be provided by email from the email address associated with your Account to: www.usefull.us in order to be effective, the notice must include your full name and clearly indicate your intent to reject changes to these arbitration provisions. By rejecting changes, you are agreeing that you will arbitrate any dispute between you and USEFULL in accordance with the provisions of these arbitration provisions as of the date you first agreed to this Rental Agreement (or to any subsequent changes to this Rental Agreement).
+9.8  Severability and Survival.  If any portion of these arbitration provisions are  found to be unenforceable or unlawful for any reason, (1) the unenforceable or unlawful provision shall be severed from this Rental Agreement; (2) severance of the unenforceable or unlawful provision shall have no impact whatsoever on the remainder of these arbitration provisions or the parties’ ability to compel arbitration of any remaining claims on an individual basis pursuant to these arbitration provisions; and (3) to the extent that any claims must therefore proceed on a class, collective, consolidated, or representative basis, such claims must be litigated in a civil court of competent jurisdiction and not in arbitration, and the parties agree that litigation of those claims shall be stayed pending the outcome of any individual claims in arbitration.
+10. GOVERNING LAW; JURISDICTION.  
+Subject to the provisions of Section 9 above, this Rental Agreement shall be governed by and construed under and in accordance with the laws of the Commonwealth of Massachusetts (without regard to its choice of law principles).  Subject to the provisions of Section 9 above, each party hereby absolutely and irrevocably consents and submits to the exclusive venue and jurisdiction of the courts in Boston, Massachusetts and of any Federal court located therein in connection with any actions or proceedings arising out of or relating to this Agreement. 
+11. MISCELLANEOUS.  
+No waiver by either party of any term or condition of this Agreement, whether by conduct or otherwise, in any one or more instance, shall be deemed a continuing waiver of any such term or condition, or a waiver of any other term or condition of this Rental Agreement.  Headings set forth in this Rental Agreement are solely for the convenience of the parties and have no legal effect.  The singular shall include the plural, and the masculine gender shall include the feminine and neuter, and vice versa, unless the context otherwise requires.  If any provision of this Rental Agreement shall be found to be invalid by any court having competent jurisdiction, the invalidity of such provision shall not affect the validity of the remaining provisions hereof.  You may not assign this Rental Agreement or any of your rights and remedies hereunder. This Rental Agreement shall be (i) binding upon, and will inure to the benefit of, the parties and their respective successors and permitted assigns, and (ii) construed without presumption of any rule requiring construction to be made against the party causing it to be drafted.
+PRIVACY POLICY
+USEFULL PRIVACY POLICY
+USEFULL values the privacy of individuals who use our application, websites, and related services. This privacy policy (the “Privacy Policy”) explains how we collect, use, and share information from consumers.
+Registration Information. When you sign up for a USEFULL account, you give us your name and email address. If you decide to sign up for USEFULL using your Facebook account, we will also get basic information from your Facebook profile like your name, gender, profile photo, and Facebook friends. Similarly, if you decide to sign up using your Google or twitter accounts. If you would like your data deleted, please email info@usefull.us and we would be happy to process your request. 
+Payment Method. When you add a credit card or payment method to your USEFULL account, a third party that handles payments for us will receive your card information. To keep your financial data secure, we do not store full credit card information on our servers. 
+Communications. If you contact us directly, we may receive additional information about you. For example, when you contact our Customer Support Team, we will receive your name, email address, phone number, the contents of a message or attachments that you may send to us, and other information you choose to provide.
+Usage Information. To help us understand how you use the USEFULL service and to help us improve it, we automatically receive information about your interactions with the USEFULL, like the pages or other content you view, your actions within the USEFULL App, and the dates and times of your visits.
+Enterprise Programs. If your company, university, or organization participates in one of our enterprise programs, we may receive information about you, such as your email address, from your participating organization. We also may give your participating organization the opportunity to access data on your usage trends to produce sustainability reports and other information to improve the program on site.
+Data Security. We are committed to protecting the data of the USEFULL community. Even though we take reasonable precautions to protect your data, no security measures can be 100% secure, and we cannot guarantee the security of your data.
+General Data Protection Regulation (GDPR). If you would like your data deleted, please email info@usefull.us and we would be happy to process your request.
+Children’s Privacy. USEFULL is not directed to children, and we do not knowingly collect personal information from children under 13. If we find out that a child under 13 has given us personal information, we will take steps to delete that information. If you believe that a child under the age of 13 has given us personal information, please contact us at: info@usefull.us
+Changes to Our Privacy Policy. We may make changes to this Privacy Policy from time to time. If we make any material changes, we will let you know by email, or other communication. We encourage you to read this Privacy Policy periodically to stay up- to-date about our privacy practices. As long as you use the USEFULL service, you are agreeing to this Privacy Policy and any updates we make to it.
+Contact Information. Feel free to contact us at any time with any questions or comments about this Privacy Policy, your personal information, our use and sharing practices, or your consent choices by contacting info@usefull.us</pre>
+            </div>
+            </div>
+          </div>
+          <div class="terms-panel__qr">
+            <div class="terms-panel__qr-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" role="img" aria-label="Phone">
+                <rect x="6.5" y="2.5" width="11" height="19" rx="2.2" fill="none" stroke="currentColor" stroke-width="1.6"/>
+                <circle cx="12" cy="18.4" r="1" fill="currentColor"/>
+                <rect x="9" y="4.8" width="6" height="0.8" fill="currentColor"/>
+              </svg>
+            </div>
+            <div class="terms-panel__qr-title">Scan to view on your phone</div>
+            <div class="terms-panel__qr-box">
+              <img class="terms-qr-img" alt="USEFULL Terms QR" src="images/terms-QR.png" />
+            </div>
             </div>
           </div>
         </div>
       </div>
-    </section>
 
-    <aside class="sim-panel">
-      <div class="sim-panel__header">
-        <div>
-          <h2>Simulation Controls</h2>
-          <p>Use these while viewing the iPad mockup.</p>
-        </div>
-      </div>
-      <div class="sim-panel__grid">
-        <button class="btn" data-sim="scan">Simulate Container Scan</button>
-        <button class="btn" data-sim="returning">Simulate ID Tap → Returning User</button>
-        <button class="btn" data-sim="new">Simulate ID Tap → New User</button>
-        <button class="btn" data-sim="campus_not_found">Simulate ID Tap → Campus User Not Found</button>
-        <button class="btn" data-sim="frozen">Simulate ID Tap → Account Frozen</button>
-        <button class="btn btn-outline" data-sim="reset">Reset Session</button>
-      </div>
-      <div class="sim-panel__note">
-        Tip: Long‑press the top-right corner of the iPad for the hidden overlay.
-      </div>
-    </aside>
+    <div id="scanHotspot" class="hotspot hotspot--scan" aria-hidden="true"></div>
+    <div id="idHotspot" class="hotspot hotspot--id" aria-hidden="true"></div>
   </div>
 
   <script src="app.js"></script>
