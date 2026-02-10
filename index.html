@@ -2,11 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
   <title>USEFULL Checkout Kiosk</title>
   <meta name="theme-color" content="#008C95" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="USEFULL Demo" />
   <link rel="manifest" href="/manifest.webmanifest" />
   <link rel="apple-touch-icon" href="/images/icons/icon-180.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -69,7 +71,7 @@
               <button class="terms-tab is-active" type="button" data-terms-tab="summary">Summary</button>
               <button class="terms-tab" type="button" data-terms-tab="full">Full Terms</button>
             </div>
-            <div class="terms-panel__scroll terms-content" id="termsSummary">
+            <div class="terms-panel__scroll terms-content" id="termsSummary" data-allow-scroll>
               <p><strong>Service &amp; rental:</strong> USEFULL provides reusable cups and bowls through a sharing program. You rent containers and ownership stays with USEFULL.</p>
               <p><strong>Eligibility &amp; payment:</strong> A valid credit/debit card, Apple Pay, Google Pay, or campus account is required. Users must be 18+; ages 13–17 may participate with parent/guardian supervision.</p>
               <p><strong>Changes to terms:</strong> USEFULL may update the agreement; continued participation or re‑acceptance means you agree to changes.</p>
@@ -81,7 +83,7 @@
               <p><strong>Liability &amp; arbitration:</strong> The agreement includes assumption of risk, release of liability, and binding arbitration with a waiver of class actions; remedies are limited as described in the agreement.</p>
               <p><strong>Termination:</strong> USEFULL may terminate participation; you may terminate but may still owe applicable fees.</p>
             </div>
-            <div class="terms-panel__scroll terms-content terms-content--full" id="termsFull" hidden>
+            <div class="terms-panel__scroll terms-content terms-content--full" id="termsFull" hidden data-allow-scroll>
               <pre class="terms-pre">Terms of Service
 Rental Agreement and Liability Waiver and Release
 Welcome to USEFULL!   We hope you love participating in our sustainable cup and bowl program. Please read through these Terms and Conditions carefully as they contain important information that you should consider before using our USEFULL Cups and Bowls.
@@ -166,7 +168,6 @@ Children’s Privacy. USEFULL is not directed to children, and we do not knowin
 Changes to Our Privacy Policy. We may make changes to this Privacy Policy from time to time. If we make any material changes, we will let you know by email, or other communication. We encourage you to read this Privacy Policy periodically to stay up- to-date about our privacy practices. As long as you use the USEFULL service, you are agreeing to this Privacy Policy and any updates we make to it.
 Contact Information. Feel free to contact us at any time with any questions or comments about this Privacy Policy, your personal information, our use and sharing practices, or your consent choices by contacting info@usefull.us</pre>
             </div>
-            </div>
           </div>
           <div class="terms-panel__qr">
             <div class="terms-panel__qr-icon" aria-hidden="true">
@@ -180,13 +181,15 @@ Contact Information. Feel free to contact us at any time with any questions or 
             <div class="terms-panel__qr-box">
               <img class="terms-qr-img" alt="USEFULL Terms QR" src="images/terms-QR.png" />
             </div>
-            </div>
           </div>
         </div>
       </div>
+    </div>
 
     <div id="scanHotspot" class="hotspot hotspot--scan" aria-hidden="true"></div>
     <div id="idHotspot" class="hotspot hotspot--id" aria-hidden="true"></div>
+    <div id="viewportDebug" class="viewport-debug" hidden></div>
+    <div id="debugBadge" class="debug-badge" hidden>DEBUG ON</div>
   </div>
 
   <script src="app.js"></script>

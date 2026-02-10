@@ -11,6 +11,8 @@ const idHotspot = document.getElementById('idHotspot');
 const termsTabs = document.querySelectorAll('[data-terms-tab]');
 const termsSummary = document.getElementById('termsSummary');
 const termsFull = document.getElementById('termsFull');
+const viewportDebug = document.getElementById('viewportDebug');
+const debugBadge = document.getElementById('debugBadge');
 
 const STATE = {
   SCAN: 'scan',
@@ -31,10 +33,79 @@ let idleDeadline = null;
 let countdownInterval = null;
 let demoIdOutcome = 'new_user';
 let termsModalOpen = false;
+let checkoutLocked = false;
+let scanNoticeMessage = '';
+let scanNoticeTimer = null;
 
 const IDLE_TIMEOUT_MS = 15000;
 const SUCCESS_RESET_MS = 5000;
 const ERROR_RESET_MS = 8000;
+const SCAN_NOTICE_MS = 2500;
+const urlParams = new URL(window.location.href).searchParams;
+const viewportDebugEnabled =
+  urlParams.get('debugViewport') === '1' || window.localStorage.getItem('debugViewport') === '1';
+const HOTSPOT_CLICK_DEDUPE_MS = 450;
+let lastHotspotPointerAt = 0;
+
+function installScrollGuards() {
+  const shouldAllowScroll = (target) =>
+    target instanceof Element && Boolean(target.closest('[data-allow-scroll]'));
+
+  const handleBlockingScroll = (event) => {
+    if (!shouldAllowScroll(event.target)) {
+      event.preventDefault();
+    }
+  };
+
+  document.addEventListener('touchmove', handleBlockingScroll, { passive: false });
+  document.addEventListener('wheel', handleBlockingScroll, { passive: false });
+}
+
+function updateViewportDebug() {
+  if (!viewportDebugEnabled || !viewportDebug) return;
+  const visualHeight = window.visualViewport ? Math.round(window.visualViewport.height) : 'n/a';
+  const visualWidth = window.visualViewport ? Math.round(window.visualViewport.width) : 'n/a';
+  viewportDebug.textContent =
+    `inner: ${window.innerWidth}x${window.innerHeight} | ` +
+    `visual: ${visualWidth}x${visualHeight}`;
+}
+
+function initViewportDebug() {
+  if (!viewportDebug) return;
+  appRoot.classList.toggle('app--debug-hotspots', viewportDebugEnabled);
+  if (!viewportDebugEnabled) {
+    viewportDebug.hidden = true;
+    if (debugBadge) debugBadge.hidden = true;
+    return;
+  }
+
+  viewportDebug.hidden = false;
+  if (debugBadge) debugBadge.hidden = false;
+  updateViewportDebug();
+  window.addEventListener('resize', updateViewportDebug);
+  window.addEventListener('orientationchange', updateViewportDebug);
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', updateViewportDebug);
+  }
+}
+
+window.toggleDebugHotspots = function toggleDebugHotspots(force) {
+  const enabled =
+    typeof force === 'boolean' ? force : !appRoot.classList.contains('app--debug-hotspots');
+  appRoot.classList.toggle('app--debug-hotspots', enabled);
+  if (viewportDebug) {
+    viewportDebug.hidden = !enabled;
+  }
+  if (debugBadge) {
+    debugBadge.hidden = !enabled;
+  }
+  if (enabled) {
+    window.localStorage.setItem('debugViewport', '1');
+  } else {
+    window.localStorage.removeItem('debugViewport');
+  }
+  updateViewportDebug();
+};
 
 function formatDueDate(date) {
   return new Intl.DateTimeFormat('en-US', {
@@ -57,7 +128,7 @@ function resetTimers() {
     idleTimer = setTimeout(() => {
       resetSession();
     }, IDLE_TIMEOUT_MS);
-    if (appState === STATE.SCAN && containerCount > 0) {
+    if (appState === STATE.SCAN && containerCount > 0 && !checkoutLocked) {
       startCountdown();
     } else {
       stopCountdown();
@@ -78,6 +149,8 @@ function resetSession() {
   containerCount = 0;
   activeUserName = null;
   checkoutDate = null;
+  checkoutLocked = false;
+  clearScanNotice(false);
   stopCountdown();
   setState(STATE.SCAN);
 }
@@ -89,12 +162,20 @@ function setState(next) {
 }
 
 function handleScan() {
+  if (appState !== STATE.SCAN || checkoutLocked) return;
+  clearScanNotice(false);
   containerCount += 1;
   render();
   resetTimers();
 }
 
 function handleIdTap(outcome) {
+  if (appState !== STATE.SCAN || checkoutLocked) return;
+  if (containerCount === 0) {
+    setScanNotice('Scan containers first, then tap your ID');
+    return;
+  }
+  checkoutLocked = true;
   checkoutDate = new Date();
   activeUserName = outcome.firstName || null;
   switch (outcome.type) {
@@ -117,6 +198,42 @@ function handleIdTap(outcome) {
       setState(STATE.ERROR_CAMPUS);
       scheduleAutoReset(ERROR_RESET_MS);
   }
+}
+
+function clearScanNotice(shouldRender = true) {
+  if (scanNoticeTimer) {
+    clearTimeout(scanNoticeTimer);
+    scanNoticeTimer = null;
+  }
+  if (!scanNoticeMessage) return;
+  scanNoticeMessage = '';
+  if (shouldRender && appState === STATE.SCAN) {
+    render();
+  }
+}
+
+function setScanNotice(message) {
+  if (!message) {
+    clearScanNotice(true);
+    return;
+  }
+  if (scanNoticeTimer) {
+    clearTimeout(scanNoticeTimer);
+    scanNoticeTimer = null;
+  }
+  scanNoticeMessage = message;
+  if (appState === STATE.SCAN) {
+    render();
+  }
+  resetTimers();
+  scanNoticeTimer = setTimeout(() => {
+    scanNoticeTimer = null;
+    if (!scanNoticeMessage) return;
+    scanNoticeMessage = '';
+    if (appState === STATE.SCAN) {
+      render();
+    }
+  }, SCAN_NOTICE_MS);
 }
 
 function scheduleAutoReset(delay) {
@@ -168,6 +285,24 @@ function setTermsView(view) {
   });
 }
 
+function openTermsModal() {
+  termsModal.hidden = false;
+  termsModalOpen = true;
+  setTermsView('summary');
+  resetTimers();
+}
+
+function closeTermsModal() {
+  termsModal.hidden = true;
+  termsModalOpen = false;
+  resetTimers();
+}
+
+function canUseScanHotspots() {
+  const demoOpen = !demoModal.hidden;
+  return appState === STATE.SCAN && !termsModalOpen && !demoOpen && !checkoutLocked;
+}
+
 function render() {
   const dueDate = getDueDateString();
   const countLabel = `${containerCount} container${containerCount === 1 ? '' : 's'}`;
@@ -210,19 +345,23 @@ function render() {
             <div class="scan-rail scan-rail--left"></div>
             <div class="scan-center">
               <p class="card__subtitle scan-subhead">${subhead}</p>
+              <div class="scan-notice-space" aria-live="polite">
+                <p class="scan-notice ${scanNoticeMessage ? 'is-visible' : ''}">${scanNoticeMessage || ''}</p>
+              </div>
               <div class="scan-illustration">
                 <img class="illustration" src="Branding/checkoutkiosk.png" alt="Checkout kiosk illustration" />
               </div>
             </div>
-            <div class="scan-rail scan-rail--right">
-              <div class="status-tile ${containerCount >= 1 ? 'is-visible' : ''}">
-                <div class="status-label">READY FOR CHECKOUT</div>
-                <div class="status-number ${containerCount >= 1 ? 'is-pop' : ''}">${containerCount}</div>
-                <div class="status-unit">${containerUnit}</div>
-                <div class="status-timer" id="countdownText">Resets in 0:15</div>
-                <div class="status-bar">
-                  <div class="status-bar__fill" id="countdownBar"></div>
-                </div>
+            <div class="scan-rail scan-rail--right" aria-hidden="true"></div>
+          </div>
+          <div class="scan-status-anchor">
+            <div class="status-tile ${containerCount >= 1 ? 'is-visible' : ''}">
+              <div class="status-label">READY FOR CHECKOUT</div>
+              <div class="status-number ${containerCount >= 1 ? 'is-pop' : ''}">${containerCount}</div>
+              <div class="status-unit">${containerUnit}</div>
+              <div class="status-timer" id="countdownText">Resets in 0:15</div>
+              <div class="status-bar">
+                <div class="status-bar__fill" id="countdownBar"></div>
               </div>
             </div>
           </div>
@@ -275,10 +414,7 @@ function render() {
       };
       document.getElementById('programCancel').onclick = resetSession;
       document.getElementById('termsInlineBtn').onclick = () => {
-        termsModal.hidden = false;
-        termsModalOpen = true;
-        setTermsView('summary');
-        resetTimers();
+        openTermsModal();
       };
       break;
 
@@ -340,7 +476,7 @@ function renderSuccess(dueDate, countLabel, containerCount = 2) {
         </div>
         <div class="success-right">
           <div class="success-section-title">Your containers (${containerCount})</div>
-          <div class="container-list">
+          <div class="container-list" data-allow-scroll>
             <div class="container-row">
               <div class="container-icon">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -388,13 +524,14 @@ function closeDemoModal() {
 
 demoSettingsBtn.addEventListener('click', () => {
   demoModal.hidden = false;
+  resetTimers();
 });
 
 footerTermsBtn.addEventListener('click', () => {
-  termsModal.hidden = false;
-  termsModalOpen = true;
-  setTermsView('summary');
-  resetTimers();
+  if (appState !== STATE.PROGRAM_OVERVIEW) {
+    return;
+  }
+  openTermsModal();
 });
 
 demoClose.addEventListener('click', (event) => {
@@ -404,9 +541,7 @@ demoClose.addEventListener('click', (event) => {
 
 termsClose.addEventListener('click', (event) => {
   event.stopPropagation();
-  termsModal.hidden = true;
-  termsModalOpen = false;
-  resetTimers();
+  closeTermsModal();
 });
 
 demoModal.addEventListener('click', (event) => {
@@ -430,9 +565,7 @@ demoModal.addEventListener('click', (event) => {
 
 termsModal.addEventListener('click', (event) => {
   if (!event.target.closest('.terms-panel')) {
-    termsModal.hidden = true;
-    termsModalOpen = false;
-    resetTimers();
+    closeTermsModal();
   }
 });
 
@@ -447,22 +580,45 @@ document.addEventListener('keydown', (event) => {
     closeDemoModal();
   }
   if (event.key === 'Escape' && !termsModal.hidden) {
-    termsModal.hidden = true;
-    termsModalOpen = false;
-    resetTimers();
+    closeTermsModal();
   }
 });
 
+function runHotspotAction(action) {
+  if (!canUseScanHotspots()) return;
+  action();
+}
+
+function shouldIgnoreHotspotClick() {
+  return Date.now() - lastHotspotPointerAt < HOTSPOT_CLICK_DEDUPE_MS;
+}
+
+scanHotspot.addEventListener('pointerdown', (event) => {
+  event.preventDefault();
+  lastHotspotPointerAt = Date.now();
+  runHotspotAction(handleScan);
+});
+
 scanHotspot.addEventListener('click', () => {
-  handleScan();
+  if (shouldIgnoreHotspotClick()) return;
+  runHotspotAction(handleScan);
+});
+
+idHotspot.addEventListener('pointerdown', (event) => {
+  event.preventDefault();
+  lastHotspotPointerAt = Date.now();
+  runHotspotAction(() => handleIdTap({ type: demoIdOutcome, firstName: 'Cody' }));
 });
 
 idHotspot.addEventListener('click', () => {
-  handleIdTap({ type: demoIdOutcome, firstName: 'Cody' });
+  if (shouldIgnoreHotspotClick()) return;
+  runHotspotAction(() => handleIdTap({ type: demoIdOutcome, firstName: 'Cody' }));
 });
 
 document.querySelectorAll('[data-outcome]').forEach((btn) => {
   btn.classList.toggle('is-selected', btn.dataset.outcome === demoIdOutcome);
 });
 
+installScrollGuards();
+initViewportDebug();
 resetSession();
