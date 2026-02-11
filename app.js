@@ -349,7 +349,7 @@ function render() {
                 <p class="scan-notice ${scanNoticeMessage ? 'is-visible' : ''}">${scanNoticeMessage || ''}</p>
               </div>
               <div class="scan-illustration">
-                <img class="illustration" src="Branding/checkoutkiosk.png" alt="Checkout kiosk illustration" />
+                <img class="illustration" src="images/interface-icons/checkoutkiosk.png" alt="Checkout kiosk illustration" />
               </div>
             </div>
             <div class="scan-rail scan-rail--right" aria-hidden="true"></div>
@@ -378,22 +378,22 @@ function render() {
           <p class="program-subtitle">Welcome, ${name} — here’s how USEFULL works at NAU</p>
           <div class="summary-grid">
             <div class="summary-card">
-              <img class="summary-icon-img" src="images/icon-duedate.png" alt="Due date icon" />
+              <img class="summary-icon-img" src="images/interface-icons/icon-duedate.png" alt="Due date icon" />
               <div class="summary-title">2 Days Free</div>
               <div class="summary-text">No charge if returned on time</div>
             </div>
             <div class="summary-card">
-              <img class="summary-icon-img" src="images/icon-fee.png" alt="Fee icon" />
+              <img class="summary-icon-img" src="images/interface-icons/icon-fee.png" alt="Fee icon" />
               <div class="summary-title">$1 / Day Late Fee</div>
               <div class="summary-text">Applies after day 2</div>
             </div>
             <div class="summary-card">
-              <img class="summary-icon-img" src="images/icon-lost.png" alt="Lost item icon" />
+              <img class="summary-icon-img" src="images/interface-icons/icon-lost.png" alt="Lost item icon" />
               <div class="summary-title">Lost After 15 Days</div>
               <div class="summary-text">Charged $17 cup · $25 bowl (max)</div>
             </div>
             <div class="summary-card">
-              <img class="summary-icon-img" src="images/icon-card.png" alt="Card icon" />
+              <img class="summary-icon-img" src="images/interface-icons/icon-card.png" alt="Card icon" />
               <div class="summary-title">JacksCard Billing</div>
               <div class="summary-text">All fees charged automatically</div>
             </div>
@@ -508,7 +508,7 @@ function renderSuccess(dueDate, countLabel, containerCount = 2) {
               <button class="link-button" type="button">Get the USEFULL app</button>
             </div>
             <div class="success-qr">
-              <img src="images/appdownload-QR.png" alt="USEFULL App QR" />
+              <img src="images/QR-codes/appdownload-QR.png" alt="USEFULL App QR" />
             </div>
           </div>
         </div>
