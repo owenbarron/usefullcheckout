@@ -1,0 +1,7 @@
+node_modules/
+.DS_Store
+**/.DS_Store
+
+# Local screenshots / captures
+tablet-onboarding-app*.png
+simulation-verified.png

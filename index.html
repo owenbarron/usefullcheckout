@@ -23,7 +23,12 @@
         <img src="images/USEFULL-icons/USEFULL-Logo-Registered_KnockOut.svg" alt="USEFULL" />
       </div>
       <div class="topbar__right">
-        <img class="topbar__nau" src="images/college-logos/Northern Arizona University.png" alt="Northern Arizona University" />
+        <img
+          class="topbar__nau"
+          id="collegeLogoImage"
+          src="images/college-logos/Pioneer State University.png"
+          alt="Pioneer State University"
+        />
       </div>
     </header>
 
@@ -32,11 +37,15 @@
     </main>
 
     <footer class="footer-bar" id="footer">
-      <button class="footer-bar__link footer-bar__link--left footer-bar__icon" id="demoSettingsBtn" type="button" aria-label="Demo settings">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M12 8.2a3.8 3.8 0 1 0 0 7.6 3.8 3.8 0 0 0 0-7.6zm9.2 3.2-.9-.2a7.5 7.5 0 0 0-.7-1.7l.5-.8a1 1 0 0 0-.1-1.2l-1.4-1.4a1 1 0 0 0-1.2-.1l-.8.5a7.5 7.5 0 0 0-1.7-.7l-.2-.9a1 1 0 0 0-1-.8h-2a1 1 0 0 0-1 .8l-.2.9a7.5 7.5 0 0 0-1.7.7l-.8-.5a1 1 0 0 0-1.2.1L4 6.7a1 1 0 0 0-.1 1.2l.5.8a7.5 7.5 0 0 0-.7 1.7l-.9.2a1 1 0 0 0-.8 1v2a1 1 0 0 0 .8 1l.9.2a7.5 7.5 0 0 0 .7 1.7l-.5.8a1 1 0 0 0 .1 1.2l1.4 1.4a1 1 0 0 0 1.2.1l.8-.5a7.5 7.5 0 0 0 1.7.7l.2.9a1 1 0 0 0 1 .8h2a1 1 0 0 0 1-.8l.2-.9a7.5 7.5 0 0 0 1.7-.7l.8.5a1 1 0 0 0 1.2-.1l1.4-1.4a1 1 0 0 0 .1-1.2l-.5-.8a7.5 7.5 0 0 0 .7-1.7l.9-.2a1 1 0 0 0 .8-1v-2a1 1 0 0 0-.8-1z" fill="currentColor"/>
-        </svg>
-      </button>
+      <div class="footer-bar__left-controls">
+        <button class="footer-bar__link footer-bar__icon footer-bar__icon--simulate" id="simulationBtn" type="button" aria-label="Run simulation">
+          <img class="footer-bar__sim-icon" src="images/USEFULL-icons/USEFULL-Icon-Registered_KnockOut.svg" alt="" aria-hidden="true" />
+          <span class="footer-bar__sim-countdown" id="simulationCountdown" aria-live="polite" hidden></span>
+        </button>
+        <button class="footer-bar__link footer-bar__icon footer-bar__icon--settings" id="demoSettingsBtn" type="button" aria-label="Demo settings">
+          <img class="footer-bar__icon-image" src="images/interface-icons/settings.png" alt="" aria-hidden="true" />
+        </button>
+      </div>
       <div class="footer-bar__center">
         <div class="footer-bar__text" id="footerScanText">Use your campus ID or Mobile ID — no app needed.</div>
         <button class="footer-bar__link footer-bar__link--center" id="footerTermsBtn" type="button">View Terms &amp; Conditions</button>
@@ -49,11 +58,78 @@
           <div>Demo Settings</div>
           <button id="demoClose" class="btn btn-ghost" type="button">Close</button>
         </div>
-        <div class="admin-panel__grid">
-          <button class="btn btn-outline" data-outcome="returning_user">ID Tap → Returning User</button>
-          <button class="btn btn-outline" data-outcome="new_user">ID Tap → New User</button>
-          <button class="btn btn-outline" data-outcome="campus_user_not_found">ID Tap → Campus User Not Found</button>
-          <button class="btn btn-outline" data-outcome="account_frozen">ID Tap → Account Frozen</button>
+        <div class="admin-panel__sections">
+          <section class="admin-panel__section">
+            <h3 class="admin-panel__section-title">Branding</h3>
+            <label class="admin-panel__field">
+              <span class="admin-panel__label">College logo</span>
+              <select class="admin-panel__select" id="collegeLogoSelect">
+                <option value="pioneer">Pioneer State University</option>
+                <option value="nau">Northern Arizona University</option>
+              </select>
+            </label>
+          </section>
+
+          <section class="admin-panel__section">
+            <h3 class="admin-panel__section-title">ID Outcome</h3>
+            <label class="admin-panel__field">
+              <span class="admin-panel__label">ID tap</span>
+              <select class="admin-panel__select" id="idTapOutcomeSelect">
+                <option value="returning_user">Returning User</option>
+                <option value="new_user">New User</option>
+                <option value="campus_user_not_found">Campus User Not Found</option>
+                <option value="account_frozen">Account Frozen</option>
+              </select>
+            </label>
+          </section>
+
+          <section class="admin-panel__section">
+            <h3 class="admin-panel__section-title">Simulation</h3>
+            <div class="admin-panel__controls admin-panel__controls--grid">
+              <label class="admin-panel__field">
+                <span class="admin-panel__label">Containers to scan</span>
+                <select class="admin-panel__select" id="simContainerCountSelect">
+                  <option value="1">1 container</option>
+                  <option value="2">2 containers</option>
+                  <option value="3">3 containers</option>
+                  <option value="4">4 containers</option>
+                  <option value="5">5 containers</option>
+                </select>
+              </label>
+              <label class="admin-panel__field">
+                <span class="admin-panel__label">Delay before 1st scan</span>
+                <select class="admin-panel__select" id="simDelayFirstSelect">
+                  <option value="1">1 second</option>
+                  <option value="2">2 seconds</option>
+                  <option value="3">3 seconds</option>
+                  <option value="4">4 seconds</option>
+                  <option value="5">5 seconds</option>
+                </select>
+              </label>
+              <label class="admin-panel__field">
+                <span class="admin-panel__label">Delay between scans</span>
+                <select class="admin-panel__select" id="simDelayBetweenSelect">
+                  <option value="1">1 second</option>
+                  <option value="2">2 seconds</option>
+                  <option value="3">3 seconds</option>
+                  <option value="4">4 seconds</option>
+                  <option value="5">5 seconds</option>
+                </select>
+              </label>
+              <label class="admin-panel__field">
+                <span class="admin-panel__label">Delay between scan &amp; tap</span>
+                <select class="admin-panel__select" id="simDelayBeforeIdSelect">
+                  <option value="1">1 second</option>
+                  <option value="2">2 seconds</option>
+                  <option value="3">3 seconds</option>
+                  <option value="4">4 seconds</option>
+                  <option value="5">5 seconds</option>
+                </select>
+              </label>
+            </div>
+          </section>
+        </div>
+        <div class="admin-panel__actions">
           <button class="btn" data-action="reset">Reset Session</button>
         </div>
       </div>

@@ -2,7 +2,16 @@ const appRoot = document.getElementById('app');
 const screen = document.getElementById('screen');
 const demoModal = document.getElementById('demoModal');
 const demoClose = document.getElementById('demoClose');
+const simulationBtn = document.getElementById('simulationBtn');
+const simulationCountdown = document.getElementById('simulationCountdown');
 const demoSettingsBtn = document.getElementById('demoSettingsBtn');
+const collegeLogoSelect = document.getElementById('collegeLogoSelect');
+const collegeLogoImage = document.getElementById('collegeLogoImage');
+const idTapOutcomeSelect = document.getElementById('idTapOutcomeSelect');
+const simContainerCountSelect = document.getElementById('simContainerCountSelect');
+const simDelayFirstSelect = document.getElementById('simDelayFirstSelect');
+const simDelayBetweenSelect = document.getElementById('simDelayBetweenSelect');
+const simDelayBeforeIdSelect = document.getElementById('simDelayBeforeIdSelect');
 const footerTermsBtn = document.getElementById('footerTermsBtn');
 const termsModal = document.getElementById('termsModal');
 const termsClose = document.getElementById('termsClose');
@@ -23,6 +32,36 @@ const STATE = {
   ERROR_FROZEN: 'error_frozen',
 };
 
+const BRANDING_PROFILES = {
+  pioneer: {
+    name: 'Pioneer State University',
+    shortName: 'PSU',
+    campusCard: 'PioneerCard',
+    src: 'images/college-logos/Pioneer State University.png',
+    alt: 'Pioneer State University',
+  },
+  nau: {
+    name: 'Northern Arizona University',
+    shortName: 'NAU',
+    campusCard: 'JacksCard',
+    src: 'images/college-logos/Northern Arizona University.png',
+    alt: 'Northern Arizona University',
+  },
+};
+
+const CONTAINER_CATALOG = [
+  { name: 'Giant Platinum Finch', type: '16oz cup', icon: 'images/interface-icons/16oz-cup.png' },
+  { name: 'Significant Pear Centaur', type: '33 oz bowl', icon: 'images/interface-icons/33oz-bowl.png' },
+  { name: 'Quickest Peach Marlin', type: '46 oz container', icon: 'images/interface-icons/46oz-container.png' },
+  { name: 'Blank Scarlet Mosquito', type: '56oz bowl', icon: 'images/interface-icons/56oz-bowl.png' },
+  { name: 'Modest Chocolate Termite', type: '16oz cup', icon: 'images/interface-icons/16oz-cup.png' },
+  { name: 'Robust Crimson Mink', type: '33 oz bowl', icon: 'images/interface-icons/33oz-bowl.png' },
+  { name: 'Vertical Scarlet Marmoset', type: '46 oz container', icon: 'images/interface-icons/46oz-container.png' },
+  { name: 'Amarillo Phoenix Talcott', type: '56oz bowl', icon: 'images/interface-icons/56oz-bowl.png' },
+  { name: 'Costly Navy Weasel', type: '16oz cup', icon: 'images/interface-icons/16oz-cup.png' },
+  { name: 'Appropriate Blue Bird', type: '33 oz bowl', icon: 'images/interface-icons/33oz-bowl.png' },
+];
+
 let appState = STATE.SCAN;
 let containerCount = 0;
 let idleTimer = null;
@@ -32,10 +71,20 @@ let checkoutDate = null;
 let idleDeadline = null;
 let countdownInterval = null;
 let demoIdOutcome = 'new_user';
+let selectedCollegeLogo = 'pioneer';
 let termsModalOpen = false;
 let checkoutLocked = false;
 let scanNoticeMessage = '';
 let scanNoticeTimer = null;
+let simulationActive = false;
+let simulationPhase = 'idle';
+let simulationCountdownValue = null;
+let simulationRunToken = 0;
+const simulationTimers = new Set();
+let simContainerCount = 2;
+let simDelayFirstSec = 5;
+let simDelayBetweenSec = 3;
+let simDelayBeforeIdSec = 3;
 
 const IDLE_TIMEOUT_MS = 15000;
 const SUCCESS_RESET_MS = 5000;
@@ -46,6 +95,158 @@ const viewportDebugEnabled =
   urlParams.get('debugViewport') === '1' || window.localStorage.getItem('debugViewport') === '1';
 const HOTSPOT_CLICK_DEDUPE_MS = 450;
 let lastHotspotPointerAt = 0;
+
+function applyCollegeLogo(logoKey) {
+  const nextLogo = BRANDING_PROFILES[logoKey] || BRANDING_PROFILES.pioneer;
+  selectedCollegeLogo = BRANDING_PROFILES[logoKey] ? logoKey : 'pioneer';
+  if (collegeLogoImage) {
+    collegeLogoImage.src = nextLogo.src;
+    collegeLogoImage.alt = nextLogo.alt;
+    collegeLogoImage.dataset.college = selectedCollegeLogo;
+  }
+  if (collegeLogoSelect) {
+    collegeLogoSelect.value = selectedCollegeLogo;
+  }
+}
+
+function getBrandingProfile() {
+  return BRANDING_PROFILES[selectedCollegeLogo] || BRANDING_PROFILES.pioneer;
+}
+
+function getScannedContainerItems(count) {
+  if (!Number.isFinite(count) || count <= 0) return [];
+  const items = [];
+  for (let i = 0; i < count; i += 1) {
+    const entry = CONTAINER_CATALOG[i % CONTAINER_CATALOG.length];
+    items.push(entry);
+  }
+  return items;
+}
+
+function clampSelectValue(value, min, max, fallback) {
+  const parsed = Number.parseInt(value, 10);
+  if (!Number.isFinite(parsed)) return fallback;
+  return Math.min(max, Math.max(min, parsed));
+}
+
+function updateSimulationButtonState() {
+  if (!simulationBtn || !simulationCountdown) return;
+  const showCountdown = Number.isInteger(simulationCountdownValue) && simulationCountdownValue > 0;
+  simulationBtn.classList.toggle('is-countdown', showCountdown);
+  simulationCountdown.hidden = !showCountdown;
+  simulationCountdown.textContent = showCountdown ? String(simulationCountdownValue) : '';
+}
+
+function updateSettingsButtonState() {
+  if (!demoSettingsBtn) return;
+  demoSettingsBtn.disabled = simulationActive;
+  demoSettingsBtn.setAttribute('aria-disabled', simulationActive ? 'true' : 'false');
+}
+
+function syncDemoSettingsControls() {
+  if (idTapOutcomeSelect) idTapOutcomeSelect.value = demoIdOutcome;
+  if (simContainerCountSelect) simContainerCountSelect.value = String(simContainerCount);
+  if (simDelayFirstSelect) simDelayFirstSelect.value = String(simDelayFirstSec);
+  if (simDelayBetweenSelect) simDelayBetweenSelect.value = String(simDelayBetweenSec);
+  if (simDelayBeforeIdSelect) simDelayBeforeIdSelect.value = String(simDelayBeforeIdSec);
+}
+
+function setSimulationCountdown(value) {
+  simulationCountdownValue = value;
+  updateSimulationButtonState();
+}
+
+function registerSimulationTimer(callback, delayMs, runToken) {
+  const timer = setTimeout(() => {
+    simulationTimers.delete(timer);
+    if (runToken !== simulationRunToken) return;
+    callback();
+  }, delayMs);
+  simulationTimers.add(timer);
+}
+
+function clearSimulationTimers() {
+  simulationTimers.forEach((timer) => clearTimeout(timer));
+  simulationTimers.clear();
+}
+
+function finishSimulationRun(runToken) {
+  if (runToken !== simulationRunToken) return;
+  clearSimulationTimers();
+  simulationActive = false;
+  simulationPhase = 'idle';
+  setSimulationCountdown(null);
+  updateSettingsButtonState();
+}
+
+function cancelSimulation() {
+  simulationRunToken += 1;
+  clearSimulationTimers();
+  simulationActive = false;
+  simulationPhase = 'idle';
+  setSimulationCountdown(null);
+  updateSettingsButtonState();
+}
+
+function startSimulation() {
+  if (simulationActive) return;
+  if (appState !== STATE.SCAN || termsModalOpen || !demoModal.hidden || checkoutLocked) return;
+
+  if (containerCount > 0) {
+    resetSession();
+  }
+
+  simulationRunToken += 1;
+  const runToken = simulationRunToken;
+  const runConfig = {
+    containers: simContainerCount,
+    delayFirstSec: simDelayFirstSec,
+    delayBetweenSec: simDelayBetweenSec,
+    delayBeforeIdSec: simDelayBeforeIdSec,
+    outcome: demoIdOutcome,
+  };
+
+  let scansSent = 0;
+  simulationActive = true;
+  simulationPhase = 'countdown';
+  updateSettingsButtonState();
+
+  const simulateIdTap = () => {
+    if (!simulationActive || runToken !== simulationRunToken) return;
+    handleIdTap({ type: runConfig.outcome, firstName: 'Cody' });
+    finishSimulationRun(runToken);
+  };
+
+  const runScanLoop = () => {
+    if (!simulationActive || runToken !== simulationRunToken) return;
+    handleScan();
+    scansSent += 1;
+    if (scansSent < runConfig.containers) {
+      simulationPhase = 'scan_loop';
+      registerSimulationTimer(runScanLoop, runConfig.delayBetweenSec * 1000, runToken);
+      return;
+    }
+    simulationPhase = 'pre_id_delay';
+    registerSimulationTimer(simulateIdTap, runConfig.delayBeforeIdSec * 1000, runToken);
+  };
+
+  setSimulationCountdown(runConfig.delayFirstSec);
+  registerSimulationTimer(() => {
+    let countdownValue = runConfig.delayFirstSec;
+    const tick = () => {
+      if (!simulationActive || runToken !== simulationRunToken) return;
+      countdownValue -= 1;
+      if (countdownValue > 0) {
+        setSimulationCountdown(countdownValue);
+        registerSimulationTimer(tick, 1000, runToken);
+        return;
+      }
+      setSimulationCountdown(null);
+      runScanLoop();
+    };
+    tick();
+  }, 1000, runToken);
+}
 
 function installScrollGuards() {
   const shouldAllowScroll = (target) =>
@@ -146,6 +347,7 @@ function clearSuccessTimer() {
 }
 
 function resetSession() {
+  cancelSimulation();
   containerCount = 0;
   activeUserName = null;
   checkoutDate = null;
@@ -300,7 +502,7 @@ function closeTermsModal() {
 
 function canUseScanHotspots() {
   const demoOpen = !demoModal.hidden;
-  return appState === STATE.SCAN && !termsModalOpen && !demoOpen && !checkoutLocked;
+  return appState === STATE.SCAN && !termsModalOpen && !demoOpen && !checkoutLocked && !simulationActive;
 }
 
 function render() {
@@ -372,10 +574,11 @@ function render() {
 
     case STATE.PROGRAM_OVERVIEW:
       const name = activeUserName || 'Cody';
+      const branding = getBrandingProfile();
       screen.innerHTML = `
         <div class="card program-card">
           <h1 class="card__title">Program Overview</h1>
-          <p class="program-subtitle">Welcome, ${name} — here’s how USEFULL works at NAU</p>
+          <p class="program-subtitle">Welcome, ${name} — here’s how USEFULL works at ${branding.shortName}</p>
           <div class="summary-grid">
             <div class="summary-card">
               <img class="summary-icon-img" src="images/interface-icons/icon-duedate.png" alt="Due date icon" />
@@ -394,7 +597,7 @@ function render() {
             </div>
             <div class="summary-card">
               <img class="summary-icon-img" src="images/interface-icons/icon-card.png" alt="Card icon" />
-              <div class="summary-title">JacksCard Billing</div>
+              <div class="summary-title">${branding.campusCard} Billing</div>
               <div class="summary-text">All fees charged automatically</div>
             </div>
           </div>
@@ -419,11 +622,11 @@ function render() {
       break;
 
     case STATE.SUCCESS_NEW:
-      screen.innerHTML = renderSuccess(dueDate, countLabel);
+      screen.innerHTML = renderSuccess(dueDate, countLabel, containerCount);
       break;
 
     case STATE.SUCCESS_RETURNING:
-      screen.innerHTML = renderSuccess(dueDate, countLabel);
+      screen.innerHTML = renderSuccess(dueDate, countLabel, containerCount);
       break;
 
     case STATE.ERROR_CAMPUS:
@@ -456,6 +659,23 @@ function render() {
 }
 
 function renderSuccess(dueDate, countLabel, containerCount = 2) {
+  const scannedItems = getScannedContainerItems(containerCount);
+  const containerRows = scannedItems
+    .map(
+      (item) => `
+            <div class="container-row">
+              <div class="container-icon">
+                <img class="container-icon__img" src="${item.icon}" alt="${item.type} icon" />
+              </div>
+              <div class="container-text">
+                <div class="container-name">${item.name}</div>
+                <div class="container-type">${item.type}</div>
+              </div>
+            </div>
+      `
+    )
+    .join('');
+
   return `
     <div class="success-card">
       <div class="success-grid">
@@ -477,30 +697,7 @@ function renderSuccess(dueDate, countLabel, containerCount = 2) {
         <div class="success-right">
           <div class="success-section-title">Your containers (${containerCount})</div>
           <div class="container-list" data-allow-scroll>
-            <div class="container-row">
-              <div class="container-icon">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M4 8h16l-2 9a3 3 0 0 1-3 2H9a3 3 0 0 1-3-2L4 8z" fill="none" stroke="currentColor" stroke-width="1.6"/>
-                  <path d="M6 8c0-2.2 2.7-4 6-4s6 1.8 6 4" fill="none" stroke="currentColor" stroke-width="1.6"/>
-                </svg>
-              </div>
-              <div class="container-text">
-                <div class="container-name">Vicious Grey Mollusk</div>
-                <div class="container-type">Bowl</div>
-              </div>
-            </div>
-            <div class="container-row">
-              <div class="container-icon">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M7 4h10l-1 14a4 4 0 0 1-4 3h-0a4 4 0 0 1-4-3L7 4z" fill="none" stroke="currentColor" stroke-width="1.6"/>
-                  <path d="M6 4h12" fill="none" stroke="currentColor" stroke-width="1.6"/>
-                </svg>
-              </div>
-              <div class="container-text">
-                <div class="container-name">Uncontrollable Vermillion Flamingo</div>
-                <div class="container-type">Cup</div>
-              </div>
-            </div>
+            ${containerRows}
           </div>
           <div class="success-app">
             <div class="success-app-text">
@@ -523,9 +720,57 @@ function closeDemoModal() {
 }
 
 demoSettingsBtn.addEventListener('click', () => {
+  if (simulationActive) return;
+  syncDemoSettingsControls();
   demoModal.hidden = false;
   resetTimers();
 });
+
+if (simulationBtn) {
+  simulationBtn.addEventListener('click', () => {
+    startSimulation();
+  });
+}
+
+if (collegeLogoSelect) {
+  collegeLogoSelect.addEventListener('change', (event) => {
+    applyCollegeLogo(event.target.value);
+  });
+}
+
+if (idTapOutcomeSelect) {
+  idTapOutcomeSelect.addEventListener('change', (event) => {
+    demoIdOutcome = event.target.value;
+  });
+}
+
+if (simContainerCountSelect) {
+  simContainerCountSelect.addEventListener('change', (event) => {
+    simContainerCount = clampSelectValue(event.target.value, 1, 5, simContainerCount);
+    simContainerCountSelect.value = String(simContainerCount);
+  });
+}
+
+if (simDelayFirstSelect) {
+  simDelayFirstSelect.addEventListener('change', (event) => {
+    simDelayFirstSec = clampSelectValue(event.target.value, 1, 5, simDelayFirstSec);
+    simDelayFirstSelect.value = String(simDelayFirstSec);
+  });
+}
+
+if (simDelayBetweenSelect) {
+  simDelayBetweenSelect.addEventListener('change', (event) => {
+    simDelayBetweenSec = clampSelectValue(event.target.value, 1, 5, simDelayBetweenSec);
+    simDelayBetweenSelect.value = String(simDelayBetweenSec);
+  });
+}
+
+if (simDelayBeforeIdSelect) {
+  simDelayBeforeIdSelect.addEventListener('change', (event) => {
+    simDelayBeforeIdSec = clampSelectValue(event.target.value, 1, 5, simDelayBeforeIdSec);
+    simDelayBeforeIdSelect.value = String(simDelayBeforeIdSec);
+  });
+}
 
 footerTermsBtn.addEventListener('click', () => {
   if (appState !== STATE.PROGRAM_OVERVIEW) {
@@ -545,14 +790,6 @@ termsClose.addEventListener('click', (event) => {
 });
 
 demoModal.addEventListener('click', (event) => {
-  const outcomeBtn = event.target.closest('[data-outcome]');
-  if (outcomeBtn) {
-    demoIdOutcome = outcomeBtn.dataset.outcome;
-    document.querySelectorAll('[data-outcome]').forEach((btn) => {
-      btn.classList.toggle('is-selected', btn.dataset.outcome === demoIdOutcome);
-    });
-    return;
-  }
   const actionBtn = event.target.closest('[data-action]');
   if (actionBtn && actionBtn.dataset.action === 'reset') {
     resetSession();
@@ -615,10 +852,10 @@ idHotspot.addEventListener('click', () => {
   runHotspotAction(() => handleIdTap({ type: demoIdOutcome, firstName: 'Cody' }));
 });
 
-document.querySelectorAll('[data-outcome]').forEach((btn) => {
-  btn.classList.toggle('is-selected', btn.dataset.outcome === demoIdOutcome);
-});
-
 installScrollGuards();
 initViewportDebug();
+applyCollegeLogo(selectedCollegeLogo);
+syncDemoSettingsControls();
+updateSimulationButtonState();
+updateSettingsButtonState();
 resetSession();
