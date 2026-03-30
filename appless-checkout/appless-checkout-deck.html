@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appless Checkout — USEFULL</title>
+
+    <!-- Montserrat: closest free match to Proxima Nova (USEFULL brand font) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* ===========================================
+           THEME — USEFULL Brand (light mode)
+           Inspired by missing-container-enforcement.html
+           =========================================== */
+        :root {
+            --teal: #008C95;
+            --teal-dark: #006B73;
+            --teal-darker: #004F55;
+            --teal-light: #E8F5F6;
+            --teal-mid: #8FCCC8;
+            --gold: #D69A2D;
+            --gold-light: #F5ECD8;
+            --earth: #9AADA4;
+            --sky: #238DC1;
+            --charcoal: #4C4C4E;
+            --slate: #77797B;
+            --fog: #EDECE8;
+            --foam: #DEF0EE;
+            --white: #FFFFFF;
+            --off-white: #F9FAF8;
+            --red: #C0392B;
+
+            --font-primary: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+            --title-size: clamp(2rem, 5.2vw, 3.9rem);
+            --h2-size: clamp(1.7rem, 4.2vw, 3.2rem);
+            --h3-size: clamp(1.15rem, 2.2vw, 1.5rem);
+            --body-size: clamp(1rem, 1.7vw, 1.3rem);
+            --small-size: clamp(0.85rem, 1.3vw, 1.05rem);
+            --label-size: clamp(0.78rem, 1.1vw, 0.92rem);
+
+            --slide-padding: clamp(1.4rem, 4.6vw, 4.5rem);
+            --slide-padding-y: clamp(1.25rem, 3.6vh, 2.6rem);
+            --content-gap: clamp(0.65rem, 1.7vw, 1.7rem);
+            --element-gap: clamp(0.3rem, 1vw, 0.75rem);
+
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --duration: 0.7s;
+        }
+
+        /* ===========================================
+           BASE STYLES
+           =========================================== */
+        *, *::before, *::after {
+            margin: 0; padding: 0; box-sizing: border-box;
+        }
+
+        html {
+            height: 100%;
+            overflow-x: hidden;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-primary);
+            color: var(--charcoal);
+            background: var(--white);
+            overflow-x: hidden;
+            height: 100%;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ===========================================
+           SLIDE CONTAINER
+           =========================================== */
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            overflow: hidden;
+            scroll-snap-align: start;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .slide-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            max-height: 100%;
+            overflow: hidden;
+            padding: var(--slide-padding-y) var(--slide-padding);
+        }
+
+        /* ===========================================
+           PROGRESS BAR
+           =========================================== */
+        .progress-bar {
+            position: fixed;
+            top: 0; left: 0;
+            height: 3px;
+            background: var(--teal);
+            width: 0%;
+            z-index: 100;
+            transition: width 0.3s ease;
+        }
+
+        /* ===========================================
+           NAV DOTS
+           =========================================== */
+        .nav-dots {
+            position: fixed;
+            right: clamp(0.75rem, 2vw, 1.5rem);
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 90;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(6px, 1vh, 10px);
+        }
+
+        .nav-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--slate);
+            opacity: 0.25;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none; padding: 0;
+        }
+
+        .nav-dot:hover { opacity: 0.5; transform: scale(1.3); }
+
+        .nav-dot.active {
+            opacity: 1;
+            background: var(--teal);
+            transform: scale(1.3);
+        }
+
+        /* Dark slide nav dots */
+        .slide-teal-bg ~ .nav-dots .nav-dot,
+        .slide-charcoal-bg ~ .nav-dots .nav-dot { background: rgba(255,255,255,0.5); }
+
+        /* ===========================================
+           TYPOGRAPHY
+           =========================================== */
+        .section-label {
+            font-size: var(--label-size);
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--teal);
+            margin-bottom: var(--element-gap);
+        }
+
+        .slide-title {
+            font-size: var(--h2-size);
+            font-weight: 800;
+            line-height: 1.15;
+            color: var(--charcoal);
+            margin-bottom: var(--content-gap);
+        }
+
+        .slide-subtitle {
+            font-size: var(--body-size);
+            font-weight: 400;
+            line-height: 1.5;
+            color: var(--slate);
+            max-width: 42em;
+        }
+
+        .accent { color: var(--teal); }
+        .gold { color: var(--gold); }
+
+        /* ===========================================
+           ANIMATIONS
+           =========================================== */
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity var(--duration) var(--ease-out-expo),
+                        transform var(--duration) var(--ease-out-expo);
+        }
+
+        .slide.visible .reveal { opacity: 1; transform: translateY(0); }
+
+        .slide.visible .reveal:nth-child(1) { transition-delay: 0.05s; }
+        .slide.visible .reveal:nth-child(2) { transition-delay: 0.12s; }
+        .slide.visible .reveal:nth-child(3) { transition-delay: 0.19s; }
+        .slide.visible .reveal:nth-child(4) { transition-delay: 0.26s; }
+        .slide.visible .reveal:nth-child(5) { transition-delay: 0.33s; }
+        .slide.visible .reveal:nth-child(6) { transition-delay: 0.40s; }
+        .slide.visible .reveal:nth-child(7) { transition-delay: 0.47s; }
+
+        /* ===========================================
+           TITLE SLIDE — teal gradient bg
+           =========================================== */
+        .slide-title-page {
+            background: linear-gradient(160deg, var(--teal-dark) 0%, var(--teal) 50%, #00A0A8 100%);
+            color: var(--white);
+        }
+
+        .slide-title-page::before {
+            content: '';
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+        }
+
+        .slide-title-page .slide-content {
+            align-items: center;
+            text-align: center;
+            gap: clamp(0.75rem, 2vh, 1.5rem);
+            position: relative;
+            z-index: 1;
+        }
+
+        .title-logo {
+            width: clamp(120px, 18vw, 200px);
+            height: auto;
+            filter: brightness(0) invert(1);
+        }
+
+        .title-main {
+            font-size: var(--title-size);
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+
+        .title-sub {
+            font-size: clamp(0.9rem, 1.6vw, 1.2rem);
+            font-weight: 500;
+            color: rgba(255,255,255,0.7);
+        }
+
+        .title-divider {
+            width: 50px; height: 3px;
+            background: var(--gold);
+            border-radius: 2px;
+        }
+
+        .title-date {
+            font-size: var(--small-size);
+            font-weight: 600;
+            color: rgba(255,255,255,0.4);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        /* ===========================================
+           BULLET LIST
+           =========================================== */
+        .bullets {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(0.4rem, 1vh, 0.85rem);
+        }
+
+        .bullets li {
+            font-size: var(--body-size);
+            line-height: 1.5;
+            color: var(--charcoal);
+            padding-left: 1.3em;
+            position: relative;
+        }
+
+        .bullets li::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0.55em;
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: var(--teal);
+        }
+
+        .bullets.gold-bullets li::before { background: var(--gold); }
+        .bullets.white-bullets li::before { background: rgba(255,255,255,0.6); }
+        .bullets.white-bullets li { color: rgba(255,255,255,0.85); }
+
+        /* ===========================================
+           PROBLEM ITEMS (slide 3)
+           =========================================== */
+        .problem-list {
+            display: flex;
+            flex-direction: column;
+            gap: clamp(0.5rem, 1.2vh, 1rem);
+        }
+
+        .problem-item {
+            display: flex;
+            align-items: flex-start;
+            gap: clamp(0.5rem, 1.5vw, 1rem);
+            padding: clamp(0.5rem, 1vh, 0.85rem) clamp(0.75rem, 1.5vw, 1.25rem);
+            background: var(--off-white);
+            border-left: 3px solid var(--teal);
+            border-radius: 0 6px 6px 0;
+        }
+
+        .problem-icon {
+            flex-shrink: 0;
+            width: clamp(26px, 2.5vw, 34px);
+            height: clamp(26px, 2.5vw, 34px);
+            background: var(--teal);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(12px, 1.3vw, 16px);
+            color: var(--white);
+            font-weight: 700;
+        }
+
+        .problem-text {
+            font-size: var(--body-size);
+            line-height: 1.45;
+            color: var(--charcoal);
+        }
+
+        .problem-text strong { color: var(--teal-dark); }
+
+        /* ===========================================
+           CARDS
+           =========================================== */
+        .card {
+            background: var(--white);
+            border: 1px solid rgba(0,0,0,0.06);
+            border-radius: 10px;
+            padding: clamp(0.65rem, 1.5vh, 1.1rem) clamp(0.75rem, 1.5vw, 1.25rem);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .card h3 {
+            font-size: var(--h3-size);
+            font-weight: 700;
+            color: var(--charcoal);
+            margin-bottom: clamp(0.2rem, 0.5vh, 0.4rem);
+        }
+
+        .card p, .card li {
+            font-size: var(--small-size);
+            color: var(--slate);
+            line-height: 1.45;
+        }
+
+        .card-teal { border-left: 3px solid var(--teal); }
+        .card-gold { border-left: 3px solid var(--gold); }
+
+        /* On off-white slides */
+        .slide-offwhite { background: var(--off-white); }
+        .slide-offwhite .card { background: var(--white); }
+
+        /* ===========================================
+           CALLOUT
+           =========================================== */
+        .callout {
+            background: var(--teal-light);
+            border-left: 3px solid var(--teal);
+            border-radius: 0 8px 8px 0;
+            padding: clamp(0.5rem, 1.2vh, 0.85rem) clamp(0.75rem, 1.5vw, 1.25rem);
+        }
+
+        .callout p {
+            font-size: var(--small-size);
+            color: var(--charcoal);
+            line-height: 1.5;
+        }
+
+        .callout-gold {
+            background: var(--gold-light);
+            border-left-color: var(--gold);
+        }
+
+        /* ===========================================
+           FLOW STEPS (slide 4)
+           =========================================== */
+        .flow-container {
+            display: flex;
+            align-items: stretch;
+            gap: 0;
+        }
+
+        .flow-step {
+            flex: 1;
+            text-align: center;
+            padding: clamp(0.5rem, 1.2vh, 1rem) clamp(0.3rem, 0.8vw, 0.75rem);
+            background: var(--teal-light);
+            border: 2px solid var(--teal);
+            border-radius: 8px;
+            position: relative;
+            font-size: var(--small-size);
+            font-weight: 600;
+            color: var(--teal-dark);
+        }
+
+        .flow-step + .flow-step { margin-left: clamp(1.2rem, 2.5vw, 2rem); }
+
+        .flow-step + .flow-step::before {
+            content: '→';
+            position: absolute;
+            left: calc(clamp(-1rem, -2vw, -1.5rem));
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--teal);
+            font-size: var(--body-size);
+            font-weight: 700;
+        }
+
+        .flow-step-gold {
+            background: var(--gold-light);
+            border-color: var(--gold);
+            color: #8B6914;
+        }
+
+        .flow-label {
+            font-size: var(--label-size);
+            font-weight: 700;
+            color: var(--teal);
+            margin-bottom: clamp(0.2rem, 0.5vh, 0.4rem);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .flow-label-gold { color: var(--gold); }
+
+        /* ===========================================
+           STAT CARDS (slide 6)
+           =========================================== */
+        .stat-number {
+            font-size: clamp(1.6rem, 4vw, 3rem);
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: clamp(0.1rem, 0.3vh, 0.25rem);
+        }
+
+        .stat-number.red { color: var(--red); }
+
+        /* ===========================================
+           REJECT ITEMS (slide 7)
+           =========================================== */
+        .reject-item {
+            display: flex;
+            gap: clamp(0.5rem, 1vw, 0.75rem);
+            align-items: flex-start;
+            padding: clamp(0.5rem, 1vh, 0.85rem) clamp(0.75rem, 1.5vw, 1.25rem);
+            background: var(--off-white);
+            border-radius: 8px;
+            border-left: 3px solid var(--red);
+        }
+
+        .reject-x {
+            font-weight: 800;
+            color: var(--red);
+            font-size: var(--h3-size);
+            line-height: 1;
+            flex-shrink: 0;
+        }
+
+        .reject-item h3 {
+            font-size: var(--small-size);
+            font-weight: 700;
+            color: var(--charcoal);
+        }
+
+        .reject-item p {
+            font-size: var(--small-size);
+            color: var(--slate);
+            line-height: 1.4;
+        }
+
+        /* ===========================================
+           HARDWARE TAGS
+           =========================================== */
+        .hw-tag {
+            display: inline-block;
+            font-size: var(--label-size);
+            font-weight: 700;
+            padding: 0.2em 0.65em;
+            border-radius: 4px;
+            margin-right: 0.3em;
+            margin-bottom: 0.2em;
+            letter-spacing: 0.03em;
+        }
+
+        .hw-tag.stripe {
+            background: #EEEDFB;
+            color: #635BFF;
+            border: 1px solid #D4D1F7;
+        }
+
+        .hw-tag.hid {
+            background: var(--teal-light);
+            color: var(--teal-dark);
+            border: 1px solid var(--teal-mid);
+        }
+
+        .hw-tag.clover {
+            background: var(--gold-light);
+            color: #8B6914;
+            border: 1px solid #E5D4A8;
+        }
+
+        /* ===========================================
+           TABLE (slide 9)
+           =========================================== */
+        .deck-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: var(--small-size);
+        }
+
+        .deck-table th {
+            font-weight: 700;
+            font-size: var(--label-size);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--teal-dark);
+            text-align: left;
+            padding: clamp(0.35rem, 0.8vh, 0.6rem) clamp(0.5rem, 1vw, 0.85rem);
+            border-bottom: 2px solid var(--teal);
+        }
+
+        .deck-table td {
+            padding: clamp(0.35rem, 0.8vh, 0.6rem) clamp(0.5rem, 1vw, 0.85rem);
+            color: var(--slate);
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            vertical-align: top;
+        }
+
+        .deck-table td:first-child {
+            font-weight: 700;
+            color: var(--charcoal);
+            white-space: nowrap;
+        }
+
+        /* ===========================================
+           GRIDS
+           =========================================== */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: clamp(0.5rem, 1.5vw, 1rem);
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: clamp(0.5rem, 1.5vw, 1rem);
+        }
+
+        @media (max-width: 700px) {
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            .flow-container { flex-direction: column; }
+            .flow-step + .flow-step { margin-left: 0; margin-top: 1rem; }
+            .flow-step + .flow-step::before {
+                content: '↓';
+                left: 50%; top: calc(-0.75rem);
+                transform: translateX(-50%);
+            }
+        }
+
+        /* ===========================================
+           SECTION DIVIDER — teal bg slides
+           =========================================== */
+        .slide-teal-bg {
+            background: linear-gradient(160deg, var(--teal-dark) 0%, var(--teal) 50%, #00A0A8 100%);
+            color: var(--white);
+        }
+
+        .slide-teal-bg::before {
+            content: '';
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+        }
+
+        .slide-teal-bg .slide-content { position: relative; z-index: 1; }
+        .slide-teal-bg .section-label { color: var(--gold); }
+        .slide-teal-bg .slide-title { color: var(--white); }
+        .slide-teal-bg .slide-subtitle { color: rgba(255,255,255,0.7); }
+
+        /* ===========================================
+           VISION SLIDE — warm gradient
+           =========================================== */
+        .slide-vision {
+            background: linear-gradient(160deg, #2D2418 0%, #3D3020 50%, #4A3A28 100%);
+            color: var(--white);
+        }
+
+        .slide-vision .section-label { color: var(--gold); }
+        .slide-vision .slide-title { color: var(--white); }
+        .slide-vision .callout {
+            background: rgba(214, 154, 45, 0.12);
+            border-left-color: var(--gold);
+        }
+        .slide-vision .callout p { color: rgba(255,255,255,0.9); }
+
+        /* ===========================================
+           END SLIDE
+           =========================================== */
+        .slide-end .slide-content {
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: clamp(1rem, 3vh, 2rem);
+        }
+
+        .slide-end .slide-title {
+            color: rgba(255,255,255,0.5);
+            font-weight: 500;
+        }
+
+        /* ===========================================
+           SLIDE NUMBER
+           =========================================== */
+        .slide-number {
+            position: absolute;
+            bottom: clamp(0.6rem, 1.5vh, 1rem);
+            right: clamp(1rem, 3vw, 2rem);
+            font-size: var(--label-size);
+            color: var(--slate);
+            font-weight: 500;
+            letter-spacing: 0.05em;
+        }
+
+        .slide-teal-bg .slide-number,
+        .slide-vision .slide-number { color: rgba(255,255,255,0.3); }
+
+        /* ===========================================
+           RESPONSIVE — SHORT VIEWPORTS
+           =========================================== */
+        @media (max-height: 700px) {
+            :root {
+                --slide-padding: clamp(1rem, 3vw, 2.5rem);
+                --slide-padding-y: clamp(0.75rem, 2.5vh, 1.5rem);
+                --content-gap: clamp(0.5rem, 1.2vw, 1rem);
+                --title-size: clamp(1.6rem, 4.5vw, 2.8rem);
+                --h2-size: clamp(1.4rem, 3.5vw, 2.2rem);
+            }
+        }
+
+        @media (max-height: 600px) {
+            :root {
+                --slide-padding: clamp(0.75rem, 2.5vw, 1.5rem);
+                --slide-padding-y: clamp(0.5rem, 2vh, 1rem);
+                --content-gap: clamp(0.35rem, 1vw, 0.75rem);
+                --title-size: clamp(1.3rem, 4vw, 2rem);
+                --body-size: clamp(0.8rem, 1.3vw, 1rem);
+                --small-size: clamp(0.7rem, 1.1vw, 0.88rem);
+            }
+            .nav-dots { display: none; }
+        }
+
+        @media (max-height: 500px) {
+            :root {
+                --slide-padding: clamp(0.5rem, 2vw, 1rem);
+                --title-size: clamp(1.1rem, 3.5vw, 1.5rem);
+                --h2-size: clamp(1rem, 3vw, 1.3rem);
+                --body-size: clamp(0.7rem, 1.1vw, 0.88rem);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.2s !important;
+            }
+            html { scroll-behavior: auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="progress-bar" id="progressBar"></div>
+    <nav class="nav-dots" id="navDots"></nav>
+
+    <!-- =========================================
+         SLIDE 1 — TITLE
+         ========================================= -->
+    <section class="slide slide-title-page">
+        <div class="slide-content">
+            <svg class="title-logo reveal" viewBox="0 0 576 144" xmlns="http://www.w3.org/2000/svg">
+                <path d="M88.85,83.9c0,11.31-7.44,18.34-19.4,18.34s-19.4-7.03-19.4-18.34V46.13h-6.49v37.92c0,14.94,10.16,24.6,25.89,24.6s25.89-9.66,25.89-24.6V46.13h-6.49v37.77Z" fill="#008C95"/>
+                <path d="M141.57,73.67l-.29-.09c-10.6-3.34-17.04-5.84-17.04-12.37,0-6.19,5.89-10.04,15.37-10.04,10.06,0,16.82,4.22,16.82,10.5v1.38h6.41v-1.68c0-9.49-9.77-16.38-23.23-16.38s-22.09,6.64-22.09,16.53c0,11.6,12.64,15.48,21.87,18.31,10.7,3.24,17.72,5.87,17.72,12.6,0,6.19-6.12,10.04-15.98,10.04-10.56,0-17.65-4.22-17.65-10.5v-1.3h-6.41v1.61c0,9.64,9.9,16.38,24.07,16.38s22.77-6.46,22.77-16.45c0-11.74-12.91-15.66-22.34-18.53Z" fill="#008C95"/>
+                <polygon points="186.25 107.51 229.05 107.51 229.05 101.1 192.74 101.1 192.74 80.48 223.65 80.48 223.65 74.22 192.74 74.22 192.74 52.54 229.05 52.54 229.05 46.13 186.25 46.13 186.25 107.51" fill="#008C95"/>
+                <polygon points="252.78 106.51 267.93 106.51 267.93 86.18 292.21 86.18 292.21 72.4 267.93 72.4 267.93 61.9 296.86 61.9 296.86 47.13 252.78 47.13 252.78 106.51" fill="#008C95"/>
+                <polygon points="438.58 47.13 423.43 47.13 423.43 106.51 467.05 106.51 467.05 91.82 438.58 91.82 438.58 47.13" fill="#008C95"/>
+                <polygon points="503.97 91.82 503.97 47.13 488.82 47.13 488.82 106.51 532.45 106.51 532.45 91.82 503.97 91.82" fill="#008C95"/>
+                <path d="M332.04,67.58h0c.02,15.56,12.64,28.17,28.2,28.17s28.18-12.61,28.2-28.17h0v-3.27h-56.4v3.27Z" fill="#D69A2D"/>
+                <path d="M395.47,46.41v10.86h0v10.32c-.02,19.41-15.83,35.2-35.24,35.2s-35.22-15.79-35.24-35.21v-31.58h0v-6.5s7.53,7.53,7.53,7.53l4.28-4.28-14.7-14.7-14.7,14.7,4.28,4.28,7.44-7.44v37.99c.03,22.65,18.47,41.07,41.11,41.07s41.08-18.42,41.11-41.06v-21.19h-5.87Z" fill="#008C95"/>
+            </svg>
+            <div class="title-divider reveal"></div>
+            <h1 class="title-main reveal">Credit Card &amp;<br>Payment Research</h1>
+            <p class="title-sub reveal">CU Boulder, Holy Cross, and the path forward</p>
+            <p class="title-date reveal">March 2026</p>
+        </div>
+        <span class="slide-number">1 / 14</span>
+    </section>
+
+    <!-- =========================================
+         SLIDE 2 — THE IMMEDIATE QUESTION
+         ========================================= -->
+    <section class="slide">
+        <div class="slide-content">
+            <span class="section-label reveal">The question</span>
+            <h2 class="slide-title reveal">CU Boulder wants appless checkout<br>with <span class="accent">credit cards only.</span></h2>
+            <p class="slide-subtitle reveal" style="margin-bottom: var(--content-gap);">No campus card. No app. Students tap a credit card at a kiosk, check out a container, and walk away.</p>
+            <ul class="bullets reveal">
+                <li>Mandatory program, retail food courts only</li>
+                <li>Must still assign specific containers to specific students</li>
+                <li>Must still enforce fees and communicate due dates</li>
+                <li><strong style="color:var(--teal-dark)">How do we make this work?</strong></li>
+            </ul>
+        </div>
+        <span class="slide-number">2 / 14</span>
+    </section>
+
+    <!-- =========================================
+         SLIDE 3 — WHAT WE NEED TO SOLVE
+         ========================================= -->
+    <section class="slide slide-offwhite">
+        <div class="slide-content">
+            <span class="section-label reveal">Research questions</span>
+            <h2 class="slide-title reveal">What we need to solve</h2>
+            <div class="problem-list">
+                <div class="problem-item reveal">
+                    <div class="problem-icon">1</div>
+                    <p class="problem-text">How does a student <strong>identify themselves</strong> with just a credit card?</p>
+                </div>
+                <div class="problem-item reveal">
+                    <div class="problem-icon">2</div>
+                    <p class="problem-text">How do we <strong>save a payment method</strong> without processing cards ourselves?</p>
+                </div>
+                <div class="problem-item reveal">
+                    <div class="problem-icon">3</div>
+                    <p class="problem-text">How do we <strong>enforce fees</strong> if there's no campus card system managing it?</p>
+                </div>
+                <div class="problem-item reveal">
+                    <div class="problem-icon">4</div>
+                    <p class="problem-text">How do we <strong>contact students</strong> when a card tap gives us no email?</p>
+                </div>
+                <div class="problem-item reveal">
+                    <div class="problem-icon">5</div>
+                    <p class="problem-text">What <strong>hardware</strong> actually does this?</p>
+                </div>
+            </div>
+        </div>
+        <span class="slide-number">3 / 14</span>
+    </section>
+
+    <!-- =========================================
+         SLIDE 4 — THE SOLUTION: STRIPE M2
+         ========================================= -->
+    <section class="slide">
+        <div class="slide-content">
+            <span class="section-label reveal">My Recommendation</span>
+            <h2 class="slide-title reveal">Stripe Reader M2 <span style="color:var(--slate); font-weight:500;">+ HID ATR200</span></h2>
+
+            <div class="grid-2" style="margin-bottom: var(--content-gap);">
+                <div>
+                    <div style="margin-bottom: var(--element-gap);">
+                        <span class="hw-tag stripe reveal">Stripe M2 — $59</span>
+                        <span class="hw-tag hid reveal">HID ATR200 — QR</span>
+                    </div>
+                    <ul class="bullets reveal">
+                        <li>Stripe-native — works within our existing integration</li>
+                        <li>Card data encrypted at reader — fully out of PCI scope</li>
+                        <li>Stripe returns a <strong style="color:var(--teal-dark)">fingerprint</strong> hash that uniquely identifies each card</li>
+                    </ul>
+                </div>
+                <div class="reveal" style="display:flex; align-items:center; justify-content:center;">
+                    <img src="stripe-reader.webp" alt="Stripe Reader M2" style="max-height:min(28vh, 220px); width:auto; border-radius:10px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+                </div>
+            </div>
+
+            <div class="callout callout-gold reveal" style="margin-bottom: var(--content-gap);">
+                <p><strong>Decision point — phone-first identity:</strong> A card tap gives us no email. We should strongly consider collecting a phone number at the kiosk (faster + more verifiable to enter - SMS notification should come immediately). This is a paradigm shift — our current system is email-based throughout (Firebase auth, notifications, receipts). Requires changes to user schema, notification infrastructure, and support workflows.</p>
+            </div>
+
+        </div>
+        <span class="slide-number">4 / 14</span>
+    </section>
+
+    <!-- =========================================
+         SLIDE 5 — CHECKOUT FLOWS
+         ========================================= -->
+    <section class="slide slide-offwhite">
+        <div class="slide-content">
+            <span class="section-label reveal">How it works</span>
+            <h2 class="slide-title reveal">Checkout flow</h2>
+
+            <div style="display:flex; flex-direction:column; gap:var(--content-gap);">
+                <div class="reveal">
+                    <p class="flow-label flow-label-gold" style="margin-bottom:var(--element-gap);">First visit</p>
+                    <div class="flow-container">
+                        <div class="flow-step flow-step-gold">Scan containers</div>
+                        <div class="flow-step flow-step-gold">Tap card</div>
+                        <div class="flow-step flow-step-gold">Enter phone</div>
+                        <div class="flow-step flow-step-gold">Card saved</div>
+                    </div>
+                    <p class="slide-subtitle" style="margin-top:var(--element-gap);">Student provides phone number (or email), taps credit card. Stripe saves the card via SetupIntent — no charge. USEFULL creates an account linked to the card fingerprint.</p>
+                </div>
+
+                <div class="reveal">
+                    <p class="flow-label" style="margin-bottom:var(--element-gap);">Repeat visit</p>
+                    <div class="flow-container">
+                        <div class="flow-step">Tap card</div>
+                        <div class="flow-step">Fingerprint match</div>
+                        <div class="flow-step">Instant checkout</div>
+                    </div>
+                    <p class="slide-subtitle" style="margin-top:var(--element-gap);">Card tap alone identifies the student — no phone number, no app, no login. Stripe fingerprint matches the saved account.</p>
+                </div>
+            </div>
+        </div>
+        <span class="slide-number">5 / 14</span>
+    </section>
+
+    <!-- =========================================
+         SLIDE 6 — FEE MODEL
+         ========================================= -->
+    <section class="slide slide-offwhite">
+        <div class="slide-content">
+            <span class="section-label reveal">Fee model</span>
+            <h2 class="slide-title reveal">Saved card. <span class="accent">Existing fee logic.</span></h2>
+            <p class="slide-subtitle reveal" style="margin-bottom: var(--content-gap);">Save the card at checkout via Stripe SetupIntent — no charge. Fees work exactly like they do today: daily accrual, weekly batched Stripe charges, same backend, same infrastructure.</p>
+
+            <div class="callout reveal" style="margin-bottom: var(--element-gap);">
+                <p><strong>Zero changes to the charging system.</strong> The kiosk just adds a new way to save a card.</p>
+            </div>
+
+            <div class="callout callout-gold reveal">
+                <p><strong>One UX requirement:</strong> Stripe requires disclosure at the kiosk that the card will be saved for future charges. This is a copy/design task, not a technical blocker.</p>
+            </div>
+        </div>
+        <span class="slide-number">6 / 14</span>
+    </section>
+
+    <!-- =========================================
+         SLIDE 6 — WHY NOT A SMALL DEPOSIT?
+         ========================================= -->
+    <section class="slide">
+        <div class="slide-content">
+            <span class="section-label reveal">Evaluated &amp; ruled out</span>
+            <h2 class="slide-title reveal">Why not a small deposit?</h2>
+            <p class="slide-subtitle reveal" style="margin-bottom: var(--content-gap);">The $0.50 deposit idea doesn't hold up.</p>
+
+            <div class="grid-2 reveal">
+                <div class="card card-teal">
+                    <h3><span class="stat-number red">12%+</span></h3>
+                    <p>Effective processing rate. ~6&cent; on a 50&cent; charge — the fee eats the deposit.</p>
+                </div>
+                <div class="card card-teal">
+                    <h3><span class="stat-number red">5–10 days</span></h3>
+                    <p>For refunds to appear. Students return the container, charge lingers on their statement.</p>
+                </div>
+                <div class="card card-teal">
+                    <h3>No behavior change</h3>
+                    <p>Loss-aversion threshold is ~$5+. A 50&cent; deposit doesn't move the needle.</p>
+                </div>
+                <div class="card card-teal">
+                    <h3>Confusing statements</h3>
+                    <p>Charge + refund + later fee = multiple line items = support tickets and disputes.</p>
+                </div>
+            </div>
+
+            <div class="callout reveal" style="margin-top: var(--content-gap);">
+                <p>The saved-card model accomplishes the same accountability without the cost or confusion.</p>
+            </div>
+        </div>
+        <span class="slide-number">7 / 14</span>
+    </section>
+
+    <!-- =========================================
+         SLIDE 7 — OTHER ALTERNATIVES
+         ========================================= -->
+    <section class="slide slide-offwhite">
+        <div class="slide-content">
+            <span class="section-label reveal">Also evaluated</span>
+            <h2 class="slide-title reveal">Why not these approaches?</h2>
+
+            <div style="display:flex; flex-direction:column; gap:var(--content-gap);">
+                <div class="reject-item reveal">
+                    <span class="reject-x">&times;</span>
+                    <div>
+                        <h3>Square</h3>
+                        <p>SDK explicitly prohibits unattended terminals and kiosks. Disqualified.</p>
+                    </div>
+                </div>
+                <div class="reject-item reveal">
+                    <span class="reject-x">&times;</span>
+                    <div>
+                        <h3>Accountless model</h3>
+                        <p>Fee enforcement requires a saved card. "Accountless" still saves a card under the hood — it's architecturally identical to account-based. Ship account-based.</p>
+                    </div>
+                </div>
+                <div class="reject-item reveal">
+                    <span class="reject-x">&times;</span>
+                    <div>
+                        <h3>Full hold, void on return</h3>
+                        <p>Works for one-time visitors (Holy Cross), but doesn't preserve our graduated fee schedule. Boulder is a recurring campus program — our existing fee logic is a better fit.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <span class="slide-number">8 / 14</span>
+    </section>
+
+    <!-- =========================================
+         SLIDE 8 — HOLY CROSS: CLOVER
+         ========================================= -->
+    <section class="slide">
+        <div class="slide-content">
+            <span class="section-label reveal"><span class="gold">Holy Cross</span></span>
+            <h2 class="slide-title reveal">Clover integration <span style="color:var(--slate); font-weight:500;">— stadium concessions</span></h2>
+            <p class="slide-subtitle reveal" style="margin-bottom: var(--content-gap);">Different problem, different hardware, same USEFULL backend.</p>
+
+            <div class="grid-2 reveal">
+                <div>
+                    <p class="flow-label flow-label-gold" style="margin-bottom:var(--element-gap);">Checkout</p>
+                    <ul class="bullets gold-bullets">
+                        <li>Clover-native app on existing concession POS</li>
+                        <li>Cashier scans container QR, places pre-auth hold</li>
+                        <li>No separate USEFULL checkout kiosk needed</li>
+                    </ul>
+                </div>
+                <div>
+                    <p class="flow-label" style="margin-bottom:var(--element-gap);">Returns</p>
+                    <ul class="bullets">
+                        <li>USEFULL return stations: <span class="hw-tag hid" style="font-size:0.8em;">ATR200</span> + tablet</li>
+                        <li>Full hold ($17/$25), void on return within 24 hrs</li>
+                        <li>Right model for one-time stadium visitors</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="callout callout-gold reveal" style="margin-top:var(--content-gap);">
+                <p><strong>Note:</strong> Clover runs on Fiserv, not Stripe — separate integration path. State grant opportunity has resurrected this project.</p>
+            </div>
+        </div>
+        <span class="slide-number">9 / 14</span>
+    </section>
+
+    <!-- =========================================
+         SLIDE 9 — THE GENERAL SOLUTION
+         ========================================= -->
+    <section class="slide slide-offwhite">
+        <div class="slide-content">
+            <span class="section-label reveal">The bigger picture</span>
+            <h2 class="slide-title reveal">The Boulder solution is just a <span class="accent">variant</span> of our overall new checkout station </h2>
+            <p class="slide-subtitle reveal" style="margin-bottom: var(--content-gap);">Same kiosk app, swappable input hardware, per-campus configuration.</p>
+
+            <div class="reveal" style="overflow-x:auto;">
+                <table class="deck-table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Campus Card<br><span style="font-weight:400;text-transform:none;letter-spacing:0;">NAU, UCSC</span></th>
+                            <th>Credit Card<br><span style="font-weight:400;text-transform:none;letter-spacing:0;">CU Boulder</span></th>
+                            <th>Stadium / POS<br><span style="font-weight:400;text-transform:none;letter-spacing:0;">Holy Cross</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Identity</td>
+                            <td><span class="hw-tag hid" style="font-size:0.85em;">ATR215</span> NFC tap</td>
+                            <td><span class="hw-tag stripe" style="font-size:0.85em;">Stripe M2</span> card tap</td>
+                            <td><span class="hw-tag clover" style="font-size:0.85em;">Clover</span> POS</td>
+                        </tr>
+                        <tr>
+                            <td>QR Scanning</td>
+                            <td>ATR215 (built-in)</td>
+                            <td>ATR200</td>
+                            <td>ATR200 (return stations)</td>
+                        </tr>
+                        <tr>
+                            <td>Payment</td>
+                            <td>Touchnet / CBORD card</td>
+                            <td>Stripe (saved card)</td>
+                            <td>Clover / Fiserv</td>
+                        </tr>
+                        <tr>
+                            <td style="border:none;">Fee Model</td>
+                            <td style="border:none;">Existing USEFULL logic</td>
+                            <td style="border:none;">Existing USEFULL logic</td>
+                            <td style="border:none;">Full hold, void on return</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <span class="slide-number">10 / 14</span>
+    </section>
+
+    <!-- =========================================
+         SLIDE 10 — FALL 2026
+         ========================================= -->
+    <section class="slide">
+        <div class="slide-content">
+            <span class="section-label reveal">Fall 2026</span>
+            <h2 class="slide-title reveal">What this looks like</h2>
+            <p class="slide-subtitle reveal" style="margin-bottom: var(--content-gap);">Four deployments, three hardware profiles, one USEFULL platform.</p>
+
+            <div class="grid-3 reveal">
+                <div class="card card-teal">
+                    <h3 style="margin-bottom:var(--element-gap);">NAU / UCSC</h3>
+                    <div style="margin-bottom:var(--element-gap);">
+                        <span class="hw-tag hid">ATR215</span>
+                    </div>
+                    <p>Campus card + QR in one device, plus Android tablet.</p>
+                </div>
+                <div class="card" style="border-left: 3px solid #635BFF;">
+                    <h3 style="margin-bottom:var(--element-gap);">CU Boulder</h3>
+                    <div style="margin-bottom:var(--element-gap);">
+                        <span class="hw-tag hid">ATR200</span>
+                        <span class="hw-tag stripe">Stripe M2</span>
+                    </div>
+                    <p>QR + credit card, plus Android tablet.</p>
+                </div>
+                <div class="card card-gold">
+                    <h3 style="margin-bottom:var(--element-gap);">Holy Cross</h3>
+                    <div style="margin-bottom:var(--element-gap);">
+                        <span class="hw-tag clover">Clover POS</span>
+                        <span class="hw-tag hid">ATR200</span>
+                    </div>
+                    <p>Existing Clover POS + return stations (ATR200 + tablet).</p>
+                </div>
+            </div>
+        </div>
+        <span class="slide-number">11 / 14</span>
+    </section>
+
+    <!-- =========================================
+         SLIDE 11 — FUTURE VISION
+         ========================================= -->
+    <section class="slide slide-vision">
+        <div class="slide-content">
+            <span class="section-label reveal">Long-term</span>
+            <h2 class="slide-title reveal">The unified USEFULL<br><span class="gold">checkout station</span></h2>
+            <p class="slide-subtitle reveal" style="margin-bottom: var(--content-gap); color:rgba(255,255,255,0.6);">Fall deployments validate the software. The long-term product is hardware convergence.</p>
+
+            <ul class="bullets white-bullets reveal" style="margin-bottom: var(--content-gap);">
+                <li>HID embedded NFC module <span style="opacity:0.5">— campus cards + mobile credentials</span></li>
+                <li>Stripe payment terminal <span style="opacity:0.5">— credit/debit tap + insert</span></li>
+                <li>Integrated QR reader <span style="opacity:0.5">— container scanning</span></li>
+                <li>Android touchscreen <span style="opacity:0.5">— UI</span></li>
+                <li>Custom USEFULL-designed enclosure</li>
+            </ul>
+
+            <div class="callout reveal">
+                <p><strong>One device, any campus.</strong> Campus card or credit card, configured via cloud.</p>
+            </div>
+        </div>
+        <span class="slide-number">12 / 14</span>
+    </section>
+
+    <!-- =========================================
+         SLIDE 12 — NEXT STEPS
+         ========================================= -->
+    <section class="slide slide-offwhite">
+        <div class="slide-content">
+            <span class="section-label reveal">Next steps</span>
+            <h2 class="slide-title reveal">What's next</h2>
+
+            <div class="grid-2 reveal">
+                <div class="card card-teal">
+                    <h3><span class="accent">CU Boulder</span></h3>
+                    <p>Finalize Stripe Terminal integration. Test card fingerprint consistency with Apple&nbsp;Pay / Google&nbsp;Pay.</p>
+                </div>
+                <div class="card card-gold">
+                    <h3><span class="gold">Holy Cross</span></h3>
+                    <p>Begin Clover SDK integration (Clover Connector for Android).</p>
+                </div>
+                <div class="card">
+                    <h3>Firebase</h3>
+                    <p>Add phone-number auth. Make email nullable in user schema.</p>
+                </div>
+                <div class="card">
+                    <h3>NAU</h3>
+                    <p>Continue ATR215 testing. Coordinate Apple Wallet ECP config with card office.</p>
+                </div>
+            </div>
+        </div>
+        <span class="slide-number">13 / 14</span>
+    </section>
+
+    <!-- =========================================
+         SLIDE 13 — END
+         ========================================= -->
+    <section class="slide slide-teal-bg slide-end">
+        <div class="slide-content">
+            <svg class="title-logo reveal" viewBox="0 0 576 144" xmlns="http://www.w3.org/2000/svg">
+                <path d="M88.85,83.9c0,11.31-7.44,18.34-19.4,18.34s-19.4-7.03-19.4-18.34V46.13h-6.49v37.92c0,14.94,10.16,24.6,25.89,24.6s25.89-9.66,25.89-24.6V46.13h-6.49v37.77Z" fill="#008C95"/>
+                <path d="M141.57,73.67l-.29-.09c-10.6-3.34-17.04-5.84-17.04-12.37,0-6.19,5.89-10.04,15.37-10.04,10.06,0,16.82,4.22,16.82,10.5v1.38h6.41v-1.68c0-9.49-9.77-16.38-23.23-16.38s-22.09,6.64-22.09,16.53c0,11.6,12.64,15.48,21.87,18.31,10.7,3.24,17.72,5.87,17.72,12.6,0,6.19-6.12,10.04-15.98,10.04-10.56,0-17.65-4.22-17.65-10.5v-1.3h-6.41v1.61c0,9.64,9.9,16.38,24.07,16.38s22.77-6.46,22.77-16.45c0-11.74-12.91-15.66-22.34-18.53Z" fill="#008C95"/>
+                <polygon points="186.25 107.51 229.05 107.51 229.05 101.1 192.74 101.1 192.74 80.48 223.65 80.48 223.65 74.22 192.74 74.22 192.74 52.54 229.05 52.54 229.05 46.13 186.25 46.13 186.25 107.51" fill="#008C95"/>
+                <polygon points="252.78 106.51 267.93 106.51 267.93 86.18 292.21 86.18 292.21 72.4 267.93 72.4 267.93 61.9 296.86 61.9 296.86 47.13 252.78 47.13 252.78 106.51" fill="#008C95"/>
+                <polygon points="438.58 47.13 423.43 47.13 423.43 106.51 467.05 106.51 467.05 91.82 438.58 91.82 438.58 47.13" fill="#008C95"/>
+                <polygon points="503.97 91.82 503.97 47.13 488.82 47.13 488.82 106.51 532.45 106.51 532.45 91.82 503.97 91.82" fill="#008C95"/>
+                <path d="M332.04,67.58h0c.02,15.56,12.64,28.17,28.2,28.17s28.18-12.61,28.2-28.17h0v-3.27h-56.4v3.27Z" fill="#D69A2D"/>
+                <path d="M395.47,46.41v10.86h0v10.32c-.02,19.41-15.83,35.2-35.24,35.2s-35.22-15.79-35.24-35.21v-31.58h0v-6.5s7.53,7.53,7.53,7.53l4.28-4.28-14.7-14.7-14.7,14.7,4.28,4.28,7.44-7.44v37.99c.03,22.65,18.47,41.07,41.11,41.07s41.08-18.42,41.11-41.06v-21.19h-5.87Z" fill="#008C95"/>
+            </svg>
+            <h2 class="slide-title reveal">Questions?</h2>
+        </div>
+        <span class="slide-number">14 / 14</span>
+    </section>
+
+    <script>
+        /* ===========================================
+           SLIDE PRESENTATION CONTROLLER
+           =========================================== */
+        class SlidePresentation {
+            constructor() {
+                this.slides = document.querySelectorAll('.slide');
+                this.currentSlide = 0;
+                this.createNavDots();
+                this.setupIntersectionObserver();
+                this.setupKeyboardNav();
+                this.setupTouchNav();
+                this.updateProgress();
+            }
+
+            createNavDots() {
+                const nav = document.getElementById('navDots');
+                this.slides.forEach((_, i) => {
+                    const dot = document.createElement('button');
+                    dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+                    dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
+                    dot.addEventListener('click', () => this.goToSlide(i));
+                    nav.appendChild(dot);
+                });
+                this.dots = nav.querySelectorAll('.nav-dot');
+            }
+
+            setupIntersectionObserver() {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                            const index = Array.from(this.slides).indexOf(entry.target);
+                            this.currentSlide = index;
+                            this.updateDots();
+                            this.updateProgress();
+                        }
+                    });
+                }, { threshold: 0.5 });
+                this.slides.forEach(slide => observer.observe(slide));
+            }
+
+            setupKeyboardNav() {
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === ' ') {
+                        e.preventDefault();
+                        this.goToSlide(Math.min(this.currentSlide + 1, this.slides.length - 1));
+                    } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                        e.preventDefault();
+                        this.goToSlide(Math.max(this.currentSlide - 1, 0));
+                    }
+                });
+            }
+
+            setupTouchNav() {
+                let startY = 0;
+                document.addEventListener('touchstart', (e) => { startY = e.touches[0].clientY; }, { passive: true });
+                document.addEventListener('touchend', (e) => {
+                    const diff = startY - e.changedTouches[0].clientY;
+                    if (Math.abs(diff) > 50) {
+                        this.goToSlide(diff > 0
+                            ? Math.min(this.currentSlide + 1, this.slides.length - 1)
+                            : Math.max(this.currentSlide - 1, 0));
+                    }
+                }, { passive: true });
+            }
+
+            goToSlide(index) {
+                this.slides[index].scrollIntoView({ behavior: 'smooth' });
+                this.currentSlide = index;
+                this.updateDots();
+                this.updateProgress();
+            }
+
+            updateDots() {
+                this.dots.forEach((dot, i) => dot.classList.toggle('active', i === this.currentSlide));
+            }
+
+            updateProgress() {
+                document.getElementById('progressBar').style.width =
+                    ((this.currentSlide + 1) / this.slides.length * 100) + '%';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => new SlidePresentation());
+    </script>
+</body>
+</html>

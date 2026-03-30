@@ -1,0 +1,2208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Missing Container Enforcement — USEFULL Build Plan</title>
+
+    <!-- Montserrat: closest free alternative to Proxima Nova (USEFULL brand font) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* ===========================================
+           CSS CUSTOM PROPERTIES (USEFULL BRAND THEME)
+           Colors sourced from USEFULL brand palette.
+           =========================================== */
+        :root {
+            /* USEFULL Brand Colors */
+            --teal: #008C95;
+            --teal-dark: #006B73;
+            --teal-darker: #004F55;
+            --teal-light: #E8F5F6;
+            --teal-mid: #8FCCC8;
+            --gold: #D69A2D;
+            --gold-light: #F5ECD8;
+            --earth: #9AADA4;
+            --sky: #238DC1;
+            --charcoal: #4C4C4E;
+            --slate: #77797B;
+            --fog: #EDECE8;
+            --foam: #DEF0EE;
+            --white: #FFFFFF;
+            --off-white: #F9FAF8;
+
+            /* Typography — MUST use clamp() for responsive scaling */
+            --font-primary: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+            --title-size: clamp(2rem, 5.2vw, 3.9rem);
+            --h2-size: clamp(1.7rem, 4.2vw, 3.2rem);
+            --h3-size: clamp(1.25rem, 2.6vw, 1.8rem);
+            --body-size: clamp(1.05rem, 1.8vw, 1.35rem);
+            --small-size: clamp(0.9rem, 1.35vw, 1.1rem);
+            --label-size: clamp(0.82rem, 1.15vw, 0.95rem);
+
+            /* Spacing — scales with viewport */
+            --slide-padding: clamp(1.4rem, 4.6vw, 4.5rem);
+            --slide-padding-y: clamp(1.25rem, 3.6vh, 2.6rem);
+            --content-gap: clamp(0.65rem, 1.7vw, 1.7rem);
+            --element-gap: clamp(0.25rem, 1vw, 0.75rem);
+
+            /* Animation */
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --duration: 0.7s;
+        }
+
+        /* ===========================================
+           BASE STYLES & RESET
+           =========================================== */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            height: 100%;
+            overflow-x: hidden;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-primary);
+            color: var(--charcoal);
+            background: var(--white);
+            overflow-x: hidden;
+            height: 100%;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ===========================================
+           SLIDE CONTAINER
+           Each slide = exactly one viewport height.
+           overflow: hidden prevents ANY scrolling.
+           =========================================== */
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            overflow: hidden;
+            scroll-snap-align: start;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .slide-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            max-height: 100%;
+            overflow: hidden;
+            padding: var(--slide-padding-y) var(--slide-padding);
+        }
+
+        /* ===========================================
+           PROGRESS BAR
+           Thin teal bar at top of viewport
+           =========================================== */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: var(--teal);
+            width: 0%;
+            z-index: 100;
+            transition: width 0.3s ease;
+        }
+
+        /* ===========================================
+           MODAL EPIC LINK
+           =========================================== */
+        .phase-modal-epic {
+            font-size: var(--small-size);
+            font-weight: 700;
+            text-decoration: none;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.18);
+            color: inherit;
+            border: 1px solid rgba(255,255,255,0.4);
+            transition: transform 0.2s ease, filter 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .phase-modal-epic:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.02);
+        }
+
+        /* ===========================================
+           NAVIGATION DOTS
+           Right-side dots for slide navigation
+           =========================================== */
+        .nav-dots {
+            position: fixed;
+            right: clamp(0.75rem, 2vw, 1.5rem);
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 90;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(6px, 1vh, 10px);
+        }
+
+        .nav-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--slate);
+            opacity: 0.3;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            padding: 0;
+        }
+
+        .nav-dot:hover {
+            opacity: 0.6;
+            transform: scale(1.3);
+        }
+
+        .nav-dot.active {
+            opacity: 1;
+            background: var(--teal);
+            transform: scale(1.3);
+        }
+
+        /* ===========================================
+           TYPOGRAPHY
+           =========================================== */
+        .section-label {
+            font-size: var(--label-size);
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--teal);
+            margin-bottom: var(--element-gap);
+        }
+
+        .slide-title {
+            font-size: var(--h2-size);
+            font-weight: 800;
+            line-height: 1.15;
+            color: var(--charcoal);
+            margin-bottom: var(--content-gap);
+        }
+
+        .slide-subtitle {
+            font-size: var(--body-size);
+            font-weight: 400;
+            line-height: 1.5;
+            color: var(--slate);
+            max-width: 42em;
+        }
+
+        /* ===========================================
+           ANIMATIONS
+           Triggered via .visible class on scroll
+           =========================================== */
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity var(--duration) var(--ease-out-expo),
+                        transform var(--duration) var(--ease-out-expo);
+        }
+
+        .slide.visible .reveal {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Stagger children */
+        .slide.visible .reveal:nth-child(1) { transition-delay: 0.05s; }
+        .slide.visible .reveal:nth-child(2) { transition-delay: 0.12s; }
+        .slide.visible .reveal:nth-child(3) { transition-delay: 0.19s; }
+        .slide.visible .reveal:nth-child(4) { transition-delay: 0.26s; }
+        .slide.visible .reveal:nth-child(5) { transition-delay: 0.33s; }
+        .slide.visible .reveal:nth-child(6) { transition-delay: 0.40s; }
+
+        /* Fade in from left */
+        .reveal-left {
+            opacity: 0;
+            transform: translateX(-30px);
+            transition: opacity var(--duration) var(--ease-out-expo),
+                        transform var(--duration) var(--ease-out-expo);
+        }
+
+        .slide.visible .reveal-left {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Scale in */
+        .reveal-scale {
+            opacity: 0;
+            transform: scale(0.92);
+            transition: opacity var(--duration) var(--ease-out-expo),
+                        transform var(--duration) var(--ease-out-expo);
+        }
+
+        .slide.visible .reveal-scale {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+
+        /* =====================================================================
+           SLIDE 1: TITLE
+           Dark teal background with subtle grid pattern, white text, USEFULL logo
+           ===================================================================== */
+        .slide-title-page {
+            background: linear-gradient(160deg, var(--teal-dark) 0%, var(--teal) 50%, #00A0A8 100%);
+            color: var(--white);
+        }
+
+        .slide-title-page .slide-content {
+            align-items: center;
+            text-align: center;
+            gap: clamp(0.75rem, 2vh, 1.5rem);
+        }
+
+        /* Subtle grid overlay on title slide */
+        .slide-title-page::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+        }
+
+        .title-logo {
+            width: clamp(120px, 18vw, 200px);
+            height: auto;
+            filter: brightness(0) invert(1); /* Makes the colored SVG white */
+        }
+
+        .title-main {
+            font-size: var(--title-size);
+            font-weight: 800;
+            line-height: 1.1;
+            color: var(--white);
+            letter-spacing: -0.02em;
+        }
+
+        .title-sub {
+            font-size: clamp(0.85rem, 1.5vw, 1.15rem);
+            font-weight: 500;
+            color: rgba(255,255,255,0.7);
+        }
+
+        .title-date {
+            font-size: var(--small-size);
+            font-weight: 600;
+            color: rgba(255,255,255,0.45);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .title-divider {
+            width: 50px;
+            height: 3px;
+            background: var(--gold);
+            border-radius: 2px;
+        }
+
+        .keyboard-hint {
+            position: absolute;
+            bottom: clamp(1rem, 3vh, 2rem);
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: var(--small-size);
+            color: rgba(255,255,255,0.35);
+            animation: fadeHint 4s ease forwards;
+        }
+
+        @keyframes fadeHint {
+            0%, 70% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+
+        /* =====================================================================
+           SLIDE 2: THE PROBLEM
+           White background, 3 problem points with teal left-border cards
+           ===================================================================== */
+        .problem-list {
+            display: flex;
+            flex-direction: column;
+            gap: clamp(0.6rem, 1.5vh, 1.25rem);
+            margin-top: var(--content-gap);
+        }
+
+        .problem-item {
+            display: flex;
+            align-items: flex-start;
+            gap: clamp(0.5rem, 1.5vw, 1rem);
+            padding: clamp(0.6rem, 1.2vh, 1rem) clamp(0.75rem, 1.5vw, 1.25rem);
+            background: var(--off-white);
+            border-left: 3px solid var(--teal);
+            border-radius: 0 6px 6px 0;
+        }
+
+        .problem-icon {
+            flex-shrink: 0;
+            width: clamp(28px, 3vw, 38px);
+            height: clamp(28px, 3vw, 38px);
+            background: var(--teal);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(14px, 1.5vw, 18px);
+            color: var(--white);
+            font-weight: 700;
+        }
+
+        .problem-text {
+            font-size: var(--body-size);
+            line-height: 1.5;
+            color: var(--charcoal);
+        }
+
+        .problem-text strong {
+            color: var(--teal-dark);
+        }
+
+
+        /* =====================================================================
+           SLIDE 3: THE DATA
+           4 stat cards in a 2x2 grid with large gold numbers
+           ===================================================================== */
+        .slide-data {
+            background: var(--off-white);
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: clamp(0.5rem, 1.5vw, 1.25rem);
+            margin-top: var(--content-gap);
+        }
+
+        .stat-card {
+            background: var(--white);
+            border-radius: 10px;
+            padding: clamp(0.75rem, 2vh, 1.5rem) clamp(0.75rem, 2vw, 1.5rem);
+            border: 1px solid rgba(0,0,0,0.06);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .stat-number {
+            font-size: clamp(1.75rem, 4.5vw, 3.5rem);
+            font-weight: 800;
+            color: var(--gold);
+            line-height: 1;
+            margin-bottom: clamp(0.15rem, 0.5vh, 0.35rem);
+        }
+
+        .stat-label {
+            font-size: clamp(0.7rem, 1.1vw, 0.9rem);
+            font-weight: 700;
+            color: var(--charcoal);
+            margin-bottom: clamp(0.1rem, 0.3vh, 0.2rem);
+        }
+
+        .stat-desc {
+            font-size: var(--small-size);
+            color: var(--slate);
+            line-height: 1.35;
+        }
+
+
+        /* =====================================================================
+           SLIDE 4: THE SOLUTION
+           Overview + 4-step horizontal flow
+           ===================================================================== */
+        .solution-desc {
+            font-size: var(--body-size);
+            color: var(--slate);
+            line-height: 1.6;
+            max-width: 48em;
+            margin-bottom: var(--content-gap);
+        }
+
+        .flow-container {
+            display: flex;
+            align-items: stretch;
+            gap: 0;
+            margin-top: clamp(0.25rem, 0.5vh, 0.5rem);
+        }
+
+        .flow-step {
+            flex: 1;
+            text-align: center;
+            padding: clamp(0.6rem, 1.5vh, 1.25rem) clamp(0.4rem, 1vw, 1rem);
+            background: var(--teal-light);
+            border: 2px solid var(--teal);
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .flow-step:nth-child(1) { transition-delay: 0.15s; }
+        .flow-step:nth-child(3) { transition-delay: 0.25s; }
+        .flow-step:nth-child(5) { transition-delay: 0.35s; }
+        .flow-step:nth-child(7) { transition-delay: 0.45s; }
+
+        .flow-step-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: clamp(24px, 2.5vw, 32px);
+            height: clamp(24px, 2.5vw, 32px);
+            background: var(--teal);
+            color: var(--white);
+            border-radius: 50%;
+            font-size: var(--small-size);
+            font-weight: 700;
+            margin-bottom: clamp(0.2rem, 0.5vh, 0.4rem);
+        }
+
+        .flow-step-title {
+            font-size: clamp(0.7rem, 1.1vw, 0.95rem);
+            font-weight: 700;
+            color: var(--teal-dark);
+            margin-bottom: clamp(0.1rem, 0.3vh, 0.2rem);
+        }
+
+        .flow-step-desc {
+            font-size: var(--small-size);
+            color: var(--slate);
+            line-height: 1.35;
+        }
+
+        .flow-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(1rem, 2vw, 1.5rem);
+            color: var(--teal);
+            padding: 0 clamp(0.2rem, 0.5vw, 0.5rem);
+            flex-shrink: 0;
+        }
+
+
+        /* =====================================================================
+           SLIDE 5: HOW IT WORKS
+           4 numbered steps with left accent bar
+           ===================================================================== */
+        .slide-flow {
+            background: var(--off-white);
+        }
+
+        .steps-list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: clamp(0.6rem, 1.4vh, 1rem);
+            margin-top: var(--content-gap);
+        }
+
+        .step-card {
+            display: flex;
+            align-items: flex-start;
+            gap: clamp(0.5rem, 1.2vw, 1rem);
+            padding: clamp(0.5rem, 1vh, 0.85rem) clamp(0.6rem, 1.2vw, 1rem);
+            background: var(--white);
+            border-radius: 8px;
+            border-left: 4px solid var(--teal);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        }
+
+        .step-num {
+            flex-shrink: 0;
+            width: clamp(26px, 2.5vw, 34px);
+            height: clamp(26px, 2.5vw, 34px);
+            background: var(--teal);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--small-size);
+            font-weight: 700;
+        }
+
+        .step-body {
+            flex: 1;
+        }
+
+        .step-title {
+            font-size: clamp(0.75rem, 1.1vw, 0.95rem);
+            font-weight: 700;
+            color: var(--charcoal);
+            margin-bottom: 2px;
+        }
+
+        .step-desc {
+            font-size: var(--small-size);
+            color: var(--slate);
+            line-height: 1.4;
+        }
+
+        .step-config-note {
+            font-size: var(--small-size);
+            color: var(--teal);
+            font-weight: 600;
+            margin-top: clamp(0.5rem, 1vh, 0.75rem);
+        }
+
+        @media (max-width: 900px) {
+            .steps-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+
+        /* =====================================================================
+           SLIDE 6: ADMIN CONTROLS
+           Mockup image with feature callouts
+           ===================================================================== */
+        .mockup-layout {
+            display: flex;
+            align-items: center;
+            gap: clamp(1rem, 3vw, 2.5rem);
+            margin-top: var(--content-gap);
+            flex: 1;
+            min-height: 0;
+        }
+
+        .mockup-image-container {
+            flex: 1.4;
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mockup-image {
+            width: 100%;
+            max-height: min(55vh, 450px);
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.12), 0 1px 4px rgba(0,0,0,0.06);
+            border: 1px solid rgba(0,0,0,0.08);
+        }
+
+        .mockup-features {
+            flex: 0.6;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(0.5rem, 1.2vh, 1rem);
+        }
+
+        .mockup-feature {
+            padding: clamp(0.5rem, 1vh, 0.75rem) clamp(0.5rem, 1vw, 0.85rem);
+            background: var(--teal-light);
+            border-radius: 8px;
+            border-left: 3px solid var(--teal);
+        }
+
+        .mockup-feature-title {
+            font-size: var(--small-size);
+            font-weight: 700;
+            color: var(--teal-dark);
+            margin-bottom: 2px;
+        }
+
+        .mockup-feature-desc {
+            font-size: var(--small-size);
+            color: var(--slate);
+            line-height: 1.35;
+        }
+
+
+        /* =====================================================================
+           SLIDE 7: CHARGING & RECOVERY
+           Two mockup images with feature bullets
+           ===================================================================== */
+        .slide-charging {
+            background: var(--off-white);
+        }
+
+        .charging-layout {
+            display: flex;
+            gap: clamp(0.75rem, 2vw, 1.5rem);
+            margin-top: var(--content-gap);
+            flex: 1;
+            min-height: 0;
+            align-items: center;
+        }
+
+        .charging-mockups {
+            flex: 1.5;
+            display: flex;
+            gap: clamp(0.5rem, 1vw, 1rem);
+            align-items: center;
+            min-width: 0;
+        }
+
+        .charging-mockup {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .charging-mockup img {
+            width: 100%;
+            max-height: min(50vh, 400px);
+            object-fit: contain;
+            border-radius: 6px;
+            box-shadow: 0 3px 16px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.06);
+            border: 1px solid rgba(0,0,0,0.08);
+        }
+
+        .charging-features {
+            flex: 0.5;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(0.4rem, 1vh, 0.75rem);
+        }
+
+        .charging-feature {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            font-size: var(--small-size);
+            color: var(--charcoal);
+            line-height: 1.4;
+        }
+
+        .charging-feature-dot {
+            flex-shrink: 0;
+            width: 6px;
+            height: 6px;
+            background: var(--gold);
+            border-radius: 50%;
+            margin-top: 0.4em;
+        }
+
+
+        /* =====================================================================
+           SLIDE 8: BUILD PHASES
+           Two-column phase comparison
+           ===================================================================== */
+        .phases-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: clamp(0.75rem, 2vw, 1.5rem);
+            margin-top: var(--content-gap);
+        }
+
+        .phase-card {
+            padding: clamp(0.75rem, 1.5vh, 1.25rem) clamp(0.75rem, 1.5vw, 1.25rem);
+            border-radius: 10px;
+            border: 2px solid transparent;
+        }
+
+        .phase-card-primary {
+            background: var(--teal);
+            color: var(--white);
+        }
+
+        .phase-card-secondary {
+            background: var(--white);
+            color: var(--charcoal);
+            border-color: var(--teal-mid);
+        }
+
+        .phase-badge {
+            display: inline-block;
+            font-size: var(--label-size);
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 3px 10px;
+            border-radius: 20px;
+            margin-bottom: clamp(0.4rem, 1vh, 0.75rem);
+        }
+
+        .phase-card-primary .phase-badge {
+            background: rgba(255,255,255,0.2);
+            color: var(--white);
+        }
+
+        .phase-card-secondary .phase-badge {
+            background: var(--teal-light);
+            color: var(--teal);
+        }
+
+        .phase-title {
+            font-size: var(--h3-size);
+            font-weight: 700;
+            margin-bottom: clamp(0.3rem, 0.75vh, 0.5rem);
+        }
+
+        .phase-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(0.25rem, 0.6vh, 0.5rem);
+        }
+
+        .phase-list li {
+            font-size: var(--small-size);
+            line-height: 1.4;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.4em;
+        }
+
+        .phase-list li::before {
+            content: '';
+            flex-shrink: 0;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            margin-top: 0.45em;
+        }
+
+        .phase-card-primary .phase-list li::before {
+            background: rgba(255,255,255,0.5);
+        }
+
+        .phase-card-secondary .phase-list li::before {
+            background: var(--teal-mid);
+        }
+
+
+        /* =====================================================================
+           SLIDE 9: NEXT STEPS (CTA)
+           Dark teal background to bookend with slide 1
+           ===================================================================== */
+        .slide-cta {
+            background: linear-gradient(160deg, var(--teal-dark) 0%, var(--teal) 50%, #00A0A8 100%);
+            color: var(--white);
+        }
+
+        .slide-cta::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+        }
+
+        .slide-cta .slide-content {
+            align-items: center;
+            text-align: center;
+            gap: clamp(0.75rem, 2vh, 1.5rem);
+        }
+
+        .cta-title {
+            font-size: var(--h2-size);
+            font-weight: 800;
+            color: var(--white);
+        }
+
+        .cta-items {
+            display: flex;
+            flex-direction: column;
+            gap: clamp(0.4rem, 1vh, 0.75rem);
+            text-align: left;
+        }
+
+        .cta-item {
+            display: flex;
+            align-items: center;
+            gap: clamp(0.5rem, 1vw, 0.85rem);
+            font-size: var(--body-size);
+            color: rgba(255,255,255,0.9);
+        }
+
+        .cta-check {
+            flex-shrink: 0;
+            width: clamp(22px, 2.5vw, 30px);
+            height: clamp(22px, 2.5vw, 30px);
+            background: rgba(255,255,255,0.15);
+            border: 2px solid var(--gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gold);
+            font-size: var(--small-size);
+            font-weight: 700;
+        }
+
+        .cta-tickets {
+            display: flex;
+            gap: clamp(0.3rem, 0.75vw, 0.5rem);
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: clamp(0.25rem, 0.5vh, 0.5rem);
+        }
+
+        .cta-ticket {
+            font-size: var(--small-size);
+            font-weight: 600;
+            padding: 4px 12px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 20px;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
+        }
+
+        .cta-ticket:hover {
+            border-color: rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.18);
+            transform: scale(1.06);
+        }
+
+        .cta-logo {
+            width: clamp(80px, 12vw, 130px);
+            filter: brightness(0) invert(1);
+            opacity: 0.4;
+        }
+
+
+        /* ===========================================
+           RESPONSIVE BREAKPOINTS
+           Aggressive scaling for smaller viewports
+           =========================================== */
+
+        /* Short viewports (< 700px height) */
+        @media (max-height: 700px) {
+            :root {
+                --slide-padding: clamp(0.9rem, 2.8vw, 2.6rem);
+                --slide-padding-y: clamp(0.9rem, 2.8vh, 1.8rem);
+                --content-gap: clamp(0.45rem, 1.3vw, 0.9rem);
+                --h2-size: clamp(1.35rem, 3.4vw, 2.35rem);
+            }
+        }
+
+        /* Very short viewports (< 600px height) */
+        @media (max-height: 600px) {
+            :root {
+                --slide-padding: clamp(0.7rem, 2.3vw, 1.8rem);
+                --slide-padding-y: clamp(0.7rem, 2.3vh, 1.3rem);
+                --content-gap: clamp(0.25rem, 0.9vw, 0.65rem);
+                --title-size: clamp(1.2rem, 4vw, 2rem);
+                --h2-size: clamp(1.1rem, 2.7vw, 1.7rem);
+                --body-size: clamp(0.78rem, 1.25vw, 0.98rem);
+            }
+
+            .nav-dots, .keyboard-hint {
+                display: none;
+            }
+        }
+
+        /* Extremely short (landscape phones, < 500px height) */
+        @media (max-height: 500px) {
+            :root {
+                --slide-padding: clamp(0.5rem, 2vw, 1rem);
+                --slide-padding-y: clamp(0.5rem, 2vh, 1rem);
+                --title-size: clamp(1rem, 3.5vw, 1.5rem);
+                --h2-size: clamp(1.02rem, 2.7vw, 1.4rem);
+                --body-size: clamp(0.72rem, 1.15vw, 0.9rem);
+            }
+        }
+
+        /* Narrow viewports (< 768px width) */
+        @media (max-width: 768px) {
+            .flow-container {
+                flex-direction: column;
+            }
+
+            .flow-arrow {
+                transform: rotate(90deg);
+                padding: clamp(0.1rem, 0.3vh, 0.2rem) 0;
+            }
+
+            .mockup-layout {
+                flex-direction: column;
+            }
+
+            .mockup-features {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .mockup-feature {
+                flex: 1;
+                min-width: 120px;
+            }
+
+            .charging-layout {
+                flex-direction: column;
+            }
+
+            .charging-mockups {
+                flex-direction: column;
+            }
+
+            .stat-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .phases-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-dots {
+                display: none;
+            }
+        }
+
+        /* Very narrow (< 480px) */
+        @media (max-width: 480px) {
+            :root {
+                --title-size: clamp(1.25rem, 8vw, 2.5rem);
+            }
+        }
+
+        /* =====================================================================
+           LIGHTBOX
+           Fullscreen image viewer triggered by clicking mockup images
+           ===================================================================== */
+        .lightbox {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: rgba(0, 0, 0, 0.88);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            cursor: zoom-out;
+        }
+
+        .lightbox.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .lightbox img {
+            max-width: 92vw;
+            max-height: 92vh;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+            transform: scale(0.92);
+            transition: transform 0.35s var(--ease-out-expo);
+        }
+
+        .lightbox.active img {
+            transform: scale(1);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: clamp(0.75rem, 2vh, 1.5rem);
+            right: clamp(0.75rem, 2vw, 1.5rem);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .lightbox-close:hover {
+            background: rgba(255,255,255,0.2);
+            border-color: rgba(255,255,255,0.5);
+        }
+
+        /* Make mockup images look clickable */
+        .clickable-img {
+            cursor: zoom-in;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .clickable-img:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 28px rgba(0,0,0,0.18), 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+
+        /* =====================================================================
+           PHASE DETAIL MODAL
+           Expandable overlay showing full breakdown for each phase
+           ===================================================================== */
+        .phase-modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .phase-modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .phase-modal {
+            background: var(--white);
+            border-radius: 14px;
+            width: min(95vw, 1280px);
+            max-height: 90vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            box-shadow: 0 12px 48px rgba(0,0,0,0.25);
+            transform: translateY(20px) scale(0.96);
+            transition: transform 0.35s var(--ease-out-expo);
+            position: relative;
+        }
+
+        .phase-modal-overlay.active .phase-modal {
+            transform: translateY(0) scale(1);
+        }
+
+        .phase-modal-header {
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            padding: clamp(1rem, 2.5vh, 1.5rem) clamp(1.25rem, 3vw, 2rem);
+            border-bottom: 1px solid rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-radius: 14px 14px 0 0;
+        }
+
+        .phase-modal-header-copy {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: clamp(0.35rem, 0.7vh, 0.5rem);
+        }
+
+        .phase-modal-header-actions {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .phase-modal-header-primary {
+            background: var(--teal);
+            color: var(--white);
+        }
+
+        .phase-modal-header-secondary {
+            background: var(--teal-light);
+            color: var(--teal-dark);
+        }
+
+        .phase-modal-header h3 {
+            font-size: clamp(1rem, 2vw, 1.35rem);
+            font-weight: 700;
+        }
+
+        .phase-modal-header .modal-badge {
+            font-size: var(--label-size);
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 3px 10px;
+            border-radius: 20px;
+        }
+
+        .phase-modal-header-primary .modal-badge {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .phase-modal-header-secondary .modal-badge {
+            background: var(--teal);
+            color: var(--white);
+        }
+
+        .phase-modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(0,0,0,0.1);
+            color: inherit;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: background 0.2s ease;
+        }
+
+        .phase-modal-close:hover {
+            background: rgba(0,0,0,0.2);
+        }
+
+        .phase-modal-body {
+            padding: clamp(1rem, 2.5vh, 1.5rem) clamp(1.25rem, 3vw, 2rem);
+            display: flex;
+            flex-direction: column;
+            gap: clamp(0.9rem, 1.6vh, 1.25rem);
+        }
+
+        .phase-modal-compact {
+            width: min(96vw, 1360px);
+            max-height: 92vh;
+        }
+
+        .phase-modal-compact .phase-modal-header {
+            padding: clamp(0.75rem, 1.8vh, 1.05rem) clamp(1rem, 2.4vw, 1.5rem);
+        }
+
+        .phase-modal-compact .phase-modal-header h3 {
+            font-size: clamp(0.95rem, 1.7vw, 1.2rem);
+        }
+
+        .phase-modal-compact .phase-modal-body {
+            padding: clamp(0.85rem, 1.8vh, 1.1rem) clamp(1rem, 2.2vw, 1.4rem);
+            gap: clamp(0.7rem, 1.2vh, 1rem);
+        }
+
+        .phase-modal-compact .phase-section {
+            padding: clamp(0.65rem, 1vh, 0.85rem) clamp(0.75rem, 1.4vw, 0.95rem);
+        }
+
+        .phase-modal-compact .phase-section-title {
+            font-size: clamp(0.8rem, 1.05vw, 0.92rem);
+            margin-bottom: clamp(0.4rem, 0.7vh, 0.6rem);
+            padding-bottom: clamp(0.3rem, 0.5vh, 0.4rem);
+        }
+
+        .phase-modal-compact .phase-detail-list {
+            gap: clamp(0.4rem, 0.7vh, 0.6rem);
+        }
+
+        .phase-modal-compact .phase-detail-list li {
+            font-size: clamp(0.82rem, 1vw, 0.96rem);
+            line-height: 1.45;
+            padding: clamp(0.45rem, 0.7vh, 0.6rem) clamp(0.5rem, 1vw, 0.7rem);
+        }
+
+        .phase-section {
+            padding: clamp(0.75rem, 1.2vh, 1rem) clamp(0.85rem, 1.6vw, 1.1rem);
+            border-radius: 12px;
+            border: 1px solid rgba(0,0,0,0.08);
+            border-top: 4px solid var(--teal-mid);
+            background: var(--off-white);
+        }
+
+        .phase-section-title {
+            font-size: clamp(0.86rem, 1.2vw, 1rem);
+            font-weight: 700;
+            color: var(--teal);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: clamp(0.55rem, 0.9vh, 0.75rem);
+            padding-bottom: clamp(0.35rem, 0.6vh, 0.5rem);
+            border-bottom: 2px solid rgba(0, 140, 149, 0.2);
+        }
+
+        .phase-detail-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(0.5rem, 0.85vh, 0.8rem);
+        }
+
+        .phase-detail-list li {
+            font-size: clamp(0.88rem, 1.12vw, 1.02rem);
+            line-height: 1.55;
+            color: var(--charcoal);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6em;
+            padding: clamp(0.55rem, 0.9vh, 0.7rem) clamp(0.6rem, 1.2vw, 0.85rem);
+            background: var(--white);
+            border-radius: 10px;
+            border: 1px solid rgba(0,0,0,0.06);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .phase-detail-list li::before {
+            content: '';
+            flex-shrink: 0;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--teal-mid);
+            margin-top: 0.5em;
+        }
+
+        .phase-detail-list .detail-note {
+            font-size: var(--small-size);
+            color: var(--slate);
+            font-style: italic;
+        }
+
+        .phase-jira-tags {
+            display: flex;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+            margin-top: clamp(0.75rem, 1.5vh, 1rem);
+            padding-top: clamp(0.75rem, 1vh, 1rem);
+            border-top: 1px solid rgba(0,0,0,0.06);
+        }
+
+        .phase-jira-tag {
+            font-size: var(--small-size);
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 20px;
+            background: var(--teal-light);
+            color: var(--teal-dark);
+            text-decoration: none;
+            transition: filter 0.2s ease;
+        }
+
+        .phase-jira-tag:hover {
+            filter: brightness(0.95);
+        }
+
+        @media (max-width: 980px) {
+            .phase-modal {
+                width: min(94vw, 980px);
+            }
+        }
+
+        /* Make phase cards look clickable */
+        .phase-card-clickable {
+            cursor: pointer;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .phase-card-clickable:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+        }
+
+        .phase-card-clickable:active {
+            transform: translateY(-1px);
+        }
+
+        .phase-expand-hint {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4em;
+            margin-top: clamp(0.5rem, 1vh, 0.75rem);
+            padding-top: clamp(0.4rem, 0.8vh, 0.6rem);
+            font-size: var(--small-size);
+            font-weight: 600;
+            opacity: 0.6;
+            transition: opacity 0.2s ease;
+        }
+
+        .phase-card-clickable:hover .phase-expand-hint {
+            opacity: 1;
+        }
+
+        .phase-card-primary .phase-expand-hint {
+            border-top: 1px solid rgba(255,255,255,0.15);
+            color: rgba(255,255,255,0.8);
+        }
+
+        .phase-card-secondary .phase-expand-hint {
+            border-top: 1px solid rgba(0,0,0,0.06);
+            color: var(--teal);
+        }
+
+
+        /* ===========================================
+           REDUCED MOTION
+           Respect user preferences
+           =========================================== */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.2s !important;
+            }
+
+            html {
+                scroll-behavior: auto;
+            }
+
+            .reveal, .reveal-left, .reveal-scale {
+                opacity: 1;
+                transform: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Progress bar -->
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- Navigation dots (generated by JS) -->
+    <nav class="nav-dots" id="navDots" aria-label="Slide navigation"></nav>
+
+
+    <!-- =====================================================================
+         SLIDE 1: TITLE
+         ===================================================================== -->
+    <section class="slide slide-title-page" data-slide="0">
+        <div class="slide-content">
+            <!-- USEFULL logo (inline SVG, rendered white via CSS filter) -->
+            <svg class="title-logo reveal" viewBox="0 0 576 144" xmlns="http://www.w3.org/2000/svg" aria-label="USEFULL logo">
+                <g fill="#008c95">
+                    <path d="M88.85,83.9c0,11.31-7.44,18.34-19.4,18.34s-19.4-7.03-19.4-18.34V46.13h-6.49v37.92c0,14.94,10.16,24.6,25.89,24.6s25.89-9.66,25.89-24.6V46.13h-6.49v37.77Z"/>
+                    <path d="M141.57,73.67l-.29-.09c-10.6-3.34-17.04-5.84-17.04-12.37,0-6.19,5.89-10.04,15.37-10.04,10.06,0,16.82,4.22,16.82,10.5v1.38h6.41v-1.68c0-9.49-9.77-16.38-23.23-16.38s-22.09,6.64-22.09,16.53c0,11.6,12.64,15.48,21.87,18.31,10.7,3.24,17.72,5.87,17.72,12.6,0,6.19-6.12,10.04-15.98,10.04-10.56,0-17.65-4.22-17.65-10.5v-1.3h-6.41v1.61c0,9.64,9.9,16.38,24.07,16.38s22.77-6.46,22.77-16.45c0-11.74-12.91-15.66-22.34-18.53Z"/>
+                    <polygon points="186.25 107.51 229.05 107.51 229.05 101.1 192.74 101.1 192.74 80.48 223.65 80.48 223.65 74.22 192.74 74.22 192.74 52.54 229.05 52.54 229.05 46.13 186.25 46.13 186.25 107.51"/>
+                    <polygon points="252.78 106.51 267.93 106.51 267.93 86.18 292.21 86.18 292.21 72.4 267.93 72.4 267.93 61.9 296.86 61.9 296.86 47.13 252.78 47.13 252.78 106.51"/>
+                    <polygon points="438.58 47.13 423.43 47.13 423.43 106.51 467.05 106.51 467.05 91.82 438.58 91.82 438.58 47.13"/>
+                    <polygon points="503.97 91.82 503.97 47.13 488.82 47.13 488.82 106.51 532.45 106.51 532.45 91.82 503.97 91.82"/>
+                    <path d="M395.47,46.41v10.86h0v10.32c-.02,19.41-15.83,35.2-35.24,35.2s-35.22-15.79-35.24-35.21v-31.58h0v-6.5s7.53,7.53,7.53,7.53l4.28-4.28-14.7-14.7-14.7,14.7,4.28,4.28,7.44-7.44v37.99c.03,22.65,18.47,41.07,41.11,41.07s41.08-18.42,41.11-41.06v-21.19h-5.87Z"/>
+                </g>
+                <path fill="#d5992c" d="M332.04,67.58h0c.02,15.56,12.64,28.17,28.2,28.17s28.18-12.61,28.2-28.17h0v-3.27h-56.4v3.27Z"/>
+                <path fill="#58595b" d="M538.09,42.25c4.09,0,7.41,3.32,7.41,7.41s-3.32,7.41-7.41,7.41-7.41-3.32-7.41-7.41,3.32-7.41,7.41-7.41Zm0,13.84c3.57,0,6.43-2.87,6.43-6.43s-2.87-6.43-6.43-6.43-6.43,2.87-6.43,6.43,2.87,6.43,6.43,6.43Zm2.2-3.02l-1.46-2.53h-2.47v2.53h-.92v-7.16h3.29c1.55,0,2.44,1.07,2.44,2.32,0,.95-.52,1.8-1.43,2.13l1.59,2.71h-1.04Zm-3.93-6.25v2.8h2.35c.98,0,1.55-.7,1.55-1.4s-.58-1.4-1.55-1.4h-2.35Z"/>
+            </svg>
+
+            <div class="title-divider reveal"></div>
+
+            <h1 class="title-main reveal">Missing Container<br>Enforcement</h1>
+
+            <p class="title-sub reveal">Build Plan Proposal</p>
+
+            <p class="title-date reveal">February 2026</p>
+        </div>
+        <span class="keyboard-hint">Press arrow keys or scroll to navigate</span>
+    </section>
+
+
+    <!-- =====================================================================
+         SLIDE 2: THE PROBLEM
+         ===================================================================== -->
+    <section class="slide" data-slide="1">
+        <div class="slide-content">
+            <span class="section-label reveal">The Challenge</span>
+            <h2 class="slide-title reveal">Containers Are<br>Disappearing</h2>
+
+            <div class="problem-list">
+                <div class="problem-item reveal">
+                    <div class="problem-icon">!</div>
+                    <p class="problem-text">Students scan containers to <strong>"return"</strong> them at kiosks &mdash; but never place them in the bin. The system marks them as returned, but the containers are gone.</p>
+                </div>
+
+                <div class="problem-item reveal">
+                    <div class="problem-icon">?</div>
+                    <p class="problem-text"><strong>No system exists</strong> to detect, flag, or recover missing inventory. We only discover the loss when containers aren't available for the next checkout.</p>
+                </div>
+
+                <div class="problem-item reveal">
+                    <div class="problem-icon">$</div>
+                    <p class="problem-text">USEFULL absorbs the cost of every lost container &mdash; and <strong>the problem scales with every new campus</strong> we onboard.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- =====================================================================
+         SLIDE 3: THE DATA
+         ===================================================================== -->
+    <section class="slide slide-data" data-slide="2">
+        <div class="slide-content">
+            <span class="section-label reveal">UMass Lowell &mdash; Case Study</span>
+            <h2 class="slide-title reveal">The Scale of the Problem</h2>
+
+            <div class="stat-grid">
+                <div class="stat-card reveal">
+                    <div class="stat-number" data-count="742">0</div>
+                    <div class="stat-label">Missing Containers</div>
+                    <div class="stat-desc">Not checked out in 30+ days</div>
+                </div>
+
+                <div class="stat-card reveal">
+                    <div class="stat-number" data-count="73">0</div>
+                    <div class="stat-label">Ghost Returns</div>
+                    <div class="stat-desc">Returned in &lt;10 min, never seen again</div>
+                </div>
+
+                <div class="stat-card reveal">
+                    <div class="stat-number" data-count="87.7" data-suffix="%">0</div>
+                    <div class="stat-label">Single Location</div>
+                    <div class="stat-desc">Fox Hall accounts for nearly all missing</div>
+                </div>
+
+                <div class="stat-card reveal">
+                    <div class="stat-number" data-count="20">0</div>
+                    <div class="stat-label">Repeat Offenders</div>
+                    <div class="stat-desc">Users holding 5+ missing containers each</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- =====================================================================
+         SLIDE 4: THE SOLUTION
+         ===================================================================== -->
+    <section class="slide" data-slide="3">
+        <div class="slide-content">
+            <span class="section-label reveal">The Solution</span>
+            <h2 class="slide-title reveal">Automated Enforcement</h2>
+            <p class="solution-desc reveal">Identify missing containers, hold repeat offenders accountable, and give admins the tools to recover costs &mdash; all running automatically with configurable thresholds.</p>
+
+            <div class="flow-container">
+                <div class="flow-step reveal-scale">
+                    <div class="flow-step-num">1</div>
+                    <div class="flow-step-title">Detect</div>
+                    <div class="flow-step-desc">Nightly cron marks containers missing after 30 days</div>
+                </div>
+                <div class="flow-arrow reveal">&rarr;</div>
+                <div class="flow-step reveal-scale">
+                    <div class="flow-step-num">2</div>
+                    <div class="flow-step-title">Warn</div>
+                    <div class="flow-step-desc">Repeat offenders get email with container list</div>
+                </div>
+                <div class="flow-arrow reveal">&rarr;</div>
+                <div class="flow-step reveal-scale">
+                    <div class="flow-step-num">3</div>
+                    <div class="flow-step-title">Freeze</div>
+                    <div class="flow-step-desc">Account locked after grace period expires</div>
+                </div>
+                <div class="flow-arrow reveal">&rarr;</div>
+                <div class="flow-step reveal-scale">
+                    <div class="flow-step-num">4</div>
+                    <div class="flow-step-title">Resolve</div>
+                    <div class="flow-step-desc">Admin charges for containers, account unlocked</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- =====================================================================
+         SLIDE 5: HOW IT WORKS
+         ===================================================================== -->
+    <section class="slide slide-flow" data-slide="4">
+        <div class="slide-content">
+            <span class="section-label reveal">How It Works</span>
+            <h2 class="slide-title reveal">The Enforcement Timeline</h2>
+
+            <div class="steps-list">
+                <div class="step-card reveal">
+                    <div class="step-num">1</div>
+                    <div class="step-body">
+                        <div class="step-title">Container Marked Missing</div>
+                        <div class="step-desc">A nightly cron job finds containers in "Returned" status with no new checkout in X days (default 30). They're automatically flagged as Missing in the database.</div>
+                    </div>
+                </div>
+
+                <div class="step-card reveal">
+                    <div class="step-num">2</div>
+                    <div class="step-body">
+                        <div class="step-title">Repeat Offender Warning</div>
+                        <div class="step-desc">Users with Y+ missing containers (default 3) are flagged as Repeat Offenders and sent a warning email listing their missing containers and the deadline to return them.</div>
+                    </div>
+                </div>
+
+                <div class="step-card reveal">
+                    <div class="step-num">3</div>
+                    <div class="step-body">
+                        <div class="step-title">Account Frozen</div>
+                        <div class="step-desc">After Z days (default 14) with no action, the cron job automatically freezes the user's account. A "You've Been Frozen" email is sent with instructions to resolve.</div>
+                    </div>
+                </div>
+
+                <div class="step-card reveal">
+                    <div class="step-num">4</div>
+                    <div class="step-body">
+                        <div class="step-title">Charge &amp; Unlock</div>
+                        <div class="step-desc">Admin charges the user via Stripe or Campus Card. Containers are marked as "Purchased" and the account is unlocked. If the user returns containers below the threshold, auto-unlock triggers.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-config-note reveal">All thresholds (X, Y, Z) are configurable per campus via the admin panel.</div>
+        </div>
+    </section>
+
+
+    <!-- =====================================================================
+         SLIDE 6: ADMIN CONTROLS
+         ===================================================================== -->
+    <section class="slide" data-slide="5">
+        <div class="slide-content">
+            <span class="section-label reveal">Admin Controls</span>
+            <h2 class="slide-title reveal">Full Control for Every Campus</h2>
+
+            <div class="mockup-layout">
+                <div class="mockup-image-container reveal-scale">
+                    <img class="mockup-image clickable-img" src="mockups/admin settings.png" alt="Admin panel showing Missing Container Enforcement settings with toggles, threshold controls, and exception periods" loading="lazy">
+                </div>
+
+                <div class="mockup-features">
+                    <div class="mockup-feature reveal">
+                        <div class="mockup-feature-title">Independent Toggles</div>
+                        <div class="mockup-feature-desc">Track missing containers without locking, or enable full enforcement</div>
+                    </div>
+                    <div class="mockup-feature reveal">
+                        <div class="mockup-feature-title">Custom Thresholds</div>
+                        <div class="mockup-feature-desc">Days until missing, lock threshold, and grace period per campus</div>
+                    </div>
+                    <div class="mockup-feature reveal">
+                        <div class="mockup-feature-title">Exception Periods</div>
+                        <div class="mockup-feature-desc">Pause enforcement during summer &amp; winter breaks automatically</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- =====================================================================
+         SLIDE 7: CHARGING & RECOVERY
+         ===================================================================== -->
+    <section class="slide slide-charging" data-slide="6">
+        <div class="slide-content">
+            <span class="section-label reveal">Cost Recovery</span>
+            <h2 class="slide-title reveal">Charge for Missing Containers</h2>
+
+            <div class="charging-layout">
+                <div class="charging-mockups">
+                    <div class="charging-mockup reveal-scale">
+                        <img class="clickable-img" src="mockups/user page.png" alt="User page showing missing containers tab with list of missing items and charge button" loading="lazy">
+                    </div>
+                    <div class="charging-mockup reveal-scale">
+                        <img class="clickable-img" src="mockups/user page charge modal.png" alt="Charge modal showing container selection, per-type pricing, discount field, and charge button" loading="lazy">
+                    </div>
+                </div>
+
+                <div class="charging-features">
+                    <div class="charging-feature reveal">
+                        <div class="charging-feature-dot"></div>
+                        <span>Per-container-type replacement pricing</span>
+                    </div>
+                    <div class="charging-feature reveal">
+                        <div class="charging-feature-dot"></div>
+                        <span>Flexible discount for partial claims</span>
+                    </div>
+                    <div class="charging-feature reveal">
+                        <div class="charging-feature-dot"></div>
+                        <span>Stripe &amp; Campus Card integration</span>
+                    </div>
+                    <div class="charging-feature reveal">
+                        <div class="charging-feature-dot"></div>
+                        <span>Automatic unlock on successful charge</span>
+                    </div>
+                    <div class="charging-feature reveal">
+                        <div class="charging-feature-dot"></div>
+                        <span>Full audit trail in fee ledger</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- =====================================================================
+         SLIDE 8: BUILD PHASES
+         ===================================================================== -->
+    <section class="slide" data-slide="7">
+        <div class="slide-content">
+            <span class="section-label reveal">Build Plan</span>
+            <h2 class="slide-title reveal">Phased Development</h2>
+
+            <div class="phases-grid">
+                <div class="phase-card phase-card-primary phase-card-clickable reveal" data-phase="1" role="button" tabindex="0" aria-label="Click to see Phase 1 details">
+                    <span class="phase-badge">Immediate</span>
+                    <div class="phase-title">Phase 1</div>
+                    <ul class="phase-list">
+                        <li>Nightly cron jobs to detect missing containers</li>
+                        <li>Repeat offender identification &amp; DB tracking</li>
+                        <li>Automated warning emails with container lists</li>
+                        <li>Account freezing after configurable grace period</li>
+                        <li>Manual charging via Stripe &amp; Campus Card API</li>
+                        <li>Manual account unlock after payment</li>
+                    </ul>
+                    <div class="phase-expand-hint">Click to see full details &nearr;</div>
+                </div>
+
+                <div class="phase-card phase-card-secondary phase-card-clickable reveal" data-phase="2" role="button" tabindex="0" aria-label="Click to see Phase 2 details">
+                    <span class="phase-badge">Next</span>
+                    <div class="phase-title">Phase 2</div>
+                    <ul class="phase-list">
+                        <li>Missing containers visible in Active Rentals</li>
+                        <li>Push notifications &amp; login popup warnings</li>
+                        <li>Admin panel settings UI (shown in mockup)</li>
+                        <li>Exception periods for semester breaks</li>
+                        <li>Per-school missing container reports</li>
+                        <li>Advanced charging modal with discounts</li>
+                    </ul>
+                    <div class="phase-expand-hint">Click to see full details &nearr;</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- =====================================================================
+         SLIDE 9: NEXT STEPS (CTA)
+         ===================================================================== -->
+    <section class="slide slide-cta" data-slide="8">
+        <div class="slide-content">
+            <!-- USEFULL logo (white via CSS filter) -->
+            <svg class="cta-logo reveal" viewBox="0 0 576 144" xmlns="http://www.w3.org/2000/svg" aria-label="USEFULL logo">
+                <g fill="#008c95">
+                    <path d="M88.85,83.9c0,11.31-7.44,18.34-19.4,18.34s-19.4-7.03-19.4-18.34V46.13h-6.49v37.92c0,14.94,10.16,24.6,25.89,24.6s25.89-9.66,25.89-24.6V46.13h-6.49v37.77Z"/>
+                    <path d="M141.57,73.67l-.29-.09c-10.6-3.34-17.04-5.84-17.04-12.37,0-6.19,5.89-10.04,15.37-10.04,10.06,0,16.82,4.22,16.82,10.5v1.38h6.41v-1.68c0-9.49-9.77-16.38-23.23-16.38s-22.09,6.64-22.09,16.53c0,11.6,12.64,15.48,21.87,18.31,10.7,3.24,17.72,5.87,17.72,12.6,0,6.19-6.12,10.04-15.98,10.04-10.56,0-17.65-4.22-17.65-10.5v-1.3h-6.41v1.61c0,9.64,9.9,16.38,24.07,16.38s22.77-6.46,22.77-16.45c0-11.74-12.91-15.66-22.34-18.53Z"/>
+                    <polygon points="186.25 107.51 229.05 107.51 229.05 101.1 192.74 101.1 192.74 80.48 223.65 80.48 223.65 74.22 192.74 74.22 192.74 52.54 229.05 52.54 229.05 46.13 186.25 46.13 186.25 107.51"/>
+                    <polygon points="252.78 106.51 267.93 106.51 267.93 86.18 292.21 86.18 292.21 72.4 267.93 72.4 267.93 61.9 296.86 61.9 296.86 47.13 252.78 47.13 252.78 106.51"/>
+                    <polygon points="438.58 47.13 423.43 47.13 423.43 106.51 467.05 106.51 467.05 91.82 438.58 91.82 438.58 47.13"/>
+                    <polygon points="503.97 91.82 503.97 47.13 488.82 47.13 488.82 106.51 532.45 106.51 532.45 91.82 503.97 91.82"/>
+                    <path d="M395.47,46.41v10.86h0v10.32c-.02,19.41-15.83,35.2-35.24,35.2s-35.22-15.79-35.24-35.21v-31.58h0v-6.5s7.53,7.53,7.53,7.53l4.28-4.28-14.7-14.7-14.7,14.7,4.28,4.28,7.44-7.44v37.99c.03,22.65,18.47,41.07,41.11,41.07s41.08-18.42,41.11-41.06v-21.19h-5.87Z"/>
+                </g>
+                <path fill="#d5992c" d="M332.04,67.58h0c.02,15.56,12.64,28.17,28.2,28.17s28.18-12.61,28.2-28.17h0v-3.27h-56.4v3.27Z"/>
+                <path fill="#58595b" d="M538.09,42.25c4.09,0,7.41,3.32,7.41,7.41s-3.32,7.41-7.41,7.41-7.41-3.32-7.41-7.41,3.32-7.41,7.41-7.41Zm0,13.84c3.57,0,6.43-2.87,6.43-6.43s-2.87-6.43-6.43-6.43-6.43,2.87-6.43,6.43,2.87,6.43,6.43,6.43Zm2.2-3.02l-1.46-2.53h-2.47v2.53h-.92v-7.16h3.29c1.55,0,2.44,1.07,2.44,2.32,0,.95-.52,1.8-1.43,2.13l1.59,2.71h-1.04Zm-3.93-6.25v2.8h2.35c.98,0,1.55-.7,1.55-1.4s-.58-1.4-1.55-1.4h-2.35Z"/>
+            </svg>
+
+            <h2 class="cta-title reveal">Ready to Build</h2>
+
+            <div class="title-divider reveal"></div>
+
+            <div class="cta-items">
+                <div class="cta-item reveal">
+                    <div class="cta-check">&check;</div>
+                    <span>Approve the build plan and phasing</span>
+                </div>
+                <div class="cta-item reveal">
+                    <div class="cta-check">&check;</div>
+                    <span>Kick off Phase 1 development</span>
+                </div>
+                <div class="cta-item reveal">
+                    <div class="cta-check">&check;</div>
+                    <span>4 Jira tickets ready in backlog</span>
+                </div>
+            </div>
+
+            <div class="cta-tickets reveal">
+                <a class="cta-ticket" href="https://usefull-team.atlassian.net/browse/CCC-2823" target="_blank" rel="noopener noreferrer">CCC-2823</a>
+                <a class="cta-ticket" href="https://usefull-team.atlassian.net/browse/CCC-2824" target="_blank" rel="noopener noreferrer">CCC-2824</a>
+                <a class="cta-ticket" href="https://usefull-team.atlassian.net/browse/CCC-2825" target="_blank" rel="noopener noreferrer">CCC-2825</a>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ===========================================
+         LIGHTBOX: Fullscreen image viewer
+         =========================================== -->
+    <div class="lightbox" id="lightbox" role="dialog" aria-label="Image viewer">
+        <button class="lightbox-close" aria-label="Close image viewer">&times;</button>
+        <img src="" alt="">
+    </div>
+
+
+    <!-- ===========================================
+         PHASE 1 DETAIL MODAL
+         =========================================== -->
+    <div class="phase-modal-overlay" id="phaseModal1" role="dialog" aria-label="Phase 1 details">
+        <div class="phase-modal phase-modal-compact">
+            <div class="phase-modal-header phase-modal-header-primary">
+                <div class="phase-modal-header-copy">
+                    <span class="modal-badge">Immediate</span>
+                    <h3>Phase 1 — Full Breakdown</h3>
+                </div>
+                <div class="phase-modal-header-actions">
+                    <a class="phase-modal-epic" href="https://usefull-team.atlassian.net/browse/CCC-2821" target="_blank" rel="noopener noreferrer">CCC-2821 (Epic)</a>
+                    <button class="phase-modal-close" aria-label="Close">&times;</button>
+                </div>
+            </div>
+            <div class="phase-modal-body">
+                <div class="phase-section">
+                    <div class="phase-section-title">Identification &amp; Automation</div>
+                    <ul class="phase-detail-list">
+                        <li>Add <strong>returnStatus</strong> field on assignments (Pending &rarr; Complete &rarr; Missing) to track container lifecycle without changing existing "returned" logic</li>
+                        <li>Nightly cron job scans all sites for containers in "Returned" status with no new checkout in X days (default 30) and marks them as Missing</li>
+                        <li>Database fields to track: when a user was warned, whether account is locked, and that the lock is specifically for missing containers</li>
+                    </ul>
+                </div>
+
+                <div class="phase-section">
+                    <div class="phase-section-title">Account Management</div>
+                    <ul class="phase-detail-list">
+                        <li>Nightly cron job identifies Repeat Offenders (users with Y+ missing containers, default 3) and records the date they were warned</li>
+                        <li>Automated warning email sent to repeat offenders with full list of missing containers and deadline to return them</li>
+                        <li>After Z days (default 14) with no action, cron job automatically freezes the user's account</li>
+                        <li>"You've Been Frozen" email triggered with instructions on how to get unfrozen</li>
+                    </ul>
+                </div>
+
+                <div class="phase-section">
+                    <div class="phase-section-title">Unlocking &amp; Fees</div>
+                    <ul class="phase-detail-list">
+                        <li>Nightly cron job checks locked users and auto-unlocks if their missing container count drops below the threshold</li>
+                        <li>Customer service can manually charge users via <strong>Stripe invoice</strong> for missing containers</li>
+                        <li>Support can manually charge via <strong>Campus Card API</strong> for schools using campus payment systems</li>
+                        <li>Manual unlock after charge &mdash; set containers + assignments to "Purchased" status so they're no longer flagged</li>
+                        <li>System will not re-lock a manually unlocked user unless they accumulate new missing containers</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ===========================================
+         PHASE 2 DETAIL MODAL
+         =========================================== -->
+    <div class="phase-modal-overlay" id="phaseModal2" role="dialog" aria-label="Phase 2 details">
+        <div class="phase-modal">
+            <div class="phase-modal-header phase-modal-header-secondary">
+                <div class="phase-modal-header-copy">
+                    <span class="modal-badge">Next</span>
+                    <h3>Phase 2 — Full Breakdown</h3>
+                </div>
+                <div class="phase-modal-header-actions">
+                    <button class="phase-modal-close" aria-label="Close">&times;</button>
+                </div>
+            </div>
+            <div class="phase-modal-body">
+                <div class="phase-section">
+                    <div class="phase-section-title">User Experience</div>
+                    <ul class="phase-detail-list">
+                        <li>Missing container assignments show up in <strong>Active Rentals</strong> so users can see what they owe</li>
+                        <li>Login popup warning for users with 1+ missing containers: "A container you scanned to return has been identified as missing..."</li>
+                        <li>Push notifications for repeat offenders about missing containers</li>
+                        <li>In-app warning that account is at risk of being frozen</li>
+                        <li>User can trigger an <strong>in-app recalculation</strong> of missing containers to automatically unlock their account after returning items</li>
+                        <li>Email notification when user moves from Locked to Unlocked status</li>
+                    </ul>
+                </div>
+
+                <div class="phase-section">
+                    <div class="phase-section-title">Admin Panel &amp; Settings</div>
+                    <ul class="phase-detail-list">
+                        <li>Admin settings UI to toggle <strong>"Track Missing Containers"</strong> and <strong>"Lock Users for Missing Containers"</strong> independently</li>
+                        <li>Configurable thresholds per campus: Days until missing (X), Lock threshold (Y containers), Grace period (Z days)</li>
+                        <li>Exception periods for semester breaks &mdash; pause enforcement during summer and winter break with named date ranges</li>
+                        <li><span class="detail-note">During exception periods: no new containers marked missing, no new warnings or freezes. Existing freezes remain. Return detection still runs.</span></li>
+                    </ul>
+                </div>
+
+                <div class="phase-section">
+                    <div class="phase-section-title">Advanced Charging &amp; Reporting</div>
+                    <ul class="phase-detail-list">
+                        <li>Admin charging modal: select specific containers to charge for, with <strong>per-container-type pricing</strong> (e.g. cups $17, bowls $25)</li>
+                        <li>Flexible discount field &mdash; admin can arbitrarily reduce the total if user makes a plausible claim about some containers</li>
+                        <li>Separate line items per container plus discount line, all recorded in the fee ledger</li>
+                        <li>Reports showing count of missing containers and repeat offenders per school</li>
+                        <li>Reminder emails to repeat offenders before freeze deadline</li>
+                    </ul>
+                </div>
+
+                <div class="phase-jira-tags">
+                    <a class="phase-jira-tag" href="https://usefull-team.atlassian.net/browse/CCC-2823" target="_blank" rel="noopener noreferrer">CCC-2823 — Admin Settings</a>
+                    <a class="phase-jira-tag" href="https://usefull-team.atlassian.net/browse/CCC-2824" target="_blank" rel="noopener noreferrer">CCC-2824 — Charging</a>
+                    <a class="phase-jira-tag" href="https://usefull-team.atlassian.net/browse/CCC-2825" target="_blank" rel="noopener noreferrer">CCC-2825 — Exception Periods</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ===========================================
+         JAVASCRIPT: Presentation Controller
+         =========================================== -->
+    <script>
+        /* ===========================================
+           SLIDE PRESENTATION CONTROLLER
+           Handles navigation, animations, progress,
+           and interactive features.
+           =========================================== */
+        class SlidePresentation {
+            constructor() {
+                this.slides = document.querySelectorAll('.slide');
+                this.totalSlides = this.slides.length;
+                this.currentSlide = 0;
+                this.isScrolling = false;
+
+                this.progressBar = document.getElementById('progressBar');
+                this.navDotsContainer = document.getElementById('navDots');
+
+                this.init();
+            }
+
+            init() {
+                this.createNavDots();
+                this.setupIntersectionObserver();
+                this.setupKeyboardNav();
+                this.setupTouchNav();
+                this.setupWheelNav();
+                this.updateProgress();
+            }
+
+            /* -------------------------------------------
+               NAVIGATION DOTS
+               Creates clickable dots for each slide
+               ------------------------------------------- */
+            createNavDots() {
+                this.slides.forEach((_, i) => {
+                    const dot = document.createElement('button');
+                    dot.classList.add('nav-dot');
+                    if (i === 0) dot.classList.add('active');
+                    dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
+                    dot.addEventListener('click', () => this.goToSlide(i));
+                    this.navDotsContainer.appendChild(dot);
+                });
+                this.navDots = document.querySelectorAll('.nav-dot');
+            }
+
+            /* -------------------------------------------
+               INTERSECTION OBSERVER
+               Adds .visible class when slides enter view,
+               triggering CSS animations. Also updates
+               active dot and progress bar.
+               ------------------------------------------- */
+            setupIntersectionObserver() {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                            const index = parseInt(entry.target.dataset.slide);
+                            this.currentSlide = index;
+                            this.updateActiveDot(index);
+                            this.updateProgress();
+                            this.animateCounters(entry.target);
+                        }
+                    });
+                }, {
+                    threshold: 0.5
+                });
+
+                this.slides.forEach(slide => observer.observe(slide));
+            }
+
+            /* -------------------------------------------
+               KEYBOARD NAVIGATION
+               Arrow keys and Space to navigate slides
+               ------------------------------------------- */
+            setupKeyboardNav() {
+                document.addEventListener('keydown', (e) => {
+                    // Don't navigate slides while a modal or lightbox is open
+                    if (document.querySelector('.lightbox.active') ||
+                        document.querySelector('.phase-modal-overlay.active')) {
+                        return;
+                    }
+
+                    switch (e.key) {
+                        case 'ArrowDown':
+                        case 'ArrowRight':
+                        case ' ':
+                            e.preventDefault();
+                            this.nextSlide();
+                            break;
+                        case 'ArrowUp':
+                        case 'ArrowLeft':
+                            e.preventDefault();
+                            this.prevSlide();
+                            break;
+                    }
+                });
+            }
+
+            /* -------------------------------------------
+               TOUCH / SWIPE NAVIGATION
+               Swipe up/down to navigate on mobile
+               ------------------------------------------- */
+            setupTouchNav() {
+                let touchStartY = 0;
+                let touchStartX = 0;
+
+                document.addEventListener('touchstart', (e) => {
+                    touchStartY = e.touches[0].clientY;
+                    touchStartX = e.touches[0].clientX;
+                }, { passive: true });
+
+                document.addEventListener('touchend', (e) => {
+                    const deltaY = touchStartY - e.changedTouches[0].clientY;
+                    const deltaX = touchStartX - e.changedTouches[0].clientX;
+
+                    // Only trigger if vertical swipe is dominant and long enough
+                    if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > 50) {
+                        if (deltaY > 0) {
+                            this.nextSlide();
+                        } else {
+                            this.prevSlide();
+                        }
+                    }
+                }, { passive: true });
+            }
+
+            /* -------------------------------------------
+               MOUSE WHEEL NAVIGATION
+               Scroll to navigate, with debounce to prevent
+               rapid-fire slide changes
+               ------------------------------------------- */
+            setupWheelNav() {
+                document.addEventListener('wheel', (e) => {
+                    if (this.isScrolling) return;
+
+                    if (Math.abs(e.deltaY) > 30) {
+                        this.isScrolling = true;
+                        if (e.deltaY > 0) {
+                            this.nextSlide();
+                        } else {
+                            this.prevSlide();
+                        }
+                        setTimeout(() => { this.isScrolling = false; }, 800);
+                    }
+                }, { passive: true });
+            }
+
+            /* -------------------------------------------
+               SLIDE NAVIGATION METHODS
+               ------------------------------------------- */
+            goToSlide(index) {
+                if (index >= 0 && index < this.totalSlides) {
+                    this.slides[index].scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+
+            nextSlide() {
+                if (this.currentSlide < this.totalSlides - 1) {
+                    this.goToSlide(this.currentSlide + 1);
+                }
+            }
+
+            prevSlide() {
+                if (this.currentSlide > 0) {
+                    this.goToSlide(this.currentSlide - 1);
+                }
+            }
+
+            /* -------------------------------------------
+               UI UPDATES
+               Progress bar and active navigation dot
+               ------------------------------------------- */
+            updateProgress() {
+                const progress = ((this.currentSlide + 1) / this.totalSlides) * 100;
+                this.progressBar.style.width = `${progress}%`;
+            }
+
+            updateActiveDot(index) {
+                this.navDots.forEach((dot, i) => {
+                    dot.classList.toggle('active', i === index);
+                });
+            }
+
+            /* -------------------------------------------
+               COUNTER ANIMATION
+               Animates stat numbers counting up from 0
+               when the data slide enters the viewport.
+               Only runs once per element.
+               ------------------------------------------- */
+            animateCounters(slide) {
+                const counters = slide.querySelectorAll('[data-count]');
+                counters.forEach(counter => {
+                    if (counter.dataset.animated) return;
+                    counter.dataset.animated = 'true';
+
+                    const target = parseFloat(counter.dataset.count);
+                    const suffix = counter.dataset.suffix || '';
+                    const isDecimal = target % 1 !== 0;
+                    const duration = 1200;
+                    const startTime = performance.now();
+
+                    const animate = (currentTime) => {
+                        const elapsed = currentTime - startTime;
+                        const progress = Math.min(elapsed / duration, 1);
+
+                        // Ease out cubic
+                        const eased = 1 - Math.pow(1 - progress, 3);
+                        const current = target * eased;
+
+                        if (isDecimal) {
+                            counter.textContent = current.toFixed(1) + suffix;
+                        } else {
+                            counter.textContent = Math.floor(current).toLocaleString() + suffix;
+                        }
+
+                        if (progress < 1) {
+                            requestAnimationFrame(animate);
+                        } else {
+                            if (isDecimal) {
+                                counter.textContent = target.toFixed(1) + suffix;
+                            } else {
+                                counter.textContent = target.toLocaleString() + suffix;
+                            }
+                        }
+                    };
+
+                    // Small delay so the reveal animation starts first
+                    setTimeout(() => requestAnimationFrame(animate), 400);
+                });
+            }
+        }
+
+        /* ===========================================
+           IMAGE LIGHTBOX
+           Click any mockup image to view fullscreen.
+           Click backdrop or press Escape to close.
+           =========================================== */
+        class ImageLightbox {
+            constructor() {
+                this.overlay = document.getElementById('lightbox');
+                this.img = this.overlay.querySelector('img');
+                this.closeBtn = this.overlay.querySelector('.lightbox-close');
+                this.isOpen = false;
+
+                this.bindEvents();
+            }
+
+            bindEvents() {
+                // Open lightbox when clicking any image with .clickable-img
+                document.querySelectorAll('.clickable-img').forEach(img => {
+                    img.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        this.open(img.src, img.alt);
+                    });
+                });
+
+                // Close on backdrop click
+                this.overlay.addEventListener('click', (e) => {
+                    if (e.target === this.overlay || e.target === this.closeBtn) {
+                        this.close();
+                    }
+                });
+
+                // Close button
+                this.closeBtn.addEventListener('click', () => this.close());
+            }
+
+            open(src, alt) {
+                this.img.src = src;
+                this.img.alt = alt;
+                this.overlay.classList.add('active');
+                this.isOpen = true;
+            }
+
+            close() {
+                this.overlay.classList.remove('active');
+                this.isOpen = false;
+            }
+        }
+
+
+        /* ===========================================
+           PHASE DETAIL MODALS
+           Click phase cards to see full breakdown.
+           Click backdrop or press Escape to close.
+           =========================================== */
+        class PhaseModals {
+            constructor() {
+                this.modals = {
+                    '1': document.getElementById('phaseModal1'),
+                    '2': document.getElementById('phaseModal2'),
+                };
+                this.activeModal = null;
+
+                this.bindEvents();
+            }
+
+            bindEvents() {
+                // Open modal when clicking a phase card
+                document.querySelectorAll('.phase-card-clickable').forEach(card => {
+                    card.addEventListener('click', () => {
+                        const phase = card.dataset.phase;
+                        this.open(phase);
+                    });
+
+                    // Also open on Enter key for accessibility
+                    card.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            const phase = card.dataset.phase;
+                            this.open(phase);
+                        }
+                    });
+                });
+
+                // Close on backdrop click or close button
+                Object.values(this.modals).forEach(modal => {
+                    modal.addEventListener('click', (e) => {
+                        if (e.target === modal) this.close();
+                    });
+
+                    modal.querySelector('.phase-modal-close').addEventListener('click', () => {
+                        this.close();
+                    });
+                });
+            }
+
+            open(phase) {
+                const modal = this.modals[phase];
+                if (!modal) return;
+                modal.classList.add('active');
+                this.activeModal = modal;
+            }
+
+            close() {
+                if (this.activeModal) {
+                    this.activeModal.classList.remove('active');
+                    this.activeModal = null;
+                }
+            }
+
+            get isOpen() {
+                return this.activeModal !== null;
+            }
+        }
+
+
+        // Initialize everything when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            const presentation = new SlidePresentation();
+            const lightbox = new ImageLightbox();
+            const phaseModals = new PhaseModals();
+
+            // Global Escape key handler — close modals/lightbox first,
+            // don't navigate slides while an overlay is open
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    if (lightbox.isOpen) {
+                        lightbox.close();
+                        e.stopImmediatePropagation();
+                    } else if (phaseModals.isOpen) {
+                        phaseModals.close();
+                        e.stopImmediatePropagation();
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
