@@ -432,6 +432,144 @@
 
         .flow-label-gold { color: var(--gold); }
 
+        .flow-scenarios {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: clamp(0.7rem, 1.6vw, 1.2rem);
+            margin-top: clamp(0.35rem, 0.8vh, 0.7rem);
+        }
+
+        .scenario-card {
+            position: relative;
+            padding: clamp(0.8rem, 1.4vh, 1rem);
+            border-radius: 20px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(248,250,248,0.98) 100%);
+            border: 1px solid rgba(0,0,0,0.05);
+            box-shadow: 0 14px 30px rgba(0, 79, 85, 0.08);
+            overflow: hidden;
+        }
+
+        .scenario-card::before {
+            content: '';
+            position: absolute;
+            inset: 0 auto 0 0;
+            width: 6px;
+            background: linear-gradient(180deg, var(--teal) 0%, var(--teal-dark) 100%);
+        }
+
+        .scenario-card-gold::before {
+            background: linear-gradient(180deg, var(--gold) 0%, #B98524 100%);
+        }
+
+        .scenario-top {
+            display: flex;
+            align-items: center;
+            gap: clamp(0.5rem, 1vw, 0.75rem);
+            margin-bottom: clamp(0.55rem, 1vh, 0.8rem);
+        }
+
+        .scenario-badge {
+            width: clamp(1.9rem, 2.2vw, 2.2rem);
+            height: clamp(1.9rem, 2.2vw, 2.2rem);
+            border-radius: 50%;
+            background: var(--teal);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--small-size);
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        .scenario-card-gold .scenario-badge { background: var(--gold); }
+
+        .scenario-kicker {
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--slate);
+            margin-bottom: 0.15rem;
+        }
+
+        .scenario-title {
+            font-size: clamp(0.95rem, 1.45vw, 1.15rem);
+            font-weight: 800;
+            line-height: 1.2;
+            color: var(--charcoal);
+        }
+
+        .scenario-steps {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(0.35rem, 0.8vh, 0.5rem);
+            padding-left: clamp(0.35rem, 0.8vw, 0.5rem);
+        }
+
+        .scenario-steps::before {
+            content: '';
+            position: absolute;
+            left: 0.65rem;
+            top: 0.2rem;
+            bottom: 0.2rem;
+            width: 2px;
+            background: linear-gradient(180deg, rgba(0,140,149,0.26) 0%, rgba(0,140,149,0.08) 100%);
+        }
+
+        .scenario-card-gold .scenario-steps::before {
+            background: linear-gradient(180deg, rgba(214,154,45,0.35) 0%, rgba(214,154,45,0.1) 100%);
+        }
+
+        .scenario-step {
+            position: relative;
+            margin-left: 1.25rem;
+            padding: clamp(0.45rem, 0.8vh, 0.62rem) clamp(0.6rem, 1vw, 0.8rem);
+            border-radius: 999px;
+            background: var(--teal-light);
+            border: 1.5px solid rgba(0,140,149,0.3);
+            color: var(--teal-dark);
+            font-size: var(--small-size);
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .scenario-step::before {
+            content: '';
+            position: absolute;
+            left: calc(-1.25rem - 0.42rem);
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0.7rem;
+            height: 0.7rem;
+            border-radius: 50%;
+            background: var(--teal);
+            box-shadow: 0 0 0 4px rgba(0,140,149,0.14);
+        }
+
+        .scenario-card-gold .scenario-step {
+            background: #FFF8EB;
+            border-color: rgba(214,154,45,0.38);
+            color: #8B6914;
+        }
+
+        .scenario-card-gold .scenario-step::before {
+            background: var(--gold);
+            box-shadow: 0 0 0 4px rgba(214,154,45,0.16);
+        }
+
+        .scenario-step-muted {
+            background: var(--fog);
+            border-color: rgba(76,76,78,0.14);
+            color: var(--slate);
+        }
+
+        .scenario-step-muted::before {
+            background: var(--earth);
+            box-shadow: 0 0 0 4px rgba(154,173,164,0.16);
+        }
+
         /* ===========================================
            STAT CARDS (slide 6)
            =========================================== */
@@ -559,6 +697,7 @@
 
         @media (max-width: 700px) {
             .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            .flow-scenarios { grid-template-columns: 1fr; }
             .flow-container { flex-direction: column; }
             .flow-step + .flow-step { margin-left: 0; margin-top: 1rem; }
             .flow-step + .flow-step::before {
@@ -706,7 +845,7 @@
             <p class="title-sub reveal">CU Boulder, Holy Cross, and the path forward</p>
             <p class="title-date reveal">March 2026</p>
         </div>
-        <span class="slide-number">1 / 14</span>
+        <span class="slide-number">1 / 15</span>
     </section>
 
     <!-- =========================================
@@ -724,7 +863,7 @@
                 <li><strong style="color:var(--teal-dark)">How do we make this work?</strong></li>
             </ul>
         </div>
-        <span class="slide-number">2 / 14</span>
+        <span class="slide-number">2 / 15</span>
     </section>
 
     <!-- =========================================
@@ -757,7 +896,7 @@
                 </div>
             </div>
         </div>
-        <span class="slide-number">3 / 14</span>
+        <span class="slide-number">3 / 15</span>
     </section>
 
     <!-- =========================================
@@ -786,45 +925,126 @@
             </div>
 
             <div class="callout callout-gold reveal" style="margin-bottom: var(--content-gap);">
-                <p><strong>Decision point — phone-first identity:</strong> A card tap gives us no email. We should strongly consider collecting a phone number at the kiosk (faster + more verifiable to enter - SMS notification should come immediately). This is a paradigm shift — our current system is email-based throughout (Firebase auth, notifications, receipts). Requires changes to user schema, notification infrastructure, and support workflows.</p>
+                <p><strong>Decision point — identifier-first identity:</strong> A card tap gives us no email. We likely need a kiosk-friendly account identifier plus OTP verification, but whether that identifier should be phone-first, email-first, or flexible remains open. This is still a paradigm shift from USEFULL's current email-based flows and touches schema, notifications, and support workflows.</p>
             </div>
 
         </div>
-        <span class="slide-number">4 / 14</span>
+        <span class="slide-number">4 / 15</span>
     </section>
 
     <!-- =========================================
-         SLIDE 5 — CHECKOUT FLOWS
+         SLIDE 5 — STRIPE FINGERPRINTING
+         ========================================= -->
+    <section class="slide slide-offwhite">
+        <div class="slide-content">
+            <span class="section-label reveal">Identity model</span>
+            <h2 class="slide-title reveal">How Stripe fingerprinting helps</h2>
+
+            <div class="grid-2" style="margin-bottom: var(--content-gap);">
+                <div class="card reveal">
+                    <h3 style="margin-bottom:var(--element-gap);">1. Physical card lookup</h3>
+                    <p>Stripe Terminal returns a fingerprint token for the tapped card. We can look up the saved account from that token without USEFULL ever handling the raw card number.</p>
+                </div>
+                <div class="card reveal">
+                    <h3 style="margin-bottom:var(--element-gap);">2. Wallet-to-card rough match</h3>
+                    <p>Apple Pay / Google Pay usually surface the real card's <code>last4</code> even though the wallet uses a different fingerprint. That lets us roughly link wallet taps to the same underlying physical card.</p>
+                </div>
+                <div class="card card-gold reveal">
+                    <h3 style="margin-bottom:var(--element-gap);">3. Known exception</h3>
+                    <p>Apple Card added to Apple Pay can surface only the wallet number. In those cases, or any time card details don't match, we step up to OTP verification.</p>
+                </div>
+                <div class="card reveal">
+                    <h3 style="margin-bottom:var(--element-gap);">4. Hard fallback</h3>
+                    <p>Account identifier remains the durable fallback. If the tapped card details don't line up with the account, verify ownership with OTP before checkout.</p>
+                </div>
+            </div>
+
+            <div class="callout callout-gold reveal">
+                <p><strong>Practical rule:</strong> fingerprint is the zero-friction path, card-details matching is the low-friction recovery path, and OTP is the trust-preserving fallback.</p>
+            </div>
+        </div>
+        <span class="slide-number">5 / 15</span>
+    </section>
+
+    <!-- =========================================
+         SLIDE 6 — CHECKOUT FLOWS
          ========================================= -->
     <section class="slide slide-offwhite">
         <div class="slide-content">
             <span class="section-label reveal">How it works</span>
             <h2 class="slide-title reveal">Checkout flow</h2>
 
-            <div style="display:flex; flex-direction:column; gap:var(--content-gap);">
-                <div class="reveal">
-                    <p class="flow-label flow-label-gold" style="margin-bottom:var(--element-gap);">First visit</p>
-                    <div class="flow-container">
-                        <div class="flow-step flow-step-gold">Scan containers</div>
-                        <div class="flow-step flow-step-gold">Tap card</div>
-                        <div class="flow-step flow-step-gold">Enter phone</div>
-                        <div class="flow-step flow-step-gold">Card saved</div>
+            <div class="flow-scenarios reveal">
+                <article class="scenario-card scenario-card-gold">
+                    <div class="scenario-top">
+                        <div class="scenario-badge">1</div>
+                        <div>
+                            <div class="scenario-kicker">First visit</div>
+                            <div class="scenario-title">Physical card or wallet</div>
+                        </div>
                     </div>
-                    <p class="slide-subtitle" style="margin-top:var(--element-gap);">Student provides phone number (or email), taps credit card. Stripe saves the card via SetupIntent — no charge. USEFULL creates an account linked to the card fingerprint.</p>
-                </div>
+                    <div class="scenario-steps">
+                        <div class="scenario-step">Scan containers</div>
+                        <div class="scenario-step">Tap card or wallet</div>
+                        <div class="scenario-step">Enter account identifier (email or phone number)</div>
+                        <div class="scenario-step">Verify OTP (best practice)</div>
+                        <div class="scenario-step">Save card for future charges</div>
+                    </div>
+                </article>
 
-                <div class="reveal">
-                    <p class="flow-label" style="margin-bottom:var(--element-gap);">Repeat visit</p>
-                    <div class="flow-container">
-                        <div class="flow-step">Tap card</div>
-                        <div class="flow-step">Fingerprint match</div>
-                        <div class="flow-step">Instant checkout</div>
+                <article class="scenario-card">
+                    <div class="scenario-top">
+                        <div class="scenario-badge">2</div>
+                        <div>
+                            <div class="scenario-kicker">Repeat visit</div>
+                            <div class="scenario-title">Same exact method used</div>
+                        </div>
                     </div>
-                    <p class="slide-subtitle" style="margin-top:var(--element-gap);">Card tap alone identifies the student — no phone number, no app, no login. Stripe fingerprint matches the saved account.</p>
-                </div>
+                    <div class="scenario-steps">
+                        <div class="scenario-step">Scan containers</div>
+                        <div class="scenario-step">Tap same card or wallet</div>
+                        <div class="scenario-step">Fingerprint matches account</div>
+                        <div class="scenario-step scenario-step-muted">No identifier entry needed</div>
+                        <div class="scenario-step">Instant checkout</div>
+                    </div>
+                </article>
+
+                <article class="scenario-card">
+                    <div class="scenario-top">
+                        <div class="scenario-badge">3</div>
+                        <div>
+                            <div class="scenario-kicker">Repeat visit</div>
+                            <div class="scenario-title">Same underlying card, different method</div>
+                        </div>
+                    </div>
+                    <div class="scenario-steps">
+                        <div class="scenario-step">Scan containers</div>
+                        <div class="scenario-step">Tap wallet or physical card</div>
+                        <div class="scenario-step">Enter account identifier</div>
+                        <div class="scenario-step">Card details match (last 4)</div>
+                        <div class="scenario-step">Link new fingerprint and checkout</div>
+                    </div>
+                </article>
+
+                <article class="scenario-card">
+                    <div class="scenario-top">
+                        <div class="scenario-badge">4</div>
+                        <div>
+                            <div class="scenario-kicker">Repeat visit</div>
+                            <div class="scenario-title">Different method, card details don't match</div>
+                        </div>
+                    </div>
+                    <div class="scenario-steps">
+                        <div class="scenario-step">Scan containers</div>
+                        <div class="scenario-step">Tap wallet or physical card</div>
+                        <div class="scenario-step">Enter account identifier</div>
+                        <div class="scenario-step">Card details don't match</div>
+                        <div class="scenario-step">Verify OTP, then checkout</div>
+                    </div>
+                </article>
             </div>
         </div>
-        <span class="slide-number">5 / 14</span>
+        <span class="slide-number">6 / 15</span>
     </section>
 
     <!-- =========================================
@@ -844,7 +1064,7 @@
                 <p><strong>One UX requirement:</strong> Stripe requires disclosure at the kiosk that the card will be saved for future charges. This is a copy/design task, not a technical blocker.</p>
             </div>
         </div>
-        <span class="slide-number">6 / 14</span>
+        <span class="slide-number">7 / 15</span>
     </section>
 
     <!-- =========================================
@@ -879,7 +1099,7 @@
                 <p>The saved-card model accomplishes the same accountability without the cost or confusion.</p>
             </div>
         </div>
-        <span class="slide-number">7 / 14</span>
+        <span class="slide-number">8 / 15</span>
     </section>
 
     <!-- =========================================
@@ -914,7 +1134,7 @@
                 </div>
             </div>
         </div>
-        <span class="slide-number">8 / 14</span>
+        <span class="slide-number">9 / 15</span>
     </section>
 
     <!-- =========================================
@@ -949,7 +1169,7 @@
                 <p><strong>Note:</strong> Clover runs on Fiserv, not Stripe — separate integration path. State grant opportunity has resurrected this project.</p>
             </div>
         </div>
-        <span class="slide-number">9 / 14</span>
+        <span class="slide-number">10 / 15</span>
     </section>
 
     <!-- =========================================
@@ -1000,7 +1220,7 @@
                 </table>
             </div>
         </div>
-        <span class="slide-number">10 / 14</span>
+        <span class="slide-number">11 / 15</span>
     </section>
 
     <!-- =========================================
@@ -1038,7 +1258,7 @@
                 </div>
             </div>
         </div>
-        <span class="slide-number">11 / 14</span>
+        <span class="slide-number">12 / 15</span>
     </section>
 
     <!-- =========================================
@@ -1062,7 +1282,7 @@
                 <p><strong>One device, any campus.</strong> Campus card or credit card, configured via cloud.</p>
             </div>
         </div>
-        <span class="slide-number">12 / 14</span>
+        <span class="slide-number">13 / 15</span>
     </section>
 
     <!-- =========================================
@@ -1076,15 +1296,15 @@
             <div class="grid-2 reveal">
                 <div class="card card-teal">
                     <h3><span class="accent">CU Boulder</span></h3>
-                    <p>Finalize Stripe Terminal integration. Test card fingerprint consistency with Apple&nbsp;Pay / Google&nbsp;Pay.</p>
+                    <p>Finalize Stripe Terminal integration. Validate wallet <code>last4</code> behavior, Apple Card exceptions, and the OTP fallback path on real readers.</p>
                 </div>
                 <div class="card card-gold">
                     <h3><span class="gold">Holy Cross</span></h3>
                     <p>Begin Clover SDK integration (Clover Connector for Android).</p>
                 </div>
                 <div class="card">
-                    <h3>Firebase</h3>
-                    <p>Add phone-number auth. Make email nullable in user schema.</p>
+                    <h3>Identity</h3>
+                    <p>Decide whether kiosk fallback should use phone, email, or either, then wire OTP verification into the user schema and auth flow.</p>
                 </div>
                 <div class="card">
                     <h3>NAU</h3>
@@ -1092,7 +1312,7 @@
                 </div>
             </div>
         </div>
-        <span class="slide-number">13 / 14</span>
+        <span class="slide-number">14 / 15</span>
     </section>
 
     <!-- =========================================
@@ -1112,7 +1332,7 @@
             </svg>
             <h2 class="slide-title reveal">Questions?</h2>
         </div>
-        <span class="slide-number">14 / 14</span>
+        <span class="slide-number">15 / 15</span>
     </section>
 
     <script>
