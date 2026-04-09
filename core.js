@@ -431,7 +431,7 @@ function beginCreditScenarioFlow() {
 
   NEW USER:
     SCAN → card tap → IDENTIFIER_ENTRY → ACCOUNT_LOOKUP (auto ~1.5s)
-         → (no account) → PROGRAM_OVERVIEW → Accept → OTP_VERIFY → SUCCESS_NEW
+         → (no account) → PROGRAM_OVERVIEW → Accept → SUCCESS_NEW
 
   RETURN SAME EXACT:
     SCAN → card tap → SUCCESS_RETURNING (instant)
@@ -441,8 +441,8 @@ function beginCreditScenarioFlow() {
          → SMS_CONFIRM_METHOD → OTP_VERIFY → SUCCESS_RETURNING
 
   RETURN DIFFERENT CARD:
-    SCAN → card tap → IDENTIFIER_ENTRY → ACCOUNT_LOOKUP → ACCOUNT_FOUND
-         → OTP_VERIFY → SMS_CONFIRM_METHOD → SUCCESS_RETURNING
+    SCAN → card tap → IDENTIFIER_ENTRY → ACCOUNT_LOOKUP
+         → OTP_VERIFY → SUCCESS_RETURNING
 */
 
 function clearAccountLookupTimer() {
@@ -471,8 +471,12 @@ function advanceFromAccountLookup() {
   if (scenario === CREDIT_SCENARIO.NEW_USER) {
     // No account found → program overview (credit variant)
     setState(STATE.PROGRAM_OVERVIEW);
+  } else if (scenario === CREDIT_SCENARIO.RETURN_DIFFERENT_CARD) {
+    // Different card → skip confirmation, go straight to OTP verification
+    otpValue = '';
+    setState(STATE.OTP_VERIFY);
   } else {
-    // Returning user found → account found screen
+    // Same underlying → account found confirmation screen
     activeUserName = activeUserName || 'Cody';
     setState(STATE.ACCOUNT_FOUND);
   }
@@ -490,31 +494,21 @@ function advanceFromAccountFound() {
 }
 
 function advanceFromProgramOverview() {
-  const isCreditFlow = currentFlow?.paymentMode === PAYMENT_MODE.CREDIT;
-  if (isCreditFlow) {
-    // Credit new user: after accepting terms → verify phone via OTP
-    otpValue = '';
-    setState(STATE.OTP_VERIFY);
-  } else {
-    // Campus new user: accept → success
-    setState(STATE.SUCCESS_NEW);
-    scheduleAutoReset(SUCCESS_RESET_MS);
-  }
+  // Both campus and credit new users: accept → success
+  setState(STATE.SUCCESS_NEW);
+  scheduleAutoReset(SUCCESS_RESET_MS);
 }
 
 function advanceFromOtpVerify() {
   const scenario = currentFlow?.scenario;
-  if (scenario === CREDIT_SCENARIO.NEW_USER) {
-    // New user verified → success
-    setState(STATE.SUCCESS_NEW);
-    scheduleAutoReset(SUCCESS_RESET_MS);
-  } else if (scenario === CREDIT_SCENARIO.RETURN_SAME_UNDERLYING) {
+  if (scenario === CREDIT_SCENARIO.RETURN_SAME_UNDERLYING) {
     // Same underlying: OTP done → success
     setState(STATE.SUCCESS_RETURNING);
     scheduleAutoReset(SUCCESS_RESET_MS);
   } else {
-    // Different card: OTP done → now confirm the new method
-    setState(STATE.SMS_CONFIRM_METHOD);
+    // Different card: OTP done → success
+    setState(STATE.SUCCESS_RETURNING);
+    scheduleAutoReset(SUCCESS_RESET_MS);
   }
 }
 

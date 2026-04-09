@@ -1665,15 +1665,6 @@
         }
 
         case STATE.OTP_VERIFY: {
-          const scenario = currentFlow?.scenario;
-          const phoneFmt = formatPhoneNumber(identifierValue);
-          const phoneLast4 = identifierValue ? identifierValue.slice(-4) : '3456';
-          let otpBody = `We sent a 6-digit code to ${phoneFmt}.`;
-          if (scenario === CREDIT_SCENARIO.RETURN_DIFFERENT_CARD) {
-            otpBody = `This card does not match the payment method on file. To protect the account, verify the phone number ending in ***${phoneLast4}.`;
-          } else if (scenario === CREDIT_SCENARIO.RETURN_SAME_UNDERLYING) {
-            otpBody = `Confirm linking this wallet to your account. We sent a code to ***${phoneLast4}.`;
-          }
           const canVerify = otpValue.length === 6;
           const otpBoxes = Array.from({ length: 6 }, (_, i) => {
             const digit = otpValue[i] || '';
@@ -1685,13 +1676,12 @@
               <img class="brand-strip__logo" src="images/USEFULL-icons/USEFULL-Logo-Registered_Color.svg" alt="USEFULL" />
             </div>
             <div class="auth-card auth-card--dense">
-              <div class="auth-card__chip">Verify with SMS</div>
-              <div class="auth-card__title">Enter the code we sent</div>
-              <div class="auth-card__body">${otpBody}</div>
+              <div class="auth-card__title">Add new card to account?</div>
+              <div class="auth-card__body">This number is associated with a different card. Add this card to your account by entering the code we sent to your phone.</div>
               <div class="otp-boxes">${otpBoxes}</div>
               ${renderKeypad('otp')}
               <div class="btn-row">
-                <button class="btn btn--primary" id="verifyBtn" type="button" ${canVerify ? '' : 'disabled'}>Verify & Continue</button>
+                <button class="btn btn--primary" id="verifyBtn" type="button" ${canVerify ? '' : 'disabled'}>Verify</button>
                 <button class="btn btn--secondary" id="cancelBtn" type="button">Cancel</button>
               </div>
             </div>
