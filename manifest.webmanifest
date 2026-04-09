@@ -1,26 +1,17 @@
 {
   "name": "USEFULL Checkout Kiosk",
   "short_name": "USEFULL",
-  "start_url": ".",
+  "start_url": "./two-buttons.html",
   "scope": ".",
   "display": "standalone",
   "background_color": "#008C95",
   "theme_color": "#008C95",
   "icons": [
     {
-      "src": "images/USEFULL-icons/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "images/USEFULL-icons/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    },
-    {
-      "src": "images/USEFULL-icons/icon-1024.png",
+      "src": "images/interface-icons/app-icon.png",
       "sizes": "1024x1024",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }

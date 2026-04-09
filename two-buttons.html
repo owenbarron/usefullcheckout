@@ -4,9 +4,14 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
   <title>USEFULL Checkout — Two Buttons</title>
+  <meta name="theme-color" content="#008C95" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="USEFULL Kiosk" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" type="image/png" href="images/interface-icons/app-icon.png" />
+  <link rel="apple-touch-icon" href="images/interface-icons/app-icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@700&family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -67,15 +72,16 @@
 
     /* ── Branding strip ────────────────────────────── */
     .brand-strip {
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
       align-items: center;
-      justify-content: space-between;
       padding: 0 0 4px;
       flex-shrink: 0;
     }
     .brand-strip__logo {
       height: clamp(32px, 5vmin, 48px);
       opacity: 0.7;
+      justify-self: start;
     }
     .brand-strip__terms {
       font-size: 13px;
@@ -88,9 +94,31 @@
       padding: 4px 10px;
       border-radius: 6px;
       transition: background 0.15s;
+      justify-self: center;
     }
     .brand-strip__terms:active {
       background: var(--teal-light);
+    }
+    .brand-strip__right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-self: end;
+    }
+    .brand-strip__reset-btn {
+      background: var(--teal);
+      color: var(--white);
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: opacity 0.15s;
+    }
+    .brand-strip__reset-btn:active {
+      opacity: 0.8;
     }
 
     /* Countdown ring — compact circle in the brand strip */
@@ -374,20 +402,20 @@
     }
     .pay-zone__nfc {
       position: absolute;
-      width: 28px;
+      width: 48px;
       height: auto;
       animation: nfc-blink 2.4s ease-in-out infinite;
-      filter: drop-shadow(0 0 10px rgba(0, 140, 149, 0.7)) drop-shadow(0 0 3px rgba(0, 140, 149, 0.9));
+      filter: none;
     }
-    /* NFC on HID reader: centered over the top portion */
+    /* NFC on HID reader: centered over the tap target area */
     .pay-zone--campus .pay-zone__nfc {
-      top: 16%;
+      top: 28%;
       left: 50%;
-      transform: translateX(-50%);
+      transform: translate(-50%, -50%);
     }
-    /* NFC on stripe reader: centered in the middle */
+    /* NFC on stripe reader: centered over the contactless zone */
     .pay-zone--credit .pay-zone__nfc {
-      top: 42%;
+      top: 38%;
       left: 50%;
       transform: translate(-50%, -50%);
     }
@@ -475,16 +503,70 @@
       background: var(--slate);
       color: var(--white);
       border-radius: 12px;
-      padding: 14px 16px 16px;
+      padding: 18px 20px 20px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.25);
       display: none;
-      flex-wrap: wrap;
-      gap: 10px 14px;
-      align-items: end;
-      min-width: 420px;
+      min-width: 520px;
     }
     .settings-wheel.is-open .settings-popover {
+      display: block;
+    }
+
+    .settings-columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 24px;
+    }
+
+    .settings-col {
       display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .settings-col__heading {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: rgba(255,255,255,0.45);
+      font-weight: 700;
+      padding-bottom: 4px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: 2px;
+    }
+
+    .settings-section-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: rgba(255,255,255,0.35);
+      font-weight: 600;
+      margin-top: 6px;
+    }
+
+    /* Toggle switch */
+    .settings-toggle {
+      display: flex;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .settings-toggle__opt {
+      flex: 1;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: inherit;
+      text-align: center;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      color: rgba(255,255,255,0.5);
+      transition: background 0.15s, color 0.15s;
+    }
+    .settings-toggle__opt.is-active {
+      background: var(--teal);
+      color: var(--white);
     }
 
     .settings-popover__field {
@@ -514,6 +596,16 @@
       color: var(--white);
     }
 
+    .settings-sim-row {
+      display: flex;
+      gap: 8px;
+      align-items: end;
+    }
+    .settings-sim-row .settings-popover__field {
+      flex: 1;
+      min-width: 0;
+    }
+
     .settings-popover__btn {
       padding: 6px 14px;
       border-radius: 6px;
@@ -525,6 +617,7 @@
       cursor: pointer;
       font-family: inherit;
       transition: background 0.15s;
+      width: 100%;
     }
     .settings-popover__btn:active {
       background: rgba(255,255,255,0.2);
@@ -533,12 +626,13 @@
       background: var(--teal);
       border-color: var(--teal);
     }
-
-    .settings-popover__divider {
-      width: 1px;
-      height: 32px;
-      background: rgba(255,255,255,0.15);
-      align-self: center;
+    .settings-btn-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 2px;
+    }
+    .settings-btn-row .settings-popover__btn {
+      flex: 1;
     }
 
     /* ── Terms overlay (reused from main) ──────────── */
@@ -1099,27 +1193,46 @@
       text-transform: uppercase;
     }
 
-    /* ── Hotspots (invisible tap areas for demo) ───── */
-    .hotspot {
+    /* ── Action buttons (bottom bar) ────────────────── */
+    .action-bar {
       position: fixed;
-      z-index: 50;
+      bottom: 16px;
+      left: 60px;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .action-bar__gap {
+      width: 40px;
+    }
+    .action-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: none;
+      background: none;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.15s, transform 0.1s;
+      padding: 0;
     }
-    .hotspot--scan {
-      bottom: 0;
-      left: 0;
-      width: 50%;
-      height: 30%;
+    .action-btn:active {
+      transform: scale(0.92);
     }
-    .hotspot--id {
-      bottom: 0;
-      right: 0;
-      width: 50%;
-      height: 30%;
+    .action-btn img {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
     }
-    .hotspot[hidden] {
-      display: none;
+    .action-btn:disabled {
+      opacity: 0.35;
+      cursor: default;
+      pointer-events: none;
     }
+
   </style>
 </head>
 <body>
@@ -1128,8 +1241,19 @@
       <!-- Rendered by JS -->
     </main>
 
-    <div id="scanHotspot" class="hotspot hotspot--scan" aria-hidden="true"></div>
-    <div id="idHotspot" class="hotspot hotspot--id" aria-hidden="true"></div>
+    <!-- Action buttons -->
+    <div class="action-bar">
+      <button class="action-btn" id="btnScanContainer" type="button" title="Scan a container">
+        <img src="images/interface-icons/Usefull-Icons-Golden_1_Cup.png" alt="Scan container" />
+      </button>
+      <div class="action-bar__gap"></div>
+      <button class="action-btn" id="btnTapHID" type="button" title="Tap campus card (HID)">
+        <img src="images/interface-icons/Usefull-Icons-Golden_1_College.png" alt="Campus card tap" />
+      </button>
+      <button class="action-btn" id="btnTapStripe" type="button" title="Tap credit card (Stripe)">
+        <img src="images/interface-icons/Usefull-Icons-Golden_1_CreditCard.png" alt="Credit card tap" />
+      </button>
+    </div>
 
     <!-- Terms modal -->
     <div id="termsModal" class="terms-overlay" hidden>
@@ -1157,113 +1281,106 @@
         </svg>
       </button>
       <div class="settings-popover">
-        <div class="settings-popover__field">
-          <span class="settings-popover__label">College</span>
-          <select class="settings-popover__select" id="collegeSelect">
-            <option value="pioneer">Pioneer State University</option>
-            <option value="nau">Northern Arizona University</option>
-          </select>
-        </div>
-        <div class="settings-popover__field">
-          <span class="settings-popover__label">ID Outcome</span>
-          <select class="settings-popover__select" id="outcomeSelect">
-            <option value="returning_user">Returning User</option>
-            <option value="new_user">New User</option>
-            <option value="campus_user_not_found">User Not Found</option>
-            <option value="account_frozen">Account Frozen</option>
-          </select>
-        </div>
-        <div class="settings-popover__field">
-          <span class="settings-popover__label">Payment Mode</span>
-          <select class="settings-popover__select" id="paymentModeSelect">
-            <option value="campus">Campus Card</option>
-            <option value="credit">Credit Card</option>
-          </select>
-        </div>
-        <div class="settings-popover__field" id="creditScenarioField" style="display:none">
-          <span class="settings-popover__label">Credit Scenario</span>
-          <select class="settings-popover__select" id="creditScenarioSelect">
-            <option value="new_user">New User</option>
-            <option value="return_same_exact">Return same exact</option>
-            <option value="return_same_underlying">Return same underlying</option>
-            <option value="return_different_card">Return different card</option>
-          </select>
-        </div>
-        <div class="settings-popover__field" id="cardBrandField" style="display:none">
-          <span class="settings-popover__label">Card Brand</span>
-          <select class="settings-popover__select" id="cardBrandSelect">
-            <option value="Visa">Visa</option>
-            <option value="Mastercard">Mastercard</option>
-            <option value="Amex">Amex</option>
-          </select>
-        </div>
-        <div class="settings-popover__field" id="cardLast4Field" style="display:none">
-          <span class="settings-popover__label">Last 4</span>
-          <input class="settings-popover__select" id="cardLast4Input" type="text" value="1234" maxlength="4" style="width:60px" />
-        </div>
-        <div class="settings-popover__divider"></div>
-        <div class="settings-popover__field">
-          <span class="settings-popover__label">Containers</span>
-          <select class="settings-popover__select" id="simCountSelect">
-            <option value="1">1</option>
-            <option value="2" selected>2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-          </select>
-        </div>
-        <div class="settings-popover__field">
-          <span class="settings-popover__label">First delay</span>
-          <select class="settings-popover__select" id="simFirstDelay">
-            <option value="1">1s</option>
-            <option value="2">2s</option>
-            <option value="3" selected>3s</option>
-            <option value="5">5s</option>
-          </select>
-        </div>
-        <div class="settings-popover__field">
-          <span class="settings-popover__label">Between</span>
-          <select class="settings-popover__select" id="simBetweenDelay">
-            <option value="1">1s</option>
-            <option value="2">2s</option>
-            <option value="3" selected>3s</option>
-            <option value="5">5s</option>
-          </select>
-        </div>
-        <div class="settings-popover__field">
-          <span class="settings-popover__label">Before ID</span>
-          <select class="settings-popover__select" id="simIdDelay">
-            <option value="1">1s</option>
-            <option value="2">2s</option>
-            <option value="3" selected>3s</option>
-            <option value="5">5s</option>
-          </select>
-        </div>
-        <button class="settings-popover__btn settings-popover__btn--sim" id="simBtn" type="button">Simulate</button>
-        <button class="settings-popover__btn" id="resetBtn" type="button">Reset</button>
-        <div class="settings-popover__divider"></div>
-        <div class="settings-popover__field">
-          <span class="settings-popover__label">Debug</span>
-          <label style="display:flex;align-items:center;gap:6px;color:var(--white);font-size:13px;cursor:pointer">
-            <input type="checkbox" id="debugToggle" /> On
-          </label>
-        </div>
-        <div class="settings-popover__field" id="jumpToField" style="display:none">
-          <span class="settings-popover__label">Jump to</span>
-          <select class="settings-popover__select" id="jumpToSelect">
-            <option value="">— select —</option>
-            <option value="scan">Idle (SCAN)</option>
-            <option value="program_overview">Program Overview</option>
-            <option value="identifier_entry">Identifier Entry</option>
-            <option value="account_lookup">Account Lookup</option>
-            <option value="account_found">Account Found</option>
-            <option value="sms_confirm_method">SMS Confirm</option>
-            <option value="otp_verify">OTP Verify</option>
-            <option value="success_new">Success (New)</option>
-            <option value="success_returning">Success (Returning)</option>
-            <option value="error_campus">Error (Campus)</option>
-            <option value="error_frozen">Error (Frozen)</option>
-          </select>
+        <div class="settings-columns">
+          <!-- LEFT COLUMN: Payment Settings + Debug + Reset -->
+          <div class="settings-col">
+            <div class="settings-col__heading">Payment Settings</div>
+            <div class="settings-popover__field">
+              <span class="settings-popover__label">Campus ID Scenario</span>
+              <select class="settings-popover__select" id="campusScenarioSelect">
+                <option value="new_user">New User</option>
+                <option value="returning_user">Returning User</option>
+                <option value="campus_user_not_found">User Not Found</option>
+                <option value="account_frozen">Account Frozen</option>
+              </select>
+            </div>
+            <div class="settings-popover__field">
+              <span class="settings-popover__label">Credit Card Scenario</span>
+              <select class="settings-popover__select" id="creditScenarioSelect">
+                <option value="new_user">New User</option>
+                <option value="return_same_exact">Return - Same Exact Card</option>
+                <option value="return_same_underlying">Return - Same Underlying Card</option>
+                <option value="return_different_card">Return - Different Card</option>
+              </select>
+            </div>
+            <div class="settings-section-label">Debug</div>
+            <div class="settings-popover__field">
+              <label style="display:flex;align-items:center;gap:6px;color:var(--white);font-size:13px;cursor:pointer">
+                <input type="checkbox" id="debugToggle" /> Enable debug mode
+              </label>
+            </div>
+            <div class="settings-popover__field" id="jumpToField" style="display:none">
+              <span class="settings-popover__label">Jump to</span>
+              <select class="settings-popover__select" id="jumpToSelect">
+                <option value="">-- select --</option>
+                <option value="scan">Idle (SCAN)</option>
+                <option value="program_overview">Program Overview</option>
+                <option value="identifier_entry">Identifier Entry</option>
+                <option value="account_lookup">Account Lookup</option>
+                <option value="account_found">Account Found</option>
+                <option value="sms_confirm_method">SMS Confirm</option>
+                <option value="otp_verify">OTP Verify</option>
+                <option value="success_new">Success (New)</option>
+                <option value="success_returning">Success (Returning)</option>
+                <option value="error_campus">Error (Campus)</option>
+                <option value="error_frozen">Error (Frozen)</option>
+              </select>
+            </div>
+            <div class="settings-section-label">Reset</div>
+            <button class="settings-popover__btn" id="resetBtn" type="button">Reset Session</button>
+          </div>
+          <!-- RIGHT COLUMN: Other Settings -->
+          <div class="settings-col">
+            <div class="settings-col__heading">Other Settings</div>
+            <div class="settings-popover__field">
+              <span class="settings-popover__label">College</span>
+              <select class="settings-popover__select" id="collegeSelect">
+                <option value="pioneer">Pioneer State University</option>
+                <option value="nau">Northern Arizona University</option>
+              </select>
+            </div>
+            <div class="settings-section-label">Simulation</div>
+            <div class="settings-popover__field">
+              <span class="settings-popover__label">Containers</span>
+              <select class="settings-popover__select" id="simCountSelect">
+                <option value="1">1</option>
+                <option value="2" selected>2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
+            </div>
+            <div class="settings-sim-row">
+              <div class="settings-popover__field">
+                <span class="settings-popover__label">First</span>
+                <select class="settings-popover__select" id="simFirstDelay">
+                  <option value="1">1s</option>
+                  <option value="2">2s</option>
+                  <option value="3" selected>3s</option>
+                  <option value="5">5s</option>
+                </select>
+              </div>
+              <div class="settings-popover__field">
+                <span class="settings-popover__label">Between</span>
+                <select class="settings-popover__select" id="simBetweenDelay">
+                  <option value="1">1s</option>
+                  <option value="2">2s</option>
+                  <option value="3" selected>3s</option>
+                  <option value="5">5s</option>
+                </select>
+              </div>
+              <div class="settings-popover__field">
+                <span class="settings-popover__label">Before ID</span>
+                <select class="settings-popover__select" id="simIdDelay">
+                  <option value="1">1s</option>
+                  <option value="2">2s</option>
+                  <option value="3" selected>3s</option>
+                  <option value="5">5s</option>
+                </select>
+              </div>
+            </div>
+            <button class="settings-popover__btn settings-popover__btn--sim" id="simBtn" type="button">Simulate</button>
+          </div>
         </div>
       </div>
     </div>
@@ -1331,6 +1448,7 @@
               <div class="brand-strip">
                 <img class="brand-strip__logo" src="images/USEFULL-icons/USEFULL-Logo-Registered_Color.svg" alt="USEFULL" />
                 <button class="brand-strip__terms" id="termsBtn" type="button">Terms & Conditions</button>
+                <div class="brand-strip__right"></div>
               </div>
               <div class="idle-hero">
                 <div class="idle-hero__left">
@@ -1350,12 +1468,15 @@
               <div class="brand-strip">
                 <img class="brand-strip__logo" src="images/USEFULL-icons/USEFULL-Logo-Registered_Color.svg" alt="USEFULL" />
                 <button class="brand-strip__terms" id="termsBtn" type="button">Terms & Conditions</button>
-                <div class="countdown-ring" id="countdownRing">
-                  <svg class="countdown-ring__svg" viewBox="0 0 28 28">
-                    <circle class="countdown-ring__track" cx="14" cy="14" r="12" />
-                    <circle class="countdown-ring__fill" id="countdownArc" cx="14" cy="14" r="12" stroke-dasharray="75.4" stroke-dashoffset="0" />
-                  </svg>
-                  <div class="countdown-ring__text" id="countdownText">15</div>
+                <div class="brand-strip__right">
+                  <button class="brand-strip__reset-btn" id="countdownResetBtn" type="button">Reset</button>
+                  <div class="countdown-ring" id="countdownRing">
+                    <svg class="countdown-ring__svg" viewBox="0 0 28 28">
+                      <circle class="countdown-ring__track" cx="14" cy="14" r="12" />
+                      <circle class="countdown-ring__fill" id="countdownArc" cx="14" cy="14" r="12" stroke-dasharray="75.4" stroke-dashoffset="0" />
+                    </svg>
+                    <div class="countdown-ring__text" id="countdownText">15</div>
+                  </div>
                 </div>
               </div>
               <div class="scan-layout">
@@ -1497,22 +1618,19 @@
         }
 
         case STATE.ACCOUNT_FOUND: {
-          const initial = (activeUserName || 'U').charAt(0).toUpperCase();
           const phoneLast4 = identifierValue ? identifierValue.slice(-4) : '3456';
           screen.innerHTML = `
             <div class="brand-strip">
               <img class="brand-strip__logo" src="images/USEFULL-icons/USEFULL-Logo-Registered_Color.svg" alt="USEFULL" />
             </div>
             <div class="auth-card">
-              <div class="auth-card__initial">${initial}</div>
               <div class="auth-card__title">We found your account!</div>
               <div class="auth-card__detail-row">
-                <span><strong>Name:</strong> ${activeUserName || 'Unknown'}</span>
                 <span><strong>Phone:</strong> ***${phoneLast4}</span>
                 <span><strong>Member since</strong> 2024</span>
               </div>
               <div class="btn-row">
-                <button class="btn btn--primary" id="continueFoundBtn" type="button">Continue as ${activeUserName || 'User'}</button>
+                <button class="btn btn--primary" id="continueFoundBtn" type="button">Continue</button>
                 <button class="btn btn--secondary" id="cancelBtn" type="button">Cancel</button>
               </div>
               <button class="btn--link" id="notYouBtn" type="button">Not you? Try a different number</button>
@@ -1671,10 +1789,17 @@
           break;
       }
 
-      // Show hotspots only on scan screen
-      const showHotspots = appState === STATE.SCAN;
-      document.getElementById('scanHotspot').hidden = !showHotspots;
-      document.getElementById('idHotspot').hidden = !showHotspots;
+      // Update action button states
+      const btnScan = document.getElementById('btnScanContainer');
+      const btnHID = document.getElementById('btnTapHID');
+      const btnStripe = document.getElementById('btnTapStripe');
+      if (btnScan) btnScan.disabled = checkoutLocked || appState !== STATE.SCAN;
+      if (btnHID) btnHID.disabled = checkoutLocked || appState !== STATE.SCAN;
+      if (btnStripe) btnStripe.disabled = checkoutLocked || appState !== STATE.SCAN;
+
+      // Bind countdown reset button if present
+      const countdownResetBtn = document.getElementById('countdownResetBtn');
+      if (countdownResetBtn) countdownResetBtn.onclick = resetSession;
 
       // Bind terms button wherever it appears
       const termsBtn = document.getElementById('termsBtn');
@@ -1685,18 +1810,30 @@
     window.onCoreReady = function () {
       core.setScreenElement(screen);
 
-      // Hotspots
-      document.getElementById('scanHotspot').addEventListener('click', () => {
+      // Action buttons
+      document.getElementById('btnScanContainer').addEventListener('click', () => {
         const now = Date.now();
         if (now - lastScanTap < DEDUPE_MS) return;
         lastScanTap = now;
         if (canUseHotspots()) handleScan();
       });
-      document.getElementById('idHotspot').addEventListener('click', () => {
+      document.getElementById('btnTapHID').addEventListener('click', () => {
         const now = Date.now();
         if (now - lastIdTap < DEDUPE_MS) return;
         lastIdTap = now;
-        if (canUseHotspots()) handleIdTap({ type: demoIdOutcome, firstName: 'Cody' });
+        if (!canUseHotspots()) return;
+        paymentMode = PAYMENT_MODE.CAMPUS;
+        demoIdOutcome = document.getElementById('campusScenarioSelect').value;
+        handleIdTap({ type: demoIdOutcome, firstName: 'Cody' });
+      });
+      document.getElementById('btnTapStripe').addEventListener('click', () => {
+        const now = Date.now();
+        if (now - lastIdTap < DEDUPE_MS) return;
+        lastIdTap = now;
+        if (!canUseHotspots()) return;
+        paymentMode = PAYMENT_MODE.CREDIT;
+        creditScenario = document.getElementById('creditScenarioSelect').value;
+        handleIdTap({ type: 'credit' });
       });
 
       // Keypad delegation — catches clicks on any keypad key in any screen
@@ -1720,33 +1857,13 @@
         selectedCollege = e.target.value;
         window.render();
       };
-      document.getElementById('outcomeSelect').onchange = (e) => {
-        demoIdOutcome = e.target.value;
-      };
 
-      // Payment mode + credit settings visibility
-      const paymentModeSelect = document.getElementById('paymentModeSelect');
-      const creditFields = [
-        document.getElementById('creditScenarioField'),
-        document.getElementById('cardBrandField'),
-        document.getElementById('cardLast4Field'),
-      ];
-      function updateCreditFieldsVisibility() {
-        const show = paymentMode === PAYMENT_MODE.CREDIT;
-        creditFields.forEach((el) => { el.style.display = show ? '' : 'none'; });
-      }
-      paymentModeSelect.onchange = (e) => {
-        paymentMode = e.target.value;
-        updateCreditFieldsVisibility();
+      // Payment scenario dropdowns
+      document.getElementById('campusScenarioSelect').onchange = (e) => {
+        demoIdOutcome = e.target.value;
       };
       document.getElementById('creditScenarioSelect').onchange = (e) => {
         creditScenario = e.target.value;
-      };
-      document.getElementById('cardBrandSelect').onchange = (e) => {
-        cardBrand = e.target.value;
-      };
-      document.getElementById('cardLast4Input').onchange = (e) => {
-        cardLast4 = e.target.value || '1234';
       };
 
       // Debug toggle
@@ -1782,8 +1899,6 @@
         startSimulation();
       };
       document.getElementById('resetBtn').onclick = resetSession;
-
-      updateCreditFieldsVisibility();
     };
 
     /* ── Debug badge helpers ──────────────────────────── */
