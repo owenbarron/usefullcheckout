@@ -854,8 +854,8 @@
     <section class="slide">
         <div class="slide-content">
             <span class="section-label reveal">The question</span>
-            <h2 class="slide-title reveal">CU Boulder wants appless checkout<br>with <span class="accent">credit cards only.</span></h2>
-            <p class="slide-subtitle reveal" style="margin-bottom: var(--content-gap);">No campus card. No app. Students tap a credit card at a kiosk, check out a container, and walk away.</p>
+            <h2 class="slide-title reveal">CU Boulder wants appless checkout<br>with <span class="accent">credit cards</span>as an option</h2>
+            <p class="slide-subtitle reveal" style="margin-bottom: var(--content-gap);">No app. Students tap a campus card OR credit card at a kiosk, check out a container, and walk away.</p>
             <ul class="bullets reveal">
                 <li>Mandatory program, retail food courts only</li>
                 <li>Must still assign specific containers to specific students</li>
@@ -986,8 +986,9 @@
                     <div class="scenario-steps">
                         <div class="scenario-step">Scan containers</div>
                         <div class="scenario-step">Tap card or wallet</div>
-                        <div class="scenario-step">Enter account identifier (email or phone number)</div>
-                        <div class="scenario-step">Verify OTP (best practice)</div>
+                        <div class="scenario-step">Fingerprint doesn't match USEFULL account</div>
+                        <div class="scenario-step">Enter email / phone number</div>
+                        <div class="scenario-step">Accept T&C</div>
                         <div class="scenario-step">Save card for future charges</div>
                     </div>
                 </article>
@@ -1003,7 +1004,7 @@
                     <div class="scenario-steps">
                         <div class="scenario-step">Scan containers</div>
                         <div class="scenario-step">Tap same card or wallet</div>
-                        <div class="scenario-step">Fingerprint matches account</div>
+                        <div class="scenario-step">Fingerprint matches USEFULL account</div>
                         <div class="scenario-step scenario-step-muted">No identifier entry needed</div>
                         <div class="scenario-step">Instant checkout</div>
                     </div>
@@ -1020,7 +1021,9 @@
                     <div class="scenario-steps">
                         <div class="scenario-step">Scan containers</div>
                         <div class="scenario-step">Tap wallet or physical card</div>
-                        <div class="scenario-step">Enter account identifier</div>
+                        <div class="scenario-step">Fingerprint doesn't match USEFULL account</div>
+                        <div class="scenario-step">Enter email/phone number</div>
+                        <div class="scenario-step">Email/phone number matches USEFULL account.</div>
                         <div class="scenario-step">Card details match (last 4)</div>
                         <div class="scenario-step">Link new fingerprint and checkout</div>
                     </div>

@@ -1,0 +1,1807 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <title>USEFULL Checkout — Two Buttons</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@700&family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal: #008C95;
+      --golden: #D69A2D;
+      --teal-dark: #006E75;
+      --teal-glow: rgba(0, 140, 149, 0.25);
+      --teal-light: #E6F5F6;
+      --kiosk-dark: #1B2A30;
+      --green: #2E7D32;
+      --green-light: #E8F5E9;
+      --slate: #263238;
+      --slate-light: #546E7A;
+      --surface: #F0F4F5;
+      --gray-100: #F5F5F5;
+      --gray-200: #E8ECEE;
+      --gray-300: #D0D8DB;
+      --gray-500: #8A9BA2;
+      --gray-700: #4F6068;
+      --white: #FFFFFF;
+      --radius: 14px;
+      --radius-sm: 8px;
+      --shadow: 0 1px 4px rgba(0,0,0,0.06);
+      --shadow-lg: 0 2px 12px rgba(0,0,0,0.10);
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Roboto', system-ui, sans-serif;
+      background: var(--surface);
+      color: var(--slate);
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ── App shell ─────────────────────────────────── */
+    .app {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      height: 100dvh;
+      position: relative;
+    }
+
+    .screen {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 12px 20px 8px;
+      overflow: hidden;
+    }
+
+    /* ── Branding strip ────────────────────────────── */
+    .brand-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 0 4px;
+      flex-shrink: 0;
+    }
+    .brand-strip__logo {
+      height: clamp(32px, 5vmin, 48px);
+      opacity: 0.7;
+    }
+    .brand-strip__terms {
+      font-size: 13px;
+      color: var(--teal);
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 6px;
+      transition: background 0.15s;
+    }
+    .brand-strip__terms:active {
+      background: var(--teal-light);
+    }
+
+    /* Countdown ring — compact circle in the brand strip */
+    .countdown-ring {
+      position: relative;
+      width: 28px;
+      height: 28px;
+      flex-shrink: 0;
+    }
+    .countdown-ring__svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+    .countdown-ring__track {
+      fill: none;
+      stroke: var(--gray-300);
+      stroke-width: 3;
+    }
+    .countdown-ring__fill {
+      fill: none;
+      stroke: var(--teal);
+      stroke-width: 3;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 0.25s linear;
+    }
+    .countdown-ring__text {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--slate-light);
+      line-height: 1;
+    }
+
+    /* ── Idle state ─────────────────────────────────── */
+    .idle-hero {
+      flex: 1;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      padding: 0 0 0 6%;
+    }
+    .idle-hero__left {
+      flex: 0 0 55%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .idle-hero__title {
+      font-family: 'League Spartan', sans-serif;
+      font-size: clamp(56px, 11vmin, 96px);
+      font-weight: 700;
+      line-height: 1.08;
+      color: var(--slate);
+      padding-right: 20px;
+    }
+    .idle-hero__right {
+      flex: 0 0 45%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .idle-hero__scanner-wrap {
+      position: relative;
+      max-height: clamp(380px, 60vmin, 520px);
+      width: auto;
+    }
+    .idle-hero__scanner {
+      max-height: clamp(380px, 60vmin, 520px);
+      width: auto;
+      object-fit: contain;
+      display: block;
+    }
+    .idle-hero__scanner-blue {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      opacity: 0;
+      mix-blend-mode: screen;
+      animation: scanner-glow 7s ease-in-out infinite;
+    }
+    .idle-hero__hand {
+      position: absolute;
+      height: 65%;
+      width: auto;
+      object-fit: contain;
+      right: -10%;
+      top: -10%;
+      transform: translateX(110%);
+      animation: slide-hand 7s ease-in-out infinite;
+    }
+    @keyframes slide-hand {
+      0%, 3%    { transform: translateX(110%); }
+      22%       { transform: translateX(0%); }
+      55%       { transform: translateX(0%); }
+      75%, 100% { transform: translateX(110%); }
+    }
+    @keyframes scanner-glow {
+      0%, 20%   { opacity: 0; }
+      27%       { opacity: 1; }
+      55%       { opacity: 1; }
+      65%, 100% { opacity: 0; }
+    }
+
+    /* ── Scanning state ────────────────────────────── */
+    .scan-layout {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding-bottom: 8px;
+    }
+
+    @keyframes pop {
+      0% { transform: scale(1); }
+      40% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    /* Scan notice (error/warning) */
+    .scan-notice {
+      text-align: center;
+      font-size: 17px;
+      font-weight: 600;
+      color: #C62828;
+      min-height: 20px;
+      opacity: 0;
+      transition: opacity 0.2s;
+      flex-shrink: 0;
+    }
+    .scan-notice.is-visible { opacity: 1; }
+
+    /* Continue scanning hint — in dialog with the heading */
+    .keep-scanning {
+      text-align: center;
+      font-family: 'League Spartan', sans-serif;
+      font-size: clamp(36px, 6.8vmin, 58px);
+      font-weight: 700;
+      color: var(--slate);
+      flex-shrink: 0;
+      padding: 3.5vh 0 1.2vh;
+    }
+
+    /* Counter pill — oval with white text */
+    .counter-pill {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex-shrink: 0;
+      padding: 14px 0 10px;
+    }
+    .counter-pill__inner {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--teal);
+      border-radius: 999px;
+      padding: 10px 28px;
+    }
+    .counter-pill__count {
+      font-family: 'League Spartan', sans-serif;
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1;
+    }
+    .counter-pill__count.is-pop {
+      animation: pop 0.3s ease;
+    }
+    .counter-pill__label {
+      font-family: 'League Spartan', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--white);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      line-height: 1;
+    }
+
+    /* ── Shared heading above zones ────────────────── */
+    .zones-heading {
+      text-align: center;
+      font-family: 'League Spartan', sans-serif;
+      font-size: clamp(36px, 6.8vmin, 58px);
+      font-weight: 700;
+      color: var(--slate);
+      flex-shrink: 0;
+      line-height: 1;
+      padding: 10px 0 12px;
+    }
+
+    /* ── Payment zone areas ────────────────────────── */
+    .payment-zones {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      flex: 1;
+      min-height: 0;
+      padding: 0 20px;
+    }
+
+    .pay-zone {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      background: transparent;
+      border-radius: var(--radius);
+      border: none;
+      padding: 1.5vh 8px 2vh;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Campus zone: subtle teal tint — not a button */
+    .pay-zone--campus {
+      background: var(--teal-light);
+      border-radius: var(--radius);
+    }
+
+    /* Credit zone: just a faint surface shift */
+    .pay-zone--credit {
+      background: rgba(0, 0, 0, 0.025);
+      border-radius: var(--radius);
+    }
+
+    .payment-zones {
+      position: relative;
+    }
+    .zones-or {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'League Spartan', sans-serif;
+      font-size: clamp(16px, 2.5vmin, 22px);
+      font-weight: 600;
+      color: var(--slate-light);
+      background: var(--gray-100);
+      padding: 6px 12px;
+      border-radius: 999px;
+      z-index: 1;
+    }
+
+    /* Device sketch + NFC overlay wrapper — fills remaining space */
+    .pay-zone__device {
+      position: relative;
+      flex: 1 1 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 0;
+      margin: 0;
+      overflow: visible;
+      padding: 0;
+    }
+    .pay-zone__device-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transform: scale(0.95);
+    }
+    .pay-zone--credit .pay-zone__device-img {
+      transform: scale(1.5);
+    }
+    .pay-zone__nfc {
+      position: absolute;
+      width: 28px;
+      height: auto;
+      animation: nfc-blink 2.4s ease-in-out infinite;
+      filter: drop-shadow(0 0 10px rgba(0, 140, 149, 0.7)) drop-shadow(0 0 3px rgba(0, 140, 149, 0.9));
+    }
+    /* NFC on HID reader: centered over the top portion */
+    .pay-zone--campus .pay-zone__nfc {
+      top: 16%;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    /* NFC on stripe reader: centered in the middle */
+    .pay-zone--credit .pay-zone__nfc {
+      top: 42%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    @keyframes nfc-blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.08; }
+    }
+
+    .pay-zone__text {
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6vh;
+      padding: 2vh 12px 0;
+    }
+
+    .pay-zone__title {
+      font-family: 'League Spartan', sans-serif;
+      font-size: clamp(38px, 7vmin, 68px);
+      font-weight: 700;
+      color: var(--slate);
+      line-height: 1.05;
+    }
+
+    .pay-zone__location {
+      font-size: clamp(28px, 5vmin, 48px);
+      font-weight: 500;
+      color: var(--teal-dark);
+      line-height: 1.3;
+    }
+    .pay-zone--credit .pay-zone__location {
+      color: var(--slate-light);
+    }
+
+    /* Subtle glow on campus zone — draws the eye without looking clickable */
+    .pay-zone--campus.is-ready {
+      animation: pulse-glow 2.8s ease-in-out infinite;
+    }
+    @keyframes pulse-glow {
+      0%, 100% { background: var(--teal-light); }
+      50% { background: rgba(0, 140, 149, 0.08); }
+    }
+
+    /* old countdown strip removed — using ring now */
+
+    /* ── Settings wheel + popover ─────────────────── */
+    .settings-wheel {
+      position: fixed;
+      bottom: 16px;
+      left: 16px;
+      z-index: 100;
+    }
+    .settings-wheel__btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: none;
+      background: var(--slate);
+      color: var(--white);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      transition: transform 0.3s ease;
+    }
+    .settings-wheel__btn:active {
+      transform: scale(0.92);
+    }
+    .settings-wheel__btn svg {
+      width: 20px;
+      height: 20px;
+    }
+    .settings-wheel.is-open .settings-wheel__btn {
+      transform: rotate(60deg);
+    }
+    .settings-wheel.is-open .settings-wheel__btn:active {
+      transform: rotate(60deg) scale(0.92);
+    }
+
+    .settings-popover {
+      position: absolute;
+      bottom: 50px;
+      left: 0;
+      background: var(--slate);
+      color: var(--white);
+      border-radius: 12px;
+      padding: 14px 16px 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+      display: none;
+      flex-wrap: wrap;
+      gap: 10px 14px;
+      align-items: end;
+      min-width: 420px;
+    }
+    .settings-wheel.is-open .settings-popover {
+      display: flex;
+    }
+
+    .settings-popover__field {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .settings-popover__label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: rgba(255,255,255,0.6);
+      font-weight: 600;
+    }
+    .settings-popover__select {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: var(--white);
+      padding: 5px 8px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-family: inherit;
+      cursor: pointer;
+    }
+    .settings-popover__select option {
+      background: var(--slate);
+      color: var(--white);
+    }
+
+    .settings-popover__btn {
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.1);
+      color: var(--white);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s;
+    }
+    .settings-popover__btn:active {
+      background: rgba(255,255,255,0.2);
+    }
+    .settings-popover__btn--sim {
+      background: var(--teal);
+      border-color: var(--teal);
+    }
+
+    .settings-popover__divider {
+      width: 1px;
+      height: 32px;
+      background: rgba(255,255,255,0.15);
+      align-self: center;
+    }
+
+    /* ── Terms overlay (reused from main) ──────────── */
+    .terms-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .terms-overlay[hidden] {
+      display: none;
+    }
+    .terms-panel {
+      background: var(--white);
+      border-radius: var(--radius);
+      max-width: 600px;
+      width: 100%;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-lg);
+    }
+    .terms-panel__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    .terms-panel__header h2 {
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .terms-close {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: none;
+      background: var(--gray-200);
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .terms-panel__body {
+      padding: 20px;
+      overflow-y: auto;
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--gray-700);
+    }
+    .terms-panel__body p {
+      margin-bottom: 12px;
+    }
+
+    /* ── Success / error cards ─────────────────────── */
+    .result-card {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 12px;
+    }
+    .result-card__icon {
+      width: clamp(56px, 10vmin, 88px);
+      height: clamp(56px, 10vmin, 88px);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .result-card__icon--success {
+      background: var(--teal);
+      color: var(--white);
+    }
+    .result-card__icon--error {
+      background: #FFEBEE;
+      color: #C62828;
+    }
+    .result-card__icon svg {
+      width: clamp(32px, 6vmin, 48px);
+      height: clamp(32px, 6vmin, 48px);
+    }
+    .result-card__title {
+      font-family: 'League Spartan', sans-serif;
+      font-size: clamp(34px, 7vmin, 58px);
+      font-weight: 700;
+    }
+    .result-card__body {
+      font-size: clamp(20px, 4vmin, 32px);
+      color: var(--slate-light);
+      max-width: 700px;
+      line-height: 1.35;
+    }
+    .result-card__due {
+      background: var(--green-light);
+      border-radius: var(--radius-sm);
+      padding: clamp(10px, 2vmin, 18px) clamp(24px, 5vmin, 44px);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: clamp(4px, 1vmin, 10px);
+    }
+    .result-card__due-label {
+      font-size: clamp(13px, 2.5vmin, 20px);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--green);
+    }
+    .result-card__due-date {
+      font-family: 'League Spartan', sans-serif;
+      font-size: clamp(28px, 5.5vmin, 44px);
+      font-weight: 700;
+      color: var(--green);
+    }
+
+    /* ── Auth card (centered card for flow screens) ─── */
+    .auth-card {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: clamp(10px, 2.2vh, 24px);
+      padding: 1vh 24px;
+    }
+    /* Dense screens (keypad) need tighter gaps */
+    .auth-card--dense {
+      gap: clamp(4px, 1vh, 12px);
+    }
+    .auth-card__chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--teal-light);
+      color: var(--teal-dark);
+      font-size: clamp(15px, 2.8vmin, 22px);
+      font-weight: 600;
+      padding: 8px 22px;
+      border-radius: 999px;
+      letter-spacing: 0.3px;
+    }
+    .auth-card__title {
+      font-family: 'League Spartan', sans-serif;
+      font-size: clamp(36px, 7.5vmin, 68px);
+      font-weight: 700;
+      color: var(--slate);
+      line-height: 1.08;
+    }
+    .auth-card__body {
+      font-size: clamp(20px, 3.5vmin, 34px);
+      color: var(--slate-light);
+      max-width: 780px;
+      line-height: 1.3;
+      padding:20px 0px 0px 0px;
+    }
+    .auth-card__initial {
+      width: clamp(68px, 14vmin, 120px);
+      height: clamp(68px, 14vmin, 120px);
+      border-radius: 50%;
+      background: var(--teal);
+      color: var(--white);
+      font-family: 'League Spartan', sans-serif;
+      font-size: clamp(34px, 7vmin, 60px);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+    .auth-card__detail-row {
+      display: flex;
+      gap: clamp(20px, 4vmin, 44px);
+      align-items: center;
+      font-size: clamp(18px, 3.5vmin, 28px);
+      color: var(--slate-light);
+    }
+    .auth-card__detail-row strong {
+      color: var(--slate);
+      font-weight: 600;
+    }
+    .auth-card__card-display {
+      font-family: 'League Spartan', sans-serif;
+      font-size: clamp(28px, 6.5vmin, 52px);
+      font-weight: 700;
+      color: var(--slate);
+      letter-spacing: 0.5px;
+    }
+
+    /* Phone number display */
+    .phone-display {
+      font-family: 'League Spartan', sans-serif;
+      font-size: clamp(34px, 7vmin, 58px);
+      font-weight: 700;
+      color: var(--teal);
+      letter-spacing: 2px;
+      padding: 20px 0px 20px 0px;
+    }
+
+    /* OTP digit boxes */
+    .otp-boxes {
+      display: flex;
+      gap: clamp(6px, 1.5vmin, 12px);
+      justify-content: center;
+      padding: 4px 0;
+    }
+    .otp-box {
+      width: clamp(42px, 8vmin, 64px);
+      height: clamp(50px, 9.5vmin, 72px);
+      border-radius: var(--radius-sm);
+      background: var(--gray-100);
+      border: 2px solid var(--gray-300);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'League Spartan', sans-serif;
+      font-size: clamp(24px, 5vmin, 38px);
+      font-weight: 700;
+      color: var(--slate);
+      transition: border-color 0.15s;
+    }
+    .otp-box.is-active {
+      border-color: var(--teal);
+      background: var(--white);
+    }
+    .otp-box.is-filled {
+      border-color: var(--teal);
+      background: var(--teal-light);
+    }
+
+    /* ── Numeric keypad ───────────────────────────────── */
+    .keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(4px, 1vmin, 8px);
+      width: 100%;
+      max-width: 320px;
+      margin: 0 auto;
+    }
+    .keypad__key {
+      height: clamp(46px, 8vmin, 62px);
+      border: none;
+      border-radius: var(--radius-sm);
+      background: var(--white);
+      color: var(--slate);
+      font-family: 'League Spartan', sans-serif;
+      font-size: clamp(20px, 4vmin, 30px);
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.1s;
+      -webkit-tap-highlight-color: transparent;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+    }
+    .keypad__key:active {
+      background: var(--teal-light);
+    }
+    .keypad__key--utility {
+      background: var(--gray-100);
+      font-size: clamp(12px, 2.2vmin, 16px);
+      font-weight: 600;
+      color: var(--slate-light);
+      font-family: 'Roboto', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .keypad__key--utility:active {
+      background: var(--gray-200);
+    }
+
+    /* ── Button row for flow screens ──────────────────── */
+    .btn-row {
+      display: flex;
+      gap: clamp(10px, 2vmin, 18px);
+      justify-content: center;
+      padding: 1vh 0 0;
+      flex-shrink: 0;
+    }
+    .btn {
+      padding: clamp(10px, 2.4vmin, 20px) clamp(30px, 6.5vmin, 60px);
+      border-radius: var(--radius);
+      border: none;
+      font-family: 'Roboto', sans-serif;
+      font-size: clamp(18px, 3.8vmin, 30px);
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s, opacity 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn--primary {
+      background: var(--teal);
+      color: var(--white);
+    }
+    .btn--primary:active {
+      background: var(--teal-dark);
+    }
+    .btn--primary:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+    .btn--secondary {
+      background: var(--gray-100);
+      color: var(--slate-light);
+    }
+    .btn--secondary:active {
+      background: var(--gray-200);
+    }
+    .btn--link {
+      background: none;
+      border: none;
+      color: var(--teal);
+      font-size: clamp(16px, 3.2vmin, 26px);
+      font-weight: 500;
+      cursor: pointer;
+      padding: 8px 12px;
+    }
+    .btn--link:active {
+      opacity: 0.6;
+    }
+
+    /* ── Info row (program overview summary cards) ────── */
+    .info-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: clamp(12px, 2.5vmin, 24px);
+      width: 100%;
+      padding: 1.5vh 0;
+    }
+    .info-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: clamp(8px, 1.5vmin, 14px);
+      padding: clamp(16px, 3vmin, 32px) 14px;
+      background: var(--white);
+      border: 2px solid var(--teal);
+      border-radius: var(--radius);
+    }
+    .info-card__icon {
+      width: clamp(36px, 7vmin, 60px);
+      height: clamp(36px, 7vmin, 60px);
+      object-fit: contain;
+    }
+    .info-card__headline {
+      font-family: 'League Spartan', sans-serif;
+      font-size: clamp(14px, 2.8vmin, 22px);
+      font-weight: 700;
+      color: var(--slate);
+      line-height: 1.15;
+    }
+    .info-card__sub {
+      font-size: clamp(12px, 2.2vmin, 18px);
+      color: var(--slate-light);
+      line-height: 1.25;
+    }
+
+    /* ── Success screen two-column layout ────────────── */
+    .success-layout {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: clamp(16px, 3vmin, 32px);
+      align-items: stretch;
+      padding: clamp(8px, 1.5vh, 16px) 24px clamp(12px, 2vh, 24px);
+      width: 100%;
+      min-height: 0;
+    }
+    .success-left {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: clamp(12px, 2.5vmin, 24px);
+      padding: clamp(24px, 5vmin, 48px) 24px;
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+    }
+    .success-left .result-card__icon {
+      width: clamp(72px, 14vmin, 120px);
+      height: clamp(72px, 14vmin, 120px);
+    }
+    .success-left .result-card__icon svg {
+      width: clamp(40px, 8vmin, 64px);
+      height: clamp(40px, 8vmin, 64px);
+    }
+    .success-left .auth-card__title {
+      font-size: clamp(40px, 8.5vmin, 72px);
+    }
+    .success-left .auth-card__body {
+      font-size: clamp(22px, 4.5vmin, 36px);
+    }
+    .success-left .result-card__due-label {
+      font-size: clamp(15px, 3vmin, 24px);
+    }
+    .success-left .result-card__due-date {
+      font-size: clamp(32px, 7vmin, 56px);
+    }
+    .success-left .result-card__due {
+      padding: clamp(20px, 4vmin, 36px) clamp(36px, 8vmin, 72px);
+    }
+    .success-sent {
+      font-size: clamp(18px, 3.5vmin, 28px);
+      color: var(--slate-light);
+      margin-top: auto;
+    }
+    .success-right {
+      display: flex;
+      flex-direction: column;
+      gap: clamp(10px, 2vmin, 20px);
+    }
+    .success-right__section:first-child {
+      flex: 1;
+    }
+    .success-right__section {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: clamp(16px, 3vmin, 28px);
+    }
+    .success-right__heading {
+      font-family: 'League Spartan', sans-serif;
+      font-size: clamp(16px, 3vmin, 24px);
+      font-weight: 700;
+      color: var(--slate);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: clamp(8px, 1.5vmin, 14px);
+    }
+
+    /* ── Container list (success screen) ──────────────── */
+    .container-list {
+      width: 100%;
+      max-height: clamp(100px, 28vh, 280px);
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .container-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: clamp(8px, 1.5vmin, 14px) 14px;
+      border-radius: 6px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    .container-item:last-child {
+      border-bottom: none;
+    }
+    .container-item__icon {
+      width: clamp(32px, 5.5vmin, 44px);
+      height: clamp(32px, 5.5vmin, 44px);
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+    .container-item__name {
+      font-size: clamp(18px, 3.5vmin, 26px);
+      font-weight: 600;
+      color: var(--slate);
+      line-height: 1.2;
+    }
+    .container-item__type {
+      font-size: clamp(15px, 2.8vmin, 22px);
+      color: var(--slate-light);
+    }
+
+    /* Payment method line (success screen) */
+    .payment-line {
+      font-size: clamp(18px, 3.5vmin, 28px);
+      color: var(--slate-light);
+    }
+    .payment-line strong {
+      color: var(--slate);
+      font-weight: 600;
+    }
+
+    /* App promo (success screen) */
+    .app-promo {
+      display: flex;
+      align-items: center;
+      gap: clamp(12px, 2.5vmin, 20px);
+      padding: clamp(12px, 2.2vmin, 20px) clamp(16px, 3vmin, 28px);
+      background: var(--teal-light);
+      border-radius: var(--radius-sm);
+    }
+    .app-promo__qr {
+      width: clamp(56px, 10vmin, 80px);
+      height: clamp(56px, 10vmin, 80px);
+      flex-shrink: 0;
+      border-radius: 6px;
+    }
+    .app-promo__text {
+      font-size: clamp(16px, 3vmin, 22px);
+      color: var(--slate);
+      line-height: 1.35;
+      text-align: left;
+    }
+    .app-promo__text strong {
+      font-weight: 600;
+    }
+    .app-promo__link {
+      color: var(--teal);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    /* ── Loading spinner ──────────────────────────────── */
+    .spinner {
+      width: clamp(40px, 8vmin, 64px);
+      height: clamp(40px, 8vmin, 64px);
+      border: 4px solid var(--gray-200);
+      border-top-color: var(--teal);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ── Consent text ─────────────────────────────────── */
+    .consent-text {
+      font-size: clamp(14px, 2.5vmin, 20px);
+      color: var(--gray-500);
+      max-width: 600px;
+      line-height: 1.4;
+    }
+    .consent-text .brand-strip__terms {
+      font-size: inherit;
+      padding: 0;
+      display: inline;
+    }
+
+    /* ── Debug badge ──────────────────────────────────── */
+    .debug-badge {
+      position: fixed;
+      bottom: 8px;
+      right: 8px;
+      background: #FF6B00;
+      color: var(--white);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      z-index: 300;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* ── Hotspots (invisible tap areas for demo) ───── */
+    .hotspot {
+      position: fixed;
+      z-index: 50;
+      cursor: pointer;
+    }
+    .hotspot--scan {
+      bottom: 0;
+      left: 0;
+      width: 50%;
+      height: 30%;
+    }
+    .hotspot--id {
+      bottom: 0;
+      right: 0;
+      width: 50%;
+      height: 30%;
+    }
+    .hotspot[hidden] {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="app" class="app">
+    <main class="screen" id="screen">
+      <!-- Rendered by JS -->
+    </main>
+
+    <div id="scanHotspot" class="hotspot hotspot--scan" aria-hidden="true"></div>
+    <div id="idHotspot" class="hotspot hotspot--id" aria-hidden="true"></div>
+
+    <!-- Terms modal -->
+    <div id="termsModal" class="terms-overlay" hidden>
+      <div class="terms-panel">
+        <div class="terms-panel__header">
+          <h2>USEFULL Terms & Conditions</h2>
+          <button id="termsClose" class="terms-close" type="button" aria-label="Close">&times;</button>
+        </div>
+        <div class="terms-panel__body">
+          <p><strong>Service & rental:</strong> USEFULL provides reusable cups and bowls through a sharing program. You rent containers and ownership stays with USEFULL.</p>
+          <p><strong>Eligibility & payment:</strong> A valid credit/debit card, Apple Pay, Google Pay, or campus account is required. Users must be 18+; ages 13-17 may participate with parent/guardian supervision.</p>
+          <p><strong>Rental period:</strong> Short-term use; a single checkout should not exceed a continuous 14-day rental period.</p>
+          <p><strong>Fees & billing:</strong> Late fees apply after the free period ($1/day up to day 14). If not returned by day 14, loss fees apply; total late + loss fees are $17 per cup and $25 per bowl.</p>
+          <p><strong>Returns & care:</strong> You are responsible for care, inspection, and returning containers.</p>
+          <p><strong>Liability & arbitration:</strong> The agreement includes assumption of risk, release of liability, and binding arbitration with a waiver of class actions.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings wheel -->
+    <div id="settingsWheel" class="settings-wheel">
+      <button id="settingsToggle" class="settings-wheel__btn" type="button" aria-label="Demo settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+      </button>
+      <div class="settings-popover">
+        <div class="settings-popover__field">
+          <span class="settings-popover__label">College</span>
+          <select class="settings-popover__select" id="collegeSelect">
+            <option value="pioneer">Pioneer State University</option>
+            <option value="nau">Northern Arizona University</option>
+          </select>
+        </div>
+        <div class="settings-popover__field">
+          <span class="settings-popover__label">ID Outcome</span>
+          <select class="settings-popover__select" id="outcomeSelect">
+            <option value="returning_user">Returning User</option>
+            <option value="new_user">New User</option>
+            <option value="campus_user_not_found">User Not Found</option>
+            <option value="account_frozen">Account Frozen</option>
+          </select>
+        </div>
+        <div class="settings-popover__field">
+          <span class="settings-popover__label">Payment Mode</span>
+          <select class="settings-popover__select" id="paymentModeSelect">
+            <option value="campus">Campus Card</option>
+            <option value="credit">Credit Card</option>
+          </select>
+        </div>
+        <div class="settings-popover__field" id="creditScenarioField" style="display:none">
+          <span class="settings-popover__label">Credit Scenario</span>
+          <select class="settings-popover__select" id="creditScenarioSelect">
+            <option value="new_user">New User</option>
+            <option value="return_same_exact">Return same exact</option>
+            <option value="return_same_underlying">Return same underlying</option>
+            <option value="return_different_card">Return different card</option>
+          </select>
+        </div>
+        <div class="settings-popover__field" id="cardBrandField" style="display:none">
+          <span class="settings-popover__label">Card Brand</span>
+          <select class="settings-popover__select" id="cardBrandSelect">
+            <option value="Visa">Visa</option>
+            <option value="Mastercard">Mastercard</option>
+            <option value="Amex">Amex</option>
+          </select>
+        </div>
+        <div class="settings-popover__field" id="cardLast4Field" style="display:none">
+          <span class="settings-popover__label">Last 4</span>
+          <input class="settings-popover__select" id="cardLast4Input" type="text" value="1234" maxlength="4" style="width:60px" />
+        </div>
+        <div class="settings-popover__divider"></div>
+        <div class="settings-popover__field">
+          <span class="settings-popover__label">Containers</span>
+          <select class="settings-popover__select" id="simCountSelect">
+            <option value="1">1</option>
+            <option value="2" selected>2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+        </div>
+        <div class="settings-popover__field">
+          <span class="settings-popover__label">First delay</span>
+          <select class="settings-popover__select" id="simFirstDelay">
+            <option value="1">1s</option>
+            <option value="2">2s</option>
+            <option value="3" selected>3s</option>
+            <option value="5">5s</option>
+          </select>
+        </div>
+        <div class="settings-popover__field">
+          <span class="settings-popover__label">Between</span>
+          <select class="settings-popover__select" id="simBetweenDelay">
+            <option value="1">1s</option>
+            <option value="2">2s</option>
+            <option value="3" selected>3s</option>
+            <option value="5">5s</option>
+          </select>
+        </div>
+        <div class="settings-popover__field">
+          <span class="settings-popover__label">Before ID</span>
+          <select class="settings-popover__select" id="simIdDelay">
+            <option value="1">1s</option>
+            <option value="2">2s</option>
+            <option value="3" selected>3s</option>
+            <option value="5">5s</option>
+          </select>
+        </div>
+        <button class="settings-popover__btn settings-popover__btn--sim" id="simBtn" type="button">Simulate</button>
+        <button class="settings-popover__btn" id="resetBtn" type="button">Reset</button>
+        <div class="settings-popover__divider"></div>
+        <div class="settings-popover__field">
+          <span class="settings-popover__label">Debug</span>
+          <label style="display:flex;align-items:center;gap:6px;color:var(--white);font-size:13px;cursor:pointer">
+            <input type="checkbox" id="debugToggle" /> On
+          </label>
+        </div>
+        <div class="settings-popover__field" id="jumpToField" style="display:none">
+          <span class="settings-popover__label">Jump to</span>
+          <select class="settings-popover__select" id="jumpToSelect">
+            <option value="">— select —</option>
+            <option value="scan">Idle (SCAN)</option>
+            <option value="program_overview">Program Overview</option>
+            <option value="identifier_entry">Identifier Entry</option>
+            <option value="account_lookup">Account Lookup</option>
+            <option value="account_found">Account Found</option>
+            <option value="sms_confirm_method">SMS Confirm</option>
+            <option value="otp_verify">OTP Verify</option>
+            <option value="success_new">Success (New)</option>
+            <option value="success_returning">Success (Returning)</option>
+            <option value="error_campus">Error (Campus)</option>
+            <option value="error_frozen">Error (Frozen)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="core.js"></script>
+  <script>
+    /* ═══════════════════════════════════════════════════════════════
+       Two-Buttons Variant — Render + Event Wiring
+       Uses core.js for state machine, timers, simulation, etc.
+       ═══════════════════════════════════════════════════════════════ */
+
+    const screen = document.getElementById('screen');
+    const appRoot = document.getElementById('app');
+    const termsModal = document.getElementById('termsModal');
+    const DEDUPE_MS = 450;
+    let lastScanTap = 0;
+    let lastIdTap = 0;
+
+    /* ── Variant helpers ───────────────────────────── */
+    function openTerms() {
+      termsModal.hidden = false;
+      setTermsOpen(true);
+    }
+    function closeTerms() {
+      termsModal.hidden = true;
+      setTermsOpen(false);
+    }
+
+    function canUseHotspots() {
+      return appState === STATE.SCAN && !termsModalOpen && !checkoutLocked && !simulationActive;
+    }
+
+    /* ── Countdown display (called by core.js) ─────── */
+    window.updateCountdownDisplay = function () {
+      const textEl = document.getElementById('countdownText');
+      const arcEl = document.getElementById('countdownArc');
+      if (!textEl || !idleDeadline) return;
+      const remaining = Math.max(0, idleDeadline - Date.now());
+      const secs = Math.ceil(remaining / 1000);
+      textEl.textContent = secs;
+      if (arcEl) {
+        const circumference = 75.4; // 2 * PI * 12
+        const progress = Math.max(0, Math.min(1, remaining / IDLE_TIMEOUT_MS));
+        arcEl.style.strokeDashoffset = circumference * (1 - progress);
+      }
+    };
+
+    /* ── Simulation state callback ─────────────────── */
+    window.onSimulationStateChange = function () {
+      // two-buttons doesn't show a countdown badge on the sim button,
+      // so nothing extra needed here
+    };
+
+    /* ── Render (called by core.js on every state change) ── */
+    window.render = function () {
+      const b = getBrandingProfile();
+      const containerUnit = containerCount === 1 ? 'CONTAINER' : 'CONTAINERS';
+      const countLabel = `${containerCount} container${containerCount === 1 ? '' : 's'}`;
+
+      switch (appState) {
+        case STATE.SCAN:
+          if (containerCount === 0) {
+            screen.innerHTML = `
+              <div class="brand-strip">
+                <img class="brand-strip__logo" src="images/USEFULL-icons/USEFULL-Logo-Registered_Color.svg" alt="USEFULL" />
+                <button class="brand-strip__terms" id="termsBtn" type="button">Terms & Conditions</button>
+              </div>
+              <div class="idle-hero">
+                <div class="idle-hero__left">
+                  <h1 class="idle-hero__title">Scan your USEFULL containers</h1>
+                </div>
+                <div class="idle-hero__right">
+                  <div class="idle-hero__scanner-wrap">
+                    <img class="idle-hero__scanner" src="images/illustrations/qr-scanner.png" alt="Scanner" />
+                    <img class="idle-hero__scanner-blue" src="images/illustrations/qr-scanner-blue.png" alt="Scanner active" />
+                  </div>
+                  <img class="idle-hero__hand" src="images/illustrations/hand-holding-cup.png" alt="Scanning a container" />
+                </div>
+              </div>
+            `;
+          } else {
+            screen.innerHTML = `
+              <div class="brand-strip">
+                <img class="brand-strip__logo" src="images/USEFULL-icons/USEFULL-Logo-Registered_Color.svg" alt="USEFULL" />
+                <button class="brand-strip__terms" id="termsBtn" type="button">Terms & Conditions</button>
+                <div class="countdown-ring" id="countdownRing">
+                  <svg class="countdown-ring__svg" viewBox="0 0 28 28">
+                    <circle class="countdown-ring__track" cx="14" cy="14" r="12" />
+                    <circle class="countdown-ring__fill" id="countdownArc" cx="14" cy="14" r="12" stroke-dasharray="75.4" stroke-dashoffset="0" />
+                  </svg>
+                  <div class="countdown-ring__text" id="countdownText">15</div>
+                </div>
+              </div>
+              <div class="scan-layout">
+                <div class="scan-notice ${scanNoticeMessage ? 'is-visible' : ''}">${scanNoticeMessage || ''}</div>
+                <div class="zones-heading">Now finish checking out with...</div>
+                <div class="payment-zones">
+                  <div class="pay-zone pay-zone--campus is-ready">
+                    <div class="pay-zone__device">
+                      <img class="pay-zone__device-img" src="images/illustrations/HID-reader-sketch.png" alt="Campus card reader" />
+                      <img class="pay-zone__nfc" src="images/illustrations/nfc-tap.png" alt="Tap here" />
+                    </div>
+                    <div class="pay-zone__text">
+                      <div class="pay-zone__title">${b.campusCard}</div>
+                      <div class="pay-zone__location">Tap your card or mobile ID</div>
+                    </div>
+                  </div>
+                  <div class="zones-or">or</div>
+                  <div class="pay-zone pay-zone--credit">
+                    <div class="pay-zone__device">
+                      <img class="pay-zone__device-img" src="images/illustrations/stripe-reader-sketch.png" alt="Credit card reader" />
+                      <img class="pay-zone__nfc" src="images/illustrations/nfc-tap.png" alt="Tap here" />
+                    </div>
+                    <div class="pay-zone__text">
+                      <div class="pay-zone__title">Credit Card</div>
+                      <div class="pay-zone__location">Tap or insert at the card slot</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="keep-scanning">or keep scanning containers</div>
+                <div class="counter-pill">
+                  <div class="counter-pill__inner">
+                    <div class="counter-pill__count is-pop">${containerCount}</div>
+                    <div class="counter-pill__label">${containerUnit} scanned</div>
+                  </div>
+                </div>
+              </div>
+            `;
+            window.updateCountdownDisplay();
+          }
+          break;
+
+        case STATE.PROGRAM_OVERVIEW: {
+          const isCreditFlow = currentFlow?.paymentMode === PAYMENT_MODE.CREDIT;
+          const billingLabel = isCreditFlow ? 'CREDIT CARD BILLING' : `${b.campusCard.toUpperCase()} BILLING`;
+          const billingSub = isCreditFlow
+            ? `Late or lost fees bill to ${cardBrand} ***${cardLast4}`
+            : 'All fees charged automatically';
+          const welcomeName = activeUserName ? `, ${activeUserName}` : '';
+          screen.innerHTML = `
+            <div class="brand-strip">
+              <img class="brand-strip__logo" src="images/USEFULL-icons/USEFULL-Logo-Registered_Color.svg" alt="USEFULL" />
+            </div>
+            <div class="auth-card">
+              <div class="auth-card__title">Welcome to USEFULL${welcomeName}!</div>
+              <div class="auth-card__body">Here's how reuse works at ${b.name}.</div>
+              <div class="info-row">
+                <div class="info-card">
+                  <img class="info-card__icon" src="images/interface-icons/icon-duedate.png" alt="" />
+                  <div class="info-card__headline">2 DAYS FREE</div>
+                  <div class="info-card__sub">No charge if returned on time</div>
+                </div>
+                <div class="info-card">
+                  <img class="info-card__icon" src="images/interface-icons/icon-fee.png" alt="" />
+                  <div class="info-card__headline">$1 / DAY LATE FEE</div>
+                  <div class="info-card__sub">Applies after day 2</div>
+                </div>
+                <div class="info-card">
+                  <img class="info-card__icon" src="images/interface-icons/icon-lost.png" alt="" />
+                  <div class="info-card__headline">LOST AFTER 15 DAYS</div>
+                  <div class="info-card__sub">$17 cup / $25 bowl max</div>
+                </div>
+                <div class="info-card">
+                  <img class="info-card__icon" src="images/interface-icons/icon-card.png" alt="" />
+                  <div class="info-card__headline">${billingLabel}</div>
+                  <div class="info-card__sub">${billingSub}</div>
+                </div>
+              </div>
+              <div class="btn-row">
+                <button class="btn btn--primary" id="acceptBtn" type="button">Accept & Continue</button>
+                <button class="btn btn--secondary" id="cancelBtn" type="button">Cancel</button>
+              </div>
+              <div class="consent-text">
+                By tapping "Accept & Continue," you agree to the <button class="brand-strip__terms" id="termsBtn" type="button">Terms & Conditions</button>.
+              </div>
+            </div>
+          `;
+          document.getElementById('acceptBtn').onclick = () => advanceFromProgramOverview();
+          document.getElementById('cancelBtn').onclick = resetSession;
+          break;
+        }
+
+        case STATE.IDENTIFIER_ENTRY: {
+          const scenario = currentFlow?.scenario;
+          let idTitle = 'What is your phone number?';
+          let idBody = 'We will create or link your USEFULL account';
+          if (scenario === CREDIT_SCENARIO.RETURN_SAME_UNDERLYING) {
+            idTitle = 'What is your phone number?';
+            idBody = 'We will create or link your USEFULL account.';
+          } else if (scenario === CREDIT_SCENARIO.RETURN_DIFFERENT_CARD) {
+            idTitle = 'What is your phone number?';
+            idBody = 'We will create or link your USEFULL account.';
+          }
+          const phoneFmt = formatPhoneNumber(identifierValue);
+          const canContinue = identifierValue.length === 10;
+          screen.innerHTML = `
+            <div class="brand-strip">
+              <img class="brand-strip__logo" src="images/USEFULL-icons/USEFULL-Logo-Registered_Color.svg" alt="USEFULL" />
+            </div>
+            <div class="auth-card auth-card--dense">
+              <div class="auth-card__title">${idTitle}</div>
+              <div class="phone-display">${phoneFmt}</div>
+              ${renderKeypad('identifier')}
+              <div class="btn-row">
+                <button class="btn btn--primary" id="continueIdBtn" type="button" ${canContinue ? '' : 'disabled'}>Continue</button>
+                <button class="btn btn--secondary" id="cancelBtn" type="button">Cancel</button>
+              </div>
+            <div class="auth-card__body">${idBody}</div>
+            </div>
+          `;
+          document.getElementById('continueIdBtn').onclick = () => { if (identifierValue.length === 10) advanceFromIdentifierEntry(); };
+          document.getElementById('cancelBtn').onclick = resetSession;
+          break;
+        }
+
+        case STATE.ACCOUNT_LOOKUP: {
+          const phoneFmt = formatPhoneNumber(identifierValue);
+          screen.innerHTML = `
+            <div class="brand-strip">
+              <img class="brand-strip__logo" src="images/USEFULL-icons/USEFULL-Logo-Registered_Color.svg" alt="USEFULL" />
+            </div>
+            <div class="auth-card">
+              <div class="spinner"></div>
+              <div class="auth-card__title">Looking up ${phoneFmt}...</div>
+              <button class="btn--link" id="cancelBtn" type="button">Cancel</button>
+            </div>
+          `;
+          document.getElementById('cancelBtn').onclick = resetSession;
+          break;
+        }
+
+        case STATE.ACCOUNT_FOUND: {
+          const initial = (activeUserName || 'U').charAt(0).toUpperCase();
+          const phoneLast4 = identifierValue ? identifierValue.slice(-4) : '3456';
+          screen.innerHTML = `
+            <div class="brand-strip">
+              <img class="brand-strip__logo" src="images/USEFULL-icons/USEFULL-Logo-Registered_Color.svg" alt="USEFULL" />
+            </div>
+            <div class="auth-card">
+              <div class="auth-card__initial">${initial}</div>
+              <div class="auth-card__title">We found your account!</div>
+              <div class="auth-card__detail-row">
+                <span><strong>Name:</strong> ${activeUserName || 'Unknown'}</span>
+                <span><strong>Phone:</strong> ***${phoneLast4}</span>
+                <span><strong>Member since</strong> 2024</span>
+              </div>
+              <div class="btn-row">
+                <button class="btn btn--primary" id="continueFoundBtn" type="button">Continue as ${activeUserName || 'User'}</button>
+                <button class="btn btn--secondary" id="cancelBtn" type="button">Cancel</button>
+              </div>
+              <button class="btn--link" id="notYouBtn" type="button">Not you? Try a different number</button>
+            </div>
+          `;
+          document.getElementById('continueFoundBtn').onclick = () => advanceFromAccountFound();
+          document.getElementById('cancelBtn').onclick = resetSession;
+          document.getElementById('notYouBtn').onclick = () => { identifierValue = ''; setState(STATE.IDENTIFIER_ENTRY); };
+          break;
+        }
+
+        case STATE.SMS_CONFIRM_METHOD: {
+          const phoneLast4 = identifierValue ? identifierValue.slice(-4) : '3456';
+          const cardDisplay = `${cardBrand} ***${cardLast4}`;
+          screen.innerHTML = `
+            <div class="brand-strip">
+              <img class="brand-strip__logo" src="images/USEFULL-icons/USEFULL-Logo-Registered_Color.svg" alt="USEFULL" />
+            </div>
+            <div class="auth-card">
+              <div class="auth-card__title">Add this payment method?</div>
+              <div class="auth-card__card-display">${cardDisplay}</div>
+              <div class="auth-card__body">We'll send a confirmation code to ***${phoneLast4}</div>
+              <div class="btn-row">
+                <button class="btn btn--primary" id="sendCodeBtn" type="button">Send Code</button>
+                <button class="btn btn--secondary" id="cancelBtn" type="button">Cancel</button>
+              </div>
+            </div>
+          `;
+          document.getElementById('sendCodeBtn').onclick = () => advanceFromSmsConfirm();
+          document.getElementById('cancelBtn').onclick = resetSession;
+          break;
+        }
+
+        case STATE.OTP_VERIFY: {
+          const scenario = currentFlow?.scenario;
+          const phoneFmt = formatPhoneNumber(identifierValue);
+          const phoneLast4 = identifierValue ? identifierValue.slice(-4) : '3456';
+          let otpBody = `We sent a 6-digit code to ${phoneFmt}.`;
+          if (scenario === CREDIT_SCENARIO.RETURN_DIFFERENT_CARD) {
+            otpBody = `This card does not match the payment method on file. To protect the account, verify the phone number ending in ***${phoneLast4}.`;
+          } else if (scenario === CREDIT_SCENARIO.RETURN_SAME_UNDERLYING) {
+            otpBody = `Confirm linking this wallet to your account. We sent a code to ***${phoneLast4}.`;
+          }
+          const canVerify = otpValue.length === 6;
+          const otpBoxes = Array.from({ length: 6 }, (_, i) => {
+            const digit = otpValue[i] || '';
+            const cls = digit ? 'otp-box is-filled' : (i === otpValue.length ? 'otp-box is-active' : 'otp-box');
+            return `<div class="${cls}">${digit}</div>`;
+          }).join('');
+          screen.innerHTML = `
+            <div class="brand-strip">
+              <img class="brand-strip__logo" src="images/USEFULL-icons/USEFULL-Logo-Registered_Color.svg" alt="USEFULL" />
+            </div>
+            <div class="auth-card auth-card--dense">
+              <div class="auth-card__chip">Verify with SMS</div>
+              <div class="auth-card__title">Enter the code we sent</div>
+              <div class="auth-card__body">${otpBody}</div>
+              <div class="otp-boxes">${otpBoxes}</div>
+              ${renderKeypad('otp')}
+              <div class="btn-row">
+                <button class="btn btn--primary" id="verifyBtn" type="button" ${canVerify ? '' : 'disabled'}>Verify & Continue</button>
+                <button class="btn btn--secondary" id="cancelBtn" type="button">Cancel</button>
+              </div>
+            </div>
+          `;
+          document.getElementById('verifyBtn').onclick = () => { if (otpValue.length === 6) advanceFromOtpVerify(); };
+          document.getElementById('cancelBtn').onclick = resetSession;
+          break;
+        }
+
+        case STATE.SUCCESS_NEW:
+        case STATE.SUCCESS_RETURNING: {
+          const dueDate = getDueDateString();
+          const isNew = appState === STATE.SUCCESS_NEW;
+          const title = "You're all set";
+          const items = getScannedContainerItems(containerCount);
+          const containerListHtml = items.map((item) => `
+            <div class="container-item">
+              <img class="container-item__icon" src="${item.icon}" alt="" />
+              <div>
+                <div class="container-item__name">${item.name}</div>
+                <div class="container-item__type">${item.type}</div>
+              </div>
+            </div>
+          `).join('');
+          screen.innerHTML = `
+            <div class="brand-strip">
+              <img class="brand-strip__logo" src="images/USEFULL-icons/USEFULL-Logo-Registered_Color.svg" alt="USEFULL" />
+            </div>
+            <div class="success-layout">
+              <div class="success-left">
+                <div class="result-card__icon result-card__icon--success">
+                  <svg viewBox="0 0 24 24"><path d="M9.5 16.2 5.8 12.5l1.4-1.4 2.3 2.3 6.3-6.3 1.4 1.4-7.7 7.7z" fill="currentColor"/></svg>
+                </div>
+                <div class="auth-card__title" style="color:var(--teal)">${title}</div>
+                <div class="auth-card__body">You checked out ${containerCount} container${containerCount === 1 ? '' : 's'}.</div>
+                <div class="result-card__due">
+                  <div class="result-card__due-label">Return by</div>
+                  <div class="result-card__due-date">${dueDate}</div>
+                  <div style="font-size:clamp(13px,2.2vmin,18px);color:var(--slate-light);margin-top:4px">To avoid late fees</div>
+                </div>
+                <div class="success-sent">We sent your checkout details.</div>
+              </div>
+              <div class="success-right">
+                <div class="success-right__section">
+                  <div class="success-right__heading">Your Containers (${containerCount})</div>
+                  <div class="container-list" data-allow-scroll>
+                    ${containerListHtml}
+                  </div>
+                </div>
+                <div class="success-right__section">
+                  <div class="app-promo">
+                    <div class="app-promo__text">
+                      Want reminders and impact stats?<br>
+                      <span class="app-promo__link">Get the USEFULL app</span>
+                    </div>
+                    <img class="app-promo__qr" src="images/interface-icons/usefull-qr-code.png" alt="QR code" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+          break;
+        }
+
+        case STATE.ERROR_CAMPUS:
+          screen.innerHTML = `
+            <div class="auth-card">
+              <div class="result-card__icon result-card__icon--error">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" fill="currentColor"/></svg>
+              </div>
+              <div class="auth-card__title">We couldn't find your campus account</div>
+              <div class="auth-card__body">Please contact support@usefull.us for help.</div>
+              <div class="btn-row">
+                <button class="btn btn--primary" id="tryAgainBtn" type="button">Try Again</button>
+              </div>
+            </div>
+          `;
+          document.getElementById('tryAgainBtn').onclick = resetSession;
+          break;
+
+        case STATE.ERROR_FROZEN:
+          screen.innerHTML = `
+            <div class="auth-card">
+              <div class="result-card__icon result-card__icon--error">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" fill="currentColor"/></svg>
+              </div>
+              <div class="auth-card__title">Account on hold</div>
+              <div class="auth-card__body">Please pay outstanding fees to continue.<br>Questions? support@usefull.us</div>
+              <div class="btn-row">
+                <button class="btn btn--primary" id="doneBtn" type="button">Done</button>
+              </div>
+            </div>
+          `;
+          document.getElementById('doneBtn').onclick = resetSession;
+          break;
+      }
+
+      // Show hotspots only on scan screen
+      const showHotspots = appState === STATE.SCAN;
+      document.getElementById('scanHotspot').hidden = !showHotspots;
+      document.getElementById('idHotspot').hidden = !showHotspots;
+
+      // Bind terms button wherever it appears
+      const termsBtn = document.getElementById('termsBtn');
+      if (termsBtn) termsBtn.onclick = openTerms;
+    };
+
+    /* ── onCoreReady — wire up event listeners ─────── */
+    window.onCoreReady = function () {
+      core.setScreenElement(screen);
+
+      // Hotspots
+      document.getElementById('scanHotspot').addEventListener('click', () => {
+        const now = Date.now();
+        if (now - lastScanTap < DEDUPE_MS) return;
+        lastScanTap = now;
+        if (canUseHotspots()) handleScan();
+      });
+      document.getElementById('idHotspot').addEventListener('click', () => {
+        const now = Date.now();
+        if (now - lastIdTap < DEDUPE_MS) return;
+        lastIdTap = now;
+        if (canUseHotspots()) handleIdTap({ type: demoIdOutcome, firstName: 'Cody' });
+      });
+
+      // Keypad delegation — catches clicks on any keypad key in any screen
+      screen.addEventListener('click', (e) => {
+        const keyEl = e.target.closest('[data-keypad-value]');
+        if (!keyEl) return;
+        const target = keyEl.dataset.keypadTarget;
+        const value = keyEl.dataset.keypadValue;
+        handleKeypadInput(target, value);
+      });
+
+      // Terms
+      document.getElementById('termsClose').onclick = closeTerms;
+      termsModal.addEventListener('click', (e) => { if (e.target === termsModal) closeTerms(); });
+
+      // Settings wheel
+      document.getElementById('settingsToggle').onclick = () => {
+        document.getElementById('settingsWheel').classList.toggle('is-open');
+      };
+      document.getElementById('collegeSelect').onchange = (e) => {
+        selectedCollege = e.target.value;
+        window.render();
+      };
+      document.getElementById('outcomeSelect').onchange = (e) => {
+        demoIdOutcome = e.target.value;
+      };
+
+      // Payment mode + credit settings visibility
+      const paymentModeSelect = document.getElementById('paymentModeSelect');
+      const creditFields = [
+        document.getElementById('creditScenarioField'),
+        document.getElementById('cardBrandField'),
+        document.getElementById('cardLast4Field'),
+      ];
+      function updateCreditFieldsVisibility() {
+        const show = paymentMode === PAYMENT_MODE.CREDIT;
+        creditFields.forEach((el) => { el.style.display = show ? '' : 'none'; });
+      }
+      paymentModeSelect.onchange = (e) => {
+        paymentMode = e.target.value;
+        updateCreditFieldsVisibility();
+      };
+      document.getElementById('creditScenarioSelect').onchange = (e) => {
+        creditScenario = e.target.value;
+      };
+      document.getElementById('cardBrandSelect').onchange = (e) => {
+        cardBrand = e.target.value;
+      };
+      document.getElementById('cardLast4Input').onchange = (e) => {
+        cardLast4 = e.target.value || '1234';
+      };
+
+      // Debug toggle
+      const debugToggle = document.getElementById('debugToggle');
+      const jumpToField = document.getElementById('jumpToField');
+      debugToggle.checked = debugEnabled;
+      jumpToField.style.display = debugEnabled ? '' : 'none';
+      if (debugEnabled) {
+        addDebugBadge();
+      }
+      debugToggle.onchange = (e) => {
+        setDebugEnabled(e.target.checked);
+        jumpToField.style.display = e.target.checked ? '' : 'none';
+        if (e.target.checked) {
+          addDebugBadge();
+        } else {
+          removeDebugBadge();
+        }
+      };
+      document.getElementById('jumpToSelect').onchange = (e) => {
+        if (e.target.value) {
+          jumpTo(e.target.value);
+          e.target.value = '';
+        }
+      };
+
+      // Simulation
+      document.getElementById('simBtn').onclick = () => {
+        simContainerCount = parseInt(document.getElementById('simCountSelect').value, 10) || 2;
+        simDelayFirstSec = parseInt(document.getElementById('simFirstDelay').value, 10) || 3;
+        simDelayBetweenSec = parseInt(document.getElementById('simBetweenDelay').value, 10) || 3;
+        simDelayBeforeIdSec = parseInt(document.getElementById('simIdDelay').value, 10) || 3;
+        startSimulation();
+      };
+      document.getElementById('resetBtn').onclick = resetSession;
+
+      updateCreditFieldsVisibility();
+    };
+
+    /* ── Debug badge helpers ──────────────────────────── */
+    function addDebugBadge() {
+      if (document.getElementById('debugBadge')) return;
+      const badge = document.createElement('div');
+      badge.id = 'debugBadge';
+      badge.className = 'debug-badge';
+      badge.textContent = 'DEBUG';
+      document.body.appendChild(badge);
+    }
+    function removeDebugBadge() {
+      const badge = document.getElementById('debugBadge');
+      if (badge) badge.remove();
+    }
+
+    /* ── Boot ──────────────────────────────────────── */
+    core.boot();
+  </script>
+</body>
+</html>
