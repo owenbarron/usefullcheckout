@@ -2318,6 +2318,21 @@
       display: inline;
     }
 
+    /* ── Version badge ───────────────────────────────── */
+    .version-badge {
+      position: absolute;
+      bottom: 8px;
+      left: 10px;
+      font-size: 11px;
+      color: rgba(0, 0, 0, 0.22);
+      font-family: var(--font-sans);
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      pointer-events: none;
+      z-index: 10;
+      user-select: none;
+    }
+
     /* ── Debug badge ──────────────────────────────────── */
     .debug-badge {
       position: fixed;
@@ -2412,6 +2427,9 @@
         </div>
       </div>
     </div>
+
+    <!-- Version badge -->
+    <div class="version-badge">v0.3.3</div>
 
     <!-- Settings wheel -->
     <div id="settingsWheel" class="settings-wheel">
@@ -2521,6 +2539,14 @@
               </div>
             </div>
             <button class="settings-popover__btn settings-popover__btn--sim" id="simBtn" type="button">Simulate</button>
+            <div class="settings-section-label">Sound</div>
+            <div class="settings-popover__field">
+              <span class="settings-popover__label">Sound effects</span>
+              <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+                <input type="checkbox" id="soundToggle" checked style="width:16px;height:16px;cursor:pointer" />
+                <span style="font-size:13px;color:var(--text-secondary,#666)">On</span>
+              </label>
+            </div>
             <div class="settings-section-label">Display</div>
             <div class="settings-btn-row">
               <button class="settings-popover__btn" id="portraitBtn" type="button">Portrait</button>
@@ -2560,6 +2586,22 @@
     const DEDUPE_MS = 450;
     let lastScanTap = 0;
     let lastIdTap = 0;
+
+    /* ── Sound system ──────────────────────────────────── */
+    let soundEnabled = true;
+    const SFX = {
+      scan:    new Audio('sounds/successful-scan.m4a'),
+      success: new Audio('sounds/final-success-chime-1.mp3'),
+      error:   new Audio('sounds/error.mp3'),
+    };
+    function playSound(name) {
+      if (!soundEnabled) return;
+      const sfx = SFX[name];
+      if (!sfx) return;
+      sfx.currentTime = 0;
+      sfx.play().catch(() => {});
+    }
+    let lastSoundState = null;
 
     /* ── Variant helpers ───────────────────────────── */
     function openTerms() {
@@ -2615,6 +2657,12 @@
         STATE.ERROR_CAMPUS,
         STATE.ERROR_FROZEN,
       ].includes(appState));
+
+      if (appState !== lastSoundState) {
+        if (appState === STATE.SUCCESS_NEW || appState === STATE.SUCCESS_RETURNING) playSound('success');
+        else if (appState === STATE.ERROR_CAMPUS || appState === STATE.ERROR_FROZEN) playSound('error');
+        lastSoundState = appState;
+      }
 
       switch (appState) {
         case STATE.SCAN:
@@ -3024,7 +3072,7 @@
         const now = Date.now();
         if (now - lastScanTap < DEDUPE_MS) return;
         lastScanTap = now;
-        if (canUseHotspots()) handleScan();
+        if (canUseHotspots()) { playSound('scan'); handleScan(); }
       });
       document.getElementById('btnTapHID').addEventListener('click', () => {
         const now = Date.now();
@@ -3118,6 +3166,11 @@
         startSimulation();
       };
       document.getElementById('resetBtn').onclick = resetSession;
+
+      // Sound toggle
+      const soundToggle = document.getElementById('soundToggle');
+      soundToggle.checked = soundEnabled;
+      soundToggle.onchange = (e) => { soundEnabled = e.target.checked; };
 
       // Pill style variant selector
       document.getElementById('pillStyleSelect').onchange = (e) => {
