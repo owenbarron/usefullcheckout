@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Container Scanned Variants</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal: #008C95;
+      --teal-dark: #006E75;
+      --foam: #DDF0EE;
+      --foam-page: #EAF5F4;
+      --slate: #263238;
+      --slate-light: #546E7A;
+      --golden: #D69A2D;
+      --white: #FFFFFF;
+      --radius: 14px;
+      --shadow: 0 10px 26px rgba(0, 140, 149, 0.08);
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      font-family: "Roboto", system-ui, sans-serif;
+      background: #172024;
+      color: var(--slate);
+    }
+
+    body {
+      min-width: 946px;
+      padding: 28px;
+    }
+
+    .board {
+      max-width: 930px;
+      margin: 0 auto;
+    }
+
+    .board-header {
+      margin: 0 0 26px;
+      color: var(--white);
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-start;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .board-header h1 {
+      font-family: "League Spartan", sans-serif;
+      font-size: clamp(34px, 4vw, 54px);
+      line-height: 0.95;
+      letter-spacing: 0;
+    }
+
+    .board-header p {
+      max-width: 720px;
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 18px;
+      line-height: 1.4;
+      text-align: left;
+    }
+
+    .variant-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 42px;
+      align-items: center;
+    }
+
+    .variant {
+      width: 906px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      border-radius: 18px;
+      padding: 12px;
+    }
+
+    .variant-caption {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 0 4px 12px;
+      color: var(--white);
+      font-family: "League Spartan", sans-serif;
+    }
+
+    .variant-caption strong {
+      font-size: 38px;
+      line-height: 1;
+    }
+
+    .variant-caption span {
+      color: rgba(255, 255, 255, 0.64);
+      font-size: 22px;
+      font-weight: 600;
+      line-height: 1;
+      text-align: right;
+    }
+
+    .mock-screen {
+      position: relative;
+      width: 882px;
+      height: 1404px;
+      overflow: hidden;
+      border-radius: 14px;
+      background: var(--foam);
+      box-shadow: 0 18px 46px rgba(0, 0, 0, 0.22);
+      display: flex;
+      flex-direction: column;
+      padding: 12px 20px 18px;
+    }
+
+    .brand-strip {
+      flex: 0 0 auto;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+    }
+
+    .brand-strip img {
+      height: 64px;
+      opacity: 0.72;
+      justify-self: start;
+    }
+
+    .brand-strip button {
+      border: none;
+      background: none;
+      color: var(--teal);
+      font-family: "League Spartan", sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      justify-self: center;
+    }
+
+    .mock-content {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 42px;
+      padding: 42px 8px 72px;
+    }
+
+    .instruction {
+      width: 100%;
+      max-width: 780px;
+      text-align: center;
+      font-family: "League Spartan", sans-serif;
+      font-weight: 700;
+      color: var(--slate);
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+
+    .instruction--hero {
+      font-size: 66px;
+    }
+
+    .instruction--primary {
+      font-size: 76px;
+    }
+
+    .instruction--secondary {
+      max-width: 760px;
+      font-size: 48px;
+      color: var(--slate-light);
+      line-height: 1.05;
+    }
+
+    .counter-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 18px 44px 14px;
+      min-width: 456px;
+      border-radius: 999px;
+      background: var(--teal);
+      color: var(--white);
+      font-family: "League Spartan", sans-serif;
+      font-weight: 700;
+      box-shadow: 0 5px 16px rgba(0, 140, 149, 0.20);
+    }
+
+    .counter-pill__count {
+      font-size: 40px;
+      line-height: 0.9;
+    }
+
+    .counter-pill__label {
+      font-size: 35px;
+      line-height: 0.9;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .kiosk-zone {
+      width: min(100%, 760px);
+      aspect-ratio: 3 / 2;
+      position: relative;
+      flex: 0 0 auto;
+    }
+
+    .kiosk-zone img.kiosk {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .tap-dot {
+      position: absolute;
+      width: 78px;
+      transform: translate(-50%, -50%);
+      opacity: 0.88;
+    }
+
+    .tap-dot--campus { top: 25%; left: 30%; }
+    .tap-dot--credit { top: 66%; left: 37%; }
+
+    .tap-label {
+      position: absolute;
+      transform: translateY(-50%);
+      border-radius: 999px;
+      padding: 8px 16px 5px;
+      background: var(--white);
+      border: 2px solid var(--teal);
+      color: var(--teal);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      font-family: "League Spartan", sans-serif;
+      font-size: 45px;
+      font-weight: 700;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .tap-label--campus { top: 25%; left: calc(30% + 52px); }
+    .tap-label--credit { top: 66%; left: calc(37% + 52px); }
+
+    .white-panel {
+      width: min(100%, 760px);
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(0, 140, 149, 0.08);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 32px;
+      padding: 48px 36px 42px;
+    }
+
+    .white-panel--media {
+      padding: 42px 32px 32px;
+      gap: 30px;
+    }
+
+    .white-panel .instruction {
+      max-width: 700px;
+    }
+
+    .v0 .mock-content {
+      gap: 44px;
+    }
+
+    .v0 .kiosk-zone {
+      width: min(100%, 760px);
+      margin-top: 2px;
+    }
+
+    .v1 .mock-content,
+    .v2 .mock-content {
+      gap: 42px;
+    }
+
+    .v1 .kiosk-zone,
+    .v2 .kiosk-zone {
+      width: min(100%, 760px);
+    }
+
+    .v3 .mock-content {
+      gap: 40px;
+    }
+
+    .v3 .kiosk-zone {
+      width: min(100%, 760px);
+      margin-top: 18px;
+    }
+
+    .v4 .mock-content {
+      gap: 32px;
+    }
+
+    .v4 .kiosk-zone {
+      width: min(100%, 700px);
+    }
+
+    .debug-dots {
+      position: absolute;
+      left: 16px;
+      bottom: 14px;
+      display: flex;
+      gap: 12px;
+    }
+
+    .debug-dot {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      background: rgba(214, 154, 45, 0.42);
+    }
+
+    .debug-dot:first-child {
+      background: var(--slate);
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.20);
+    }
+
+    @media (max-width: 946px) {
+      .board {
+        margin: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="board">
+    <header class="board-header">
+      <h1>Container Scanned Variants</h1>
+      <p>Static comparison board only. These are layout experiments for the one-or-more-containers scanned state.</p>
+    </header>
+
+    <section class="variant-grid" aria-label="Container scanned layout variants">
+      <article class="variant">
+        <div class="variant-caption">
+          <strong>V0</strong>
+          <span>Current order</span>
+        </div>
+        <div class="mock-screen v0">
+          <div class="brand-strip">
+            <img src="images/USEFULL-icons/USEFULL-Logo-Registered_Color.svg" alt="USEFULL" />
+            <button type="button">Terms &amp; Conditions</button>
+            <div></div>
+          </div>
+          <div class="mock-content">
+            <div class="instruction instruction--hero">Keep scanning containers, or tap your ID or credit card to check out</div>
+            <div class="counter-pill" aria-label="1 container scanned">
+              <span class="counter-pill__count">1</span>
+              <span class="counter-pill__label">Container scanned</span>
+            </div>
+            <div class="kiosk-zone" aria-label="Checkout station tap targets">
+              <img class="kiosk" src="images/illustrations/checkout-station-kiosk.png" alt="USEFULL checkout station" />
+              <img class="tap-dot tap-dot--campus" src="images/illustrations/nfc-tap.png" alt="" />
+              <span class="tap-label tap-label--campus">PioneerCard</span>
+              <img class="tap-dot tap-dot--credit" src="images/illustrations/nfc-tap.png" alt="" />
+              <span class="tap-label tap-label--credit">Credit Card</span>
+            </div>
+          </div>
+          <div class="debug-dots"><span class="debug-dot"></span><span class="debug-dot"></span><span class="debug-dot"></span><span class="debug-dot"></span></div>
+        </div>
+      </article>
+
+      <article class="variant">
+        <div class="variant-caption">
+          <strong>V1</strong>
+          <span>Break up the text</span>
+        </div>
+        <div class="mock-screen v1">
+          <div class="brand-strip">
+            <img src="images/USEFULL-icons/USEFULL-Logo-Registered_Color.svg" alt="USEFULL" />
+            <button type="button">Terms &amp; Conditions</button>
+            <div></div>
+          </div>
+          <div class="mock-content">
+            <div class="counter-pill" aria-label="1 container scanned">
+              <span class="counter-pill__count">1</span>
+              <span class="counter-pill__label">Container scanned</span>
+            </div>
+            <div class="instruction instruction--primary">Keep scanning containers</div>
+            <div class="kiosk-zone" aria-label="Checkout station tap targets">
+              <img class="kiosk" src="images/illustrations/checkout-station-kiosk.png" alt="USEFULL checkout station" />
+              <img class="tap-dot tap-dot--campus" src="images/illustrations/nfc-tap.png" alt="" />
+              <span class="tap-label tap-label--campus">PioneerCard</span>
+              <img class="tap-dot tap-dot--credit" src="images/illustrations/nfc-tap.png" alt="" />
+              <span class="tap-label tap-label--credit">Credit Card</span>
+            </div>
+            <div class="instruction instruction--secondary">Then, tap your ID or credit card to check out</div>
+          </div>
+          <div class="debug-dots"><span class="debug-dot"></span><span class="debug-dot"></span><span class="debug-dot"></span><span class="debug-dot"></span></div>
+        </div>
+      </article>
+
+      <article class="variant">
+        <div class="variant-caption">
+          <strong>V2</strong>
+          <span>Reworded scan prompt</span>
+        </div>
+        <div class="mock-screen v2">
+          <div class="brand-strip">
+            <img src="images/USEFULL-icons/USEFULL-Logo-Registered_Color.svg" alt="USEFULL" />
+            <button type="button">Terms &amp; Conditions</button>
+            <div></div>
+          </div>
+          <div class="mock-content">
+            <div class="counter-pill" aria-label="1 container scanned">
+              <span class="counter-pill__count">1</span>
+              <span class="counter-pill__label">Container scanned</span>
+            </div>
+            <div class="instruction instruction--primary">Scan the rest of your containers</div>
+            <div class="kiosk-zone" aria-label="Checkout station tap targets">
+              <img class="kiosk" src="images/illustrations/checkout-station-kiosk.png" alt="USEFULL checkout station" />
+              <img class="tap-dot tap-dot--campus" src="images/illustrations/nfc-tap.png" alt="" />
+              <span class="tap-label tap-label--campus">PioneerCard</span>
+              <img class="tap-dot tap-dot--credit" src="images/illustrations/nfc-tap.png" alt="" />
+              <span class="tap-label tap-label--credit">Credit Card</span>
+            </div>
+            <div class="instruction instruction--secondary">Then, tap your ID or credit card to check out</div>
+          </div>
+          <div class="debug-dots"><span class="debug-dot"></span><span class="debug-dot"></span><span class="debug-dot"></span><span class="debug-dot"></span></div>
+        </div>
+      </article>
+
+      <article class="variant">
+        <div class="variant-caption">
+          <strong>V3</strong>
+          <span>Text first, kiosk last</span>
+        </div>
+        <div class="mock-screen v3">
+          <div class="brand-strip">
+            <img src="images/USEFULL-icons/USEFULL-Logo-Registered_Color.svg" alt="USEFULL" />
+            <button type="button">Terms &amp; Conditions</button>
+            <div></div>
+          </div>
+          <div class="mock-content">
+            <div class="counter-pill" aria-label="1 container scanned">
+              <span class="counter-pill__count">1</span>
+              <span class="counter-pill__label">Container scanned</span>
+            </div>
+            <div class="instruction instruction--primary">Keep scanning containers</div>
+            <div class="instruction instruction--secondary">Then, tap your ID or credit card to check out</div>
+            <div class="kiosk-zone" aria-label="Checkout station tap targets">
+              <img class="kiosk" src="images/illustrations/checkout-station-kiosk.png" alt="USEFULL checkout station" />
+              <img class="tap-dot tap-dot--campus" src="images/illustrations/nfc-tap.png" alt="" />
+              <span class="tap-label tap-label--campus">PioneerCard</span>
+              <img class="tap-dot tap-dot--credit" src="images/illustrations/nfc-tap.png" alt="" />
+              <span class="tap-label tap-label--credit">Credit Card</span>
+            </div>
+          </div>
+          <div class="debug-dots"><span class="debug-dot"></span><span class="debug-dot"></span><span class="debug-dot"></span><span class="debug-dot"></span></div>
+        </div>
+      </article>
+
+      <article class="variant">
+        <div class="variant-caption">
+          <strong>V4</strong>
+          <span>White-box grouping</span>
+        </div>
+        <div class="mock-screen v4">
+          <div class="brand-strip">
+            <img src="images/USEFULL-icons/USEFULL-Logo-Registered_Color.svg" alt="USEFULL" />
+            <button type="button">Terms &amp; Conditions</button>
+            <div></div>
+          </div>
+          <div class="mock-content">
+            <div class="white-panel">
+              <div class="instruction instruction--primary">Keep scanning containers</div>
+              <div class="counter-pill" aria-label="1 container scanned">
+                <span class="counter-pill__count">1</span>
+                <span class="counter-pill__label">Container scanned</span>
+              </div>
+            </div>
+            <div class="white-panel white-panel--media">
+              <div class="instruction instruction--secondary">Then, tap your ID or credit card to check out</div>
+              <div class="kiosk-zone" aria-label="Checkout station tap targets">
+                <img class="kiosk" src="images/illustrations/checkout-station-kiosk.png" alt="USEFULL checkout station" />
+                <img class="tap-dot tap-dot--campus" src="images/illustrations/nfc-tap.png" alt="" />
+                <span class="tap-label tap-label--campus">PioneerCard</span>
+                <img class="tap-dot tap-dot--credit" src="images/illustrations/nfc-tap.png" alt="" />
+                <span class="tap-label tap-label--credit">Credit Card</span>
+              </div>
+            </div>
+          </div>
+          <div class="debug-dots"><span class="debug-dot"></span><span class="debug-dot"></span><span class="debug-dot"></span><span class="debug-dot"></span></div>
+        </div>
+      </article>
+    </section>
+  </main>
+</body>
+</html>
