@@ -538,14 +538,18 @@
       padding-bottom: 0;
     }
     .app.is-portrait.is-scan-mode .brand-strip__logo {
-      height: 64px;
+      height: 58px;
     }
     .app.is-portrait .scan-shell-v3--idle {
-      padding: 116px 27px 0;
+      padding: 88px 27px 0;
     }
     .app.is-portrait .scan-shell-v3--idle .scan-hero-v3__title {
-      font-size: 96px;
-      line-height: 0.98;
+      font-size: 84px;
+      line-height: 1;
+    }
+    .app.is-portrait .idle-scan-card {
+      max-width: 680px;
+      margin-top: 96px;
     }
     .app.is-portrait .scan-shell-v3--checkout {
       padding: 54px 27px 0;
@@ -553,6 +557,40 @@
     .app.is-portrait .checkout-v3 {
       max-width: 760px;
     }
+    .app.is-portrait .scan-layout--v4 {
+      justify-content: flex-start;
+      gap: 24px;
+      padding: 78px 27px 92px;
+    }
+    .app.is-portrait .scan-panel {
+      width: min(100%, 706px);
+    }
+    .app.is-portrait .scan-panel--summary {
+      min-height: 238px;
+      gap: 26px;
+      padding: 36px 32px 32px;
+    }
+    .app.is-portrait .scan-panel--checkout {
+      min-height: 590px;
+      gap: 24px;
+      padding: 36px 28px 32px;
+    }
+    .app.is-portrait .scan-panel__text {
+      font-size: 42px;
+      line-height: 1.06;
+    }
+    .app.is-portrait .scan-panel .kiosk-zone__stage {
+      width: min(100%, 620px);
+    }
+    .app.is-portrait .scan-panel .tap-dot {
+      width: 62px;
+    }
+    .app.is-portrait .scan-panel .tap-label {
+      font-size: 38px;
+      border-width: 2px;
+    }
+    .app.is-portrait .scan-panel .tap-label--campus { left: calc(30% + 42px); }
+    .app.is-portrait .scan-panel .tap-label--credit { left: calc(37% + 42px); }
     .app.is-landscape.is-scan-mode .screen {
       padding: 10px 24px 14px;
     }
@@ -1816,52 +1854,52 @@
       height: 50px;
     }
     .app.is-portrait .welcome-canvas {
-      padding: 76px 27px 0;
+      padding: 54px 27px 0;
     }
     .app.is-portrait .welcome-hero {
-      gap: 42px;
+      gap: 30px;
       padding-top: 0;
-      margin-bottom: 20px;
+      margin-bottom: 14px;
     }
     .app.is-portrait .welcome-hero__title {
-      font-size: 76px;
-      line-height: 0.92;
+      font-size: 68px;
+      line-height: 0.94;
       letter-spacing: 0;
     }
     .app.is-portrait .welcome-hero__subtitle {
-      font-size: 34px;
-      line-height: 1.18;
+      font-size: 30px;
+      line-height: 1.16;
       max-width: 710px;
       letter-spacing: 0;
     }
     .app.is-portrait .terms-grid {
       flex: 0 0 auto;
-      grid-template-rows: 242px 242px;
+      grid-template-rows: 222px 222px;
       column-gap: 27px;
-      row-gap: 78px;
-      padding-top: 40px;
-      margin-bottom: 36px;
+      row-gap: 66px;
+      padding-top: 36px;
+      margin-bottom: 28px;
     }
     .app.is-portrait .terms-card {
       border-radius: 14px;
-      gap: 26px;
-      padding: 54px 16px 28px;
+      gap: 20px;
+      padding: 48px 16px 24px;
       box-shadow: 0 2px 11px rgba(20, 40, 50, 0.06);
     }
     .app.is-portrait .terms-card__icon-wrap {
-      width: 72px;
-      height: 72px;
-      top: -36px;
-      border-radius: 18px;
+      width: 64px;
+      height: 64px;
+      top: -32px;
+      border-radius: 16px;
     }
     .app.is-portrait .terms-card__headline {
-      font-size: 39px;
+      font-size: 34px;
       line-height: 1.06;
       letter-spacing: 0;
     }
     .app.is-portrait .terms-card__sub {
-      font-size: 30px;
-      line-height: 1.18;
+      font-size: 26px;
+      line-height: 1.16;
       letter-spacing: 0;
     }
     .app.is-portrait .terms-card--wave .terms-card__sub {
@@ -1874,24 +1912,24 @@
       white-space: nowrap;
     }
     .app.is-portrait .welcome-actions .btn--primary.btn--xl {
-      font-size: 37px;
+      font-size: 33px;
       line-height: 1;
-      padding: 24px 32px 22px;
-      max-width: 520px;
+      padding: 20px 32px 18px;
+      max-width: 500px;
       border-radius: 12px;
     }
     .app.is-portrait .welcome-actions {
-      gap: 26px;
-      margin-bottom: 34px;
+      gap: 18px;
+      margin-bottom: 24px;
     }
     .app.is-portrait .welcome-cancel {
-      font-size: 29px;
+      font-size: 25px;
       line-height: 1;
       padding: 0 14px;
     }
     .app.is-portrait .welcome-fineprint {
-      font-size: 27px;
-      line-height: 1.28;
+      font-size: 23px;
+      line-height: 1.22;
     }
 
     /* Landscape preset (1280 × 800) — cap width so it doesn't sprawl */
@@ -2280,6 +2318,21 @@
       display: inline;
     }
 
+    /* ── Version badge ───────────────────────────────── */
+    .version-badge {
+      position: absolute;
+      bottom: 8px;
+      left: 10px;
+      font-size: 11px;
+      color: rgba(0, 0, 0, 0.22);
+      font-family: var(--font-sans);
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      pointer-events: none;
+      z-index: 10;
+      user-select: none;
+    }
+
     /* ── Debug badge ──────────────────────────────────── */
     .debug-badge {
       position: fixed;
@@ -2374,6 +2427,9 @@
         </div>
       </div>
     </div>
+
+    <!-- Version badge -->
+    <div class="version-badge">v0.3.3</div>
 
     <!-- Settings wheel -->
     <div id="settingsWheel" class="settings-wheel">
@@ -2483,6 +2539,14 @@
               </div>
             </div>
             <button class="settings-popover__btn settings-popover__btn--sim" id="simBtn" type="button">Simulate</button>
+            <div class="settings-section-label">Sound</div>
+            <div class="settings-popover__field">
+              <span class="settings-popover__label">Sound effects</span>
+              <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+                <input type="checkbox" id="soundToggle" checked style="width:16px;height:16px;cursor:pointer" />
+                <span style="font-size:13px;color:var(--text-secondary,#666)">On</span>
+              </label>
+            </div>
             <div class="settings-section-label">Display</div>
             <div class="settings-btn-row">
               <button class="settings-popover__btn" id="portraitBtn" type="button">Portrait</button>
@@ -2522,6 +2586,22 @@
     const DEDUPE_MS = 450;
     let lastScanTap = 0;
     let lastIdTap = 0;
+
+    /* ── Sound system ──────────────────────────────────── */
+    let soundEnabled = true;
+    const SFX = {
+      scan:    new Audio('sounds/successful-scan.m4a'),
+      success: new Audio('sounds/final-success-chime-1.mp3'),
+      error:   new Audio('sounds/error.mp3'),
+    };
+    function playSound(name) {
+      if (!soundEnabled) return;
+      const sfx = SFX[name];
+      if (!sfx) return;
+      sfx.currentTime = 0;
+      sfx.play().catch(() => {});
+    }
+    let lastSoundState = null;
 
     /* ── Variant helpers ───────────────────────────── */
     function openTerms() {
@@ -2577,6 +2657,12 @@
         STATE.ERROR_CAMPUS,
         STATE.ERROR_FROZEN,
       ].includes(appState));
+
+      if (appState !== lastSoundState) {
+        if (appState === STATE.SUCCESS_NEW || appState === STATE.SUCCESS_RETURNING) playSound('success');
+        else if (appState === STATE.ERROR_CAMPUS || appState === STATE.ERROR_FROZEN) playSound('error');
+        lastSoundState = appState;
+      }
 
       switch (appState) {
         case STATE.SCAN:
@@ -2986,7 +3072,7 @@
         const now = Date.now();
         if (now - lastScanTap < DEDUPE_MS) return;
         lastScanTap = now;
-        if (canUseHotspots()) handleScan();
+        if (canUseHotspots()) { playSound('scan'); handleScan(); }
       });
       document.getElementById('btnTapHID').addEventListener('click', () => {
         const now = Date.now();
@@ -3080,6 +3166,11 @@
         startSimulation();
       };
       document.getElementById('resetBtn').onclick = resetSession;
+
+      // Sound toggle
+      const soundToggle = document.getElementById('soundToggle');
+      soundToggle.checked = soundEnabled;
+      soundToggle.onchange = (e) => { soundEnabled = e.target.checked; };
 
       // Pill style variant selector
       document.getElementById('pillStyleSelect').onchange = (e) => {
