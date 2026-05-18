@@ -1,7 +1,7 @@
 {
-  "name": "USEFULL Checkout Kiosk V4",
-  "short_name": "USEFULL V4",
-  "start_url": "./v4.html",
+  "name": "USEFULL Checkout Kiosk V3",
+  "short_name": "USEFULL V3",
+  "start_url": "./v3.html",
   "scope": "./",
   "display": "fullscreen",
   "display_override": ["fullscreen", "standalone"],
