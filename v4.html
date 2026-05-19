@@ -2267,7 +2267,7 @@
       display: flex;
       flex-direction: column;
       align-items: stretch;
-      justify-content: center;
+      justify-content: flex-start;
       gap: clamp(16px, 2.2vmin, 24px);
       padding: clamp(72px, 8vmin, 92px) clamp(36px, 5.6vmin, 58px) clamp(30px, 4.2vmin, 44px);
       background: rgba(255, 255, 255, 0.92);
@@ -2313,10 +2313,10 @@
     }
     .success-hero__title {
       font-family: 'League Spartan', sans-serif;
-      font-size: clamp(54px, 8.2vmin, 76px);
+      font-size: clamp(66px, 9.6vmin, 92px);
       line-height: 0.96;
       font-weight: 700;
-      color: var(--teal);
+      color: var(--slate);
       letter-spacing: 0;
     }
     .success-hero__body {
@@ -2346,10 +2346,11 @@
     .success-email-note {
       font-family: 'Roboto', system-ui, sans-serif;
       font-size: clamp(15px, 2.4vmin, 20px);
-      font-weight: 500;
+      font-weight: 600;
       color: var(--slate-light);
       line-height: 1.22;
       max-width: 520px;
+      margin-top: clamp(8px, 1.6vmin, 14px);
     }
     .success-due__label {
       font-family: 'League Spartan', sans-serif;
@@ -2375,7 +2376,10 @@
     }
     .success-receipt {
       width: 100%;
-      margin: clamp(0px, 0.6vmin, 6px) 0 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      margin: clamp(18px, 3.2vmin, 34px) 0 0;
       background: transparent;
       border: 0;
       border-radius: 0;
@@ -2414,7 +2418,7 @@
       justify-content: space-between;
       gap: 16px;
       padding: clamp(14px, 2.2vmin, 18px) 0 0;
-      margin-top: clamp(8px, 1.4vmin, 12px);
+      margin-top: auto;
       border-top: 1px solid rgba(0, 140, 149, 0.10);
       background: transparent;
       border-radius: 0;
@@ -2501,7 +2505,7 @@
       padding-top: 0;
     }
     .app.is-portrait .success-hero__title {
-      font-size: 74px;
+      font-size: 88px;
     }
     .app.is-portrait .success-hero__body {
       font-size: 35px;
@@ -2556,7 +2560,7 @@
       justify-content: center;
     }
     .app.is-landscape .success-hero__title {
-      font-size: 54px;
+      font-size: 64px;
     }
     .app.is-landscape .success-due__date {
       font-size: 60px;
@@ -3021,11 +3025,12 @@
     .scan-shell-v3--v9-student {
       flex: 1;
       min-height: 0;
-      padding: 58px 24px 18px;
+      padding: 58px 18px 18px;
       justify-content: flex-start;
     }
     .v9-cashier-stage {
       width: min(100%, 720px);
+      height: 100%;
       margin: 0 auto;
       display: grid;
       justify-items: center;
@@ -3033,6 +3038,7 @@
     }
     .v9-student-stage {
       width: min(100%, 720px);
+      height: 100%;
       margin: 0 auto;
       display: grid;
       justify-items: center;
@@ -3041,7 +3047,7 @@
     .v9-cashier-card {
       position: relative;
       width: 100%;
-      height: 885px;
+      height: 100%;
       min-height: 0;
       padding: 48px 34px 24px;
       background: var(--white);
@@ -3073,7 +3079,7 @@
     }
     .v9-card-counter {
       width: 100%;
-      min-height: 64px;
+      min-height: 78px;
       display: flex;
       justify-items: center;
       align-items: center;
@@ -3104,15 +3110,15 @@
       color: rgba(35, 141, 193, 0.32);
     }
     .done-scanning-btn {
-      min-width: 340px;
-      min-height: 56px;
-      padding: 0 32px;
+      min-width: 410px;
+      min-height: 72px;
+      padding: 0 38px;
       border: 0;
       border-radius: 14px;
       background: var(--teal);
       color: var(--white);
       font-family: 'League Spartan', sans-serif;
-      font-size: 30px;
+      font-size: 42px;
       font-weight: 700;
       line-height: 1;
       cursor: pointer;
@@ -3128,7 +3134,7 @@
     }
     .app.variant-v9 .scan-panel--checkout {
       min-height: 0;
-      height: 900px;
+      height: 100%;
       width: min(100%, 720px);
     }
     .app.variant-v9 .scan-shell-v3--v9-student .scan-panel--checkout {
@@ -3177,19 +3183,29 @@
     .app.variant-v9 .counter-pill--gold .counter-pill__label {
       color: var(--golden);
     }
+    .app.variant-v9 .counter-pill__inner {
+      padding: 16px 34px 12px;
+      gap: 12px;
+    }
+    .app.variant-v9 .counter-pill__count {
+      font-size: 50px;
+    }
+    .app.variant-v9 .counter-pill__label {
+      font-size: 42px;
+    }
     .app.variant-v9 .counter-pill__label {
       text-transform: none;
     }
     .v9-cancel-btn {
-      min-width: 340px;
-      min-height: 52px;
-      padding: 0 28px;
+      min-width: 410px;
+      min-height: 64px;
+      padding: 0 34px;
       border-radius: 14px;
       border: 2px solid var(--golden);
       background: var(--white);
       color: var(--golden);
       font-family: 'League Spartan', sans-serif;
-      font-size: 28px;
+      font-size: 38px;
       font-weight: 700;
       cursor: pointer;
       box-shadow: none;
@@ -3520,7 +3536,7 @@
         case STATE.SCAN:
           if (containerCount === 0) v9StudentStep = false;
           if (containerCount === 0) {
-            const idleTitle = isV9 ? "Scan user containers" : (isV8 ? "Scan Containers" : (variantActive ? "Scan QR codes on USEFULL containers" : "Scan user's containers"));
+            const idleTitle = isV9 ? "Scan USEFULL containers" : (isV8 ? "Scan Containers" : (variantActive ? "Scan QR codes on USEFULL containers" : "Scan user's containers"));
             const isCombinedCardVariant = kioskVariant === 'v6' || kioskVariant === 'v7' || isV8;
             if (isV9) {
               screen.innerHTML = `
@@ -3674,7 +3690,7 @@
                     <section class="v9-cashier-card">
                       ${chefIconHtml}
                       ${cashierLabelHtml}
-                      <h1 class="v9-cashier-title">Scan user containers</h1>
+                      <h1 class="v9-cashier-title">Scan USEFULL containers</h1>
                       <div class="v9-card-counter is-visible">
                         <div class="counter-pill counter-pill--v2">
                           <div class="counter-pill__inner">
@@ -3993,14 +4009,14 @@
                       <path d="M20 6 9 17l-5-5" />
                     </svg>
                   </div>
-                  <h1 class="success-hero__title">You're all set</h1>
+                  <h1 class="success-hero__title">You're all set!</h1>
                   <div class="success-hero__body">You checked out ${containerCount} container${containerCount === 1 ? '' : 's'}.</div>
-                  <div class="success-email-note">We sent the checkout details to your email.</div>
                   <div class="success-due">
                     <div class="success-due__label">Return by</div>
                     <div class="success-due__date">${dueDate}</div>
-                    <div class="success-due__hint">To avoid late fees</div>
+                    <div class="success-due__hint">to avoid late fees</div>
                   </div>
+                  <div class="success-email-note">We sent the checkout details to your email.</div>
                 </div>
                 <div class="success-receipt" aria-label="Checked out containers">
                   <div class="success-receipt__header">
