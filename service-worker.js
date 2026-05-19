@@ -1,4 +1,4 @@
-const CACHE_NAME = 'usefull-kiosk-v4-20260518';
+const CACHE_NAME = 'usefull-kiosk-v4-20260519-1';
 
 const APP_SHELL = [
   './',
@@ -68,6 +68,28 @@ self.addEventListener('fetch', (event) => {
 
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) {
+    return;
+  }
+
+  const isHtmlRequest =
+    request.mode === 'navigate' ||
+    url.pathname.endsWith('/') ||
+    url.pathname.endsWith('/index.html') ||
+    url.pathname.endsWith('/v3.html') ||
+    url.pathname.endsWith('/v4.html');
+
+  if (isHtmlRequest) {
+    event.respondWith(
+      fetch(request).then((response) => {
+        if (response && response.status === 200) {
+          const copy = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
+        }
+        return response;
+      }).catch(() => caches.match(request).then((cached) => (
+        cached || caches.match('./v4.html')
+      )))
+    );
     return;
   }
 
