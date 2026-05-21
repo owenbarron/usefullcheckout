@@ -720,9 +720,9 @@
     .scan-panel {
       width: min(100%, 760px);
       background: rgba(255, 255, 255, 0.94);
-      border: 1px solid rgba(0, 140, 149, 0.08);        /* base; student .scan-panel--checkout overrides to 2px golden below */
+      border: 1px solid rgba(0, 140, 149, 0.08);
       border-radius: 14px;
-      box-shadow: 0 8px 24px rgba(0, 140, 149, 0.08);   /* §6 harmonization: 10px 26px → 8px 24px */
+      box-shadow: 0 10px 26px rgba(0, 140, 149, 0.08);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -738,7 +738,6 @@
       min-height: 560px;
       gap: 32px;
       padding: 42px 32px 34px;
-      border: 2px solid var(--golden);   /* §7 harmonization: student checkout card matches student icon */
     }
     .scan-panel__text {
       font-family: 'League Spartan', sans-serif;
@@ -1346,18 +1345,14 @@
     }
     .app.is-auth-mode .auth-card {
       flex: 0 1 auto;
-      width: min(100%, 760px);     /* §1 harmonization: 720 → 760 */
+      width: min(100%, 720px);
       min-height: min(560px, calc(100% - 64px));
       margin: auto;
       padding: clamp(28px, 4.8vmin, 48px);
       background: rgba(255, 255, 255, 0.82);
-      border: 2px solid var(--sky);                     /* §7 harmonization: 1px subtle → 2px sky (phone icon default) */
+      border: 1px solid rgba(0, 140, 149, 0.10);
       border-radius: var(--radius);
       box-shadow: 0 8px 22px rgba(0, 140, 149, 0.08);
-    }
-    /* §7 harmonization: auth-flow-card with the credit-card icon gets the golden treatment */
-    .app.is-auth-mode .auth-flow-card:has(.auth-role-icon--card) {
-      border-color: var(--golden);
     }
     /* Dense screens (keypad) need tighter gaps */
     .auth-card--dense {
@@ -1691,16 +1686,6 @@
     .auth-role-icon--card {
       background: var(--golden);
     }
-    .auth-role-icon--error {
-      background: #C62828;       /* error red — matches the existing result-card error palette */
-    }
-    /* Error auth-flow-card: red border to match the inset icon */
-    .app.is-auth-mode .auth-flow-card.auth-card--error {
-      border-color: #C62828;
-    }
-    .app.is-auth-mode .auth-flow-card.auth-card--error .auth-card__title {
-      color: #C62828;            /* tint title in error red for stronger affordance */
-    }
     .auth-role-icon svg {
       width: 46px;
       height: 46px;
@@ -1714,16 +1699,13 @@
     }
     .app.is-auth-mode .auth-flow-card .auth-card__title {
       color: var(--slate);
-      font-size: clamp(40px, 7vmin, 64px);   /* kiosk-distance bump (was 34/5.6/54) */
+      font-size: clamp(34px, 5.6vmin, 54px);
       line-height: 1;
       text-align: center;
-      text-wrap: balance;                    /* even line lengths when title wraps */
     }
     .app.is-auth-mode .auth-flow-card .auth-card__subtitle {
-      font-size: clamp(20px, 3.4vmin, 30px); /* kiosk-distance bump (was 16/2.6/24) */
       padding: 0;
-      max-width: 600px;                      /* was 520; bumped to match wider card + bigger font */
-      text-wrap: balance;                    /* even line lengths when subtitle wraps */
+      max-width: 520px;
     }
     .auth-flow-card .sms-confirm-body {
       max-width: 520px;
@@ -2026,9 +2008,9 @@
       gap: 28px;
       padding: 86px 54px 42px;
       background: rgba(255, 255, 255, 0.92);
-      border: 2px solid var(--golden);                  /* §7 harmonization: 1px subtle → 2px golden (matches icon) */
-      border-radius: 14px;                              /* §5 harmonization: 18 → 14 */
-      box-shadow: 0 8px 24px rgba(0, 140, 149, 0.08);   /* §6 harmonization: shadow color → teal */
+      border: 1px solid rgba(20, 40, 50, 0.06);
+      border-radius: 18px;
+      box-shadow: 0 8px 24px rgba(20, 40, 50, 0.08);
       position: relative;
       overflow: visible;
     }
@@ -2343,9 +2325,9 @@
       gap: clamp(16px, 2.2vmin, 24px);
       padding: clamp(72px, 8vmin, 92px) clamp(36px, 5.6vmin, 58px) clamp(30px, 4.2vmin, 44px);
       background: rgba(255, 255, 255, 0.92);
-      border: 2px solid var(--teal);                    /* §7 harmonization: 1px subtle → 2px teal (matches icon) */
-      border-radius: 14px;                              /* §5 harmonization: 18 → 14 */
-      box-shadow: 0 8px 24px rgba(0, 140, 149, 0.08);   /* §6 harmonization: shadow color → teal */
+      border: 1px solid rgba(20, 40, 50, 0.06);
+      border-radius: 18px;
+      box-shadow: 0 8px 24px rgba(20, 40, 50, 0.08);
       position: relative;
       overflow: visible;
     }
@@ -3101,7 +3083,7 @@
       justify-content: flex-start;
     }
     .v9-cashier-stage {
-      width: min(100%, 760px);     /* §1 harmonization: 720 → 760 */
+      width: min(100%, 720px);
       height: 100%;
       margin: 0 auto;
       display: grid;
@@ -3109,7 +3091,7 @@
       gap: 14px;
     }
     .v9-student-stage {
-      width: min(100%, 760px);     /* §1 harmonization: 720 → 760 */
+      width: min(100%, 720px);
       height: 100%;
       margin: 0 auto;
       display: grid;
@@ -3136,7 +3118,7 @@
     .v9-cashier-title {
       margin: 12px 0 4px;
       font-family: 'League Spartan', sans-serif;
-      font-size: clamp(40px, 9vmin, 72px);   /* §3 harmonization: portrait target 72px; landscape overrides at 60px */
+      font-size: 62px;
       font-weight: 700;
       line-height: 1.04;
       color: var(--slate);
@@ -3212,20 +3194,20 @@
     .app.variant-v9 .scan-shell-v3--v9-student .scan-panel--checkout {
       justify-content: flex-start;
       gap: 14px;
-      padding-top: 58px;     /* §2/§4 harmonization: 48 → 58 (matches cashier card) */
+      padding-top: 48px;
       padding-bottom: 24px;
     }
     .app.variant-v9 .scan-shell-v3--v9-student .role-kicker--student {
-      margin-top: 14px;      /* §2 harmonization: 8 → 14 (unify with cashier) */
+      margin-top: 8px;
     }
     .app.variant-v9 .scan-shell-v3--v9-cashier .role-kicker--cashier {
-      margin-top: 14px;      /* §2 harmonization: 18 → 14 */
+      margin-top: 18px;
     }
     .app.variant-v9 .role-kicker {
       font-size: 26px;
     }
     .app.variant-v9 .scan-shell-v3--v9-student .scan-panel__text {
-      font-size: clamp(40px, 9vmin, 72px);   /* §3 harmonization: portrait target 72px; landscape overrides at 52px */
+      font-size: 62px;
       line-height: 1.04;
       max-width: 640px;
       text-wrap: balance;
@@ -3288,12 +3270,8 @@
       background: rgba(255, 255, 255, 0.74);
       cursor: default;
     }
-    /* §7 harmonization: toggle now covers every harmonized card */
-    [data-card-borders="off"] .v9-cashier-card,
-    [data-card-borders="off"] .scan-panel--checkout,
-    [data-card-borders="off"] .welcome-card,
-    [data-card-borders="off"] .success-card,
-    [data-card-borders="off"] .auth-card {
+    .app.variant-v9[data-card-borders="off"] .v9-cashier-card,
+    .app.variant-v9[data-card-borders="off"] .scan-panel--checkout {
       border-color: transparent;
     }
 
@@ -3458,9 +3436,14 @@
       margin-top: 98px;
     }
 
-    /* (Student card border + toggle override moved to base rules during
-        spec-harmonization §7 pass — see .scan-panel--checkout and the
-        [data-card-borders="off"] toggle block above.)                    */
+    /* Student card border: mirror cashier's 2px sky border with golden */
+    .app.is-landscape.variant-v9 .scan-shell-v3--v9-student .scan-panel--checkout {
+      border: 2px solid var(--golden);
+      box-shadow: 0 8px 22px rgba(214, 154, 45, 0.08);
+    }
+    .app.variant-v9[data-card-borders="off"].is-landscape .scan-shell-v3--v9-student .scan-panel--checkout {
+      border-color: transparent;
+    }
 
     /* --- Counter as a SQUARE BOX (cashier + student) --- */
     .app.is-landscape.variant-v9 .v9-card-counter .counter-pill,
@@ -3629,7 +3612,6 @@
                 <option value="success_returning">Success</option>
                 <option value="error_campus">Error (Campus)</option>
                 <option value="error_frozen">Error (Frozen)</option>
-                <option value="error_gift_card">Error (Gift Card)</option>
               </select>
             </div>
             <div class="settings-section-label">Reset</div>
@@ -3822,12 +3804,11 @@
         STATE.UPDATE_DEFAULT_CARD,
         STATE.ERROR_CAMPUS,
         STATE.ERROR_FROZEN,
-        STATE.ERROR_GIFT_CARD,
       ].includes(appState));
 
       if (appState !== lastSoundState) {
         if (appState === STATE.SUCCESS_NEW || appState === STATE.SUCCESS_RETURNING) playSound('success');
-        else if (appState === STATE.ERROR_CAMPUS || appState === STATE.ERROR_FROZEN || appState === STATE.ERROR_GIFT_CARD) playSound('error');
+        else if (appState === STATE.ERROR_CAMPUS || appState === STATE.ERROR_FROZEN) playSound('error');
         lastSoundState = appState;
       }
 
@@ -4145,13 +4126,13 @@
 
         case STATE.IDENTIFIER_ENTRY: {
           const scenario = currentFlow?.scenario;
-          let idTitle = 'Enter your phone number';
+          let idTitle = 'What is your phone number?';
           let idBody = 'We will create or link your USEFULL account';
           if (scenario === CREDIT_SCENARIO.RETURN_SAME_UNDERLYING) {
-            idTitle = 'Enter your phone number';
+            idTitle = 'What is your phone number?';
             idBody = 'We will create or link your USEFULL account.';
           } else if (scenario === CREDIT_SCENARIO.RETURN_DIFFERENT_CARD) {
-            idTitle = 'Enter your phone number';
+            idTitle = 'What is your phone number?';
             idBody = 'We will create or link your USEFULL account.';
           }
           const phoneFmt = formatPhoneNumber(identifierValue);
@@ -4394,49 +4375,42 @@
         }
 
         case STATE.ERROR_CAMPUS:
-        case STATE.ERROR_FROZEN:
-        case STATE.ERROR_GIFT_CARD: {
-          // White exclamation in a filled circle — visually balanced inside the 82px red role-icon tile
-          const errorIconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="12" y1="16.5" x2="12" y2="16.5"/></svg>`;
-          const errorContent = {
-            [STATE.ERROR_CAMPUS]: {
-              title: "We couldn't find your campus account",
-              subtitle: 'Please tap your card again, or contact support@usefull.us for help.',
-              btnLabel: 'Try Again',
-              btnId: 'tryAgainBtn',
-            },
-            [STATE.ERROR_FROZEN]: {
-              title: 'Account on hold',
-              subtitle: 'Please pay outstanding fees to continue. Questions? support@usefull.us',
-              btnLabel: 'Done',
-              btnId: 'doneBtn',
-            },
-            [STATE.ERROR_GIFT_CARD]: {
-              title: 'Please tap a different card',
-              subtitle: 'USEFULL needs your campus ID or a credit card to check out.',
-              btnLabel: 'Try Again',
-              btnId: 'tryAgainBtn',
-            },
-          };
-          const { title, subtitle, btnLabel, btnId } = errorContent[appState];
           screen.innerHTML = `
             <div class="brand-strip">
               <img class="brand-strip__logo" src="images/USEFULL-icons/USEFULL-Logo-Registered_Color.svg" alt="USEFULL" />
             </div>
-            <div class="id-entry-layout">
-              <div class="auth-card auth-flow-card auth-card--error">
-                <div class="auth-role-icon auth-role-icon--error" aria-hidden="true">${errorIconSvg}</div>
-                <div class="auth-card__title">${title}</div>
-                <div class="auth-card__subtitle">${subtitle}</div>
-                <div class="btn-row">
-                  <button class="btn btn--primary" id="${btnId}" type="button">${btnLabel}</button>
-                </div>
+            <div class="auth-card auth-card--found">
+              <div class="result-card__icon result-card__icon--error">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" fill="currentColor"/></svg>
+              </div>
+              <div class="auth-card__title">We couldn't find your campus account</div>
+              <div class="auth-card__body">Please contact support@usefull.us for help.</div>
+              <div class="btn-row">
+                <button class="btn btn--primary" id="tryAgainBtn" type="button">Try Again</button>
               </div>
             </div>
           `;
-          document.getElementById(btnId).onclick = resetSession;
+          document.getElementById('tryAgainBtn').onclick = resetSession;
           break;
-        }
+
+        case STATE.ERROR_FROZEN:
+          screen.innerHTML = `
+            <div class="brand-strip">
+              <img class="brand-strip__logo" src="images/USEFULL-icons/USEFULL-Logo-Registered_Color.svg" alt="USEFULL" />
+            </div>
+            <div class="auth-card auth-card--found">
+              <div class="result-card__icon result-card__icon--error">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" fill="currentColor"/></svg>
+              </div>
+              <div class="auth-card__title">Account on hold</div>
+              <div class="auth-card__body">Please pay outstanding fees to continue.<br>Questions? support@usefull.us</div>
+              <div class="btn-row">
+                <button class="btn btn--primary" id="doneBtn" type="button">Done</button>
+              </div>
+            </div>
+          `;
+          document.getElementById('doneBtn').onclick = resetSession;
+          break;
       }
 
       // Update action button states

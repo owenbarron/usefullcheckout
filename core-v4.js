@@ -25,6 +25,7 @@ const STATE = {
   SUCCESS_RETURNING: 'success_returning',
   ERROR_CAMPUS: 'error_campus',
   ERROR_FROZEN: 'error_frozen',
+  ERROR_GIFT_CARD: 'error_gift_card',
 };
 
 const PAYMENT_MODE = {
@@ -731,6 +732,7 @@ function jumpTo(stateName) {
 
     case STATE.ERROR_CAMPUS:
     case STATE.ERROR_FROZEN:
+    case STATE.ERROR_GIFT_CARD:
       break;
   }
 
