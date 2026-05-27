@@ -393,6 +393,10 @@ function handleIdTap(outcome) {
       setState(STATE.ERROR_FROZEN);
       scheduleAutoReset(ERROR_RESET_MS);
       break;
+    case 'gift_card_scanned':
+      setState(STATE.ERROR_GIFT_CARD);
+      scheduleAutoReset(ERROR_RESET_MS);
+      break;
     default:
       setState(STATE.ERROR_CAMPUS);
       scheduleAutoReset(ERROR_RESET_MS);

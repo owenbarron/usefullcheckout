@@ -3136,11 +3136,12 @@
     .v9-cashier-title {
       margin: 12px 0 4px;
       font-family: 'League Spartan', sans-serif;
-      font-size: clamp(40px, 9vmin, 72px);   /* §3 harmonization: portrait target 72px; landscape overrides at 60px */
+      font-size: clamp(56px, 12vmin, 108px);  /* portrait target ~96px (allowed to wrap 2 lines); landscape overrides at 60px */
       font-weight: 700;
-      line-height: 1.04;
+      line-height: 1.02;
       color: var(--slate);
       letter-spacing: 0;
+      text-wrap: balance;                     /* even line lengths on 2-line wrap */
     }
     .v9-cashier-image {
       width: min(100%, 620px);
@@ -3222,10 +3223,11 @@
       margin-top: 14px;      /* §2 harmonization: 18 → 14 */
     }
     .app.variant-v9 .role-kicker {
-      font-size: 26px;
+      font-size: 32px;                       /* kiosk-distance bump (was 26) */
+      letter-spacing: 0.18em;
     }
     .app.variant-v9 .scan-shell-v3--v9-student .scan-panel__text {
-      font-size: clamp(40px, 9vmin, 72px);   /* §3 harmonization: portrait target 72px; landscape overrides at 52px */
+      font-size: clamp(48px, 10vmin, 92px);  /* portrait target ~80px; landscape overrides at 52px */
       line-height: 1.04;
       max-width: 640px;
       text-wrap: balance;
@@ -3260,10 +3262,10 @@
       gap: 12px;
     }
     .app.variant-v9 .counter-pill__count {
-      font-size: 50px;
+      font-size: 68px;                       /* kiosk-distance bump (was 50) */
     }
     .app.variant-v9 .counter-pill__label {
-      font-size: 42px;
+      font-size: 54px;                       /* kiosk-distance bump (was 42) */
     }
     .app.variant-v9 .counter-pill__label {
       text-transform: none;
@@ -3434,19 +3436,20 @@
     .app.is-landscape.variant-v9 .scan-shell-v3--v9-student .tap-dot {
       width: 46px;
     }
-    /* v9-student-actions wraps {counter-pill, cancel-btn}. In landscape we
-       use display:contents so its children become direct children of the
-       grid, letting counter sit in row 3 col 2 and cancel sit in row 4. */
-    .app.is-landscape.variant-v9 .scan-shell-v3--v9-student .v9-student-actions {
-      display: contents;
-    }
-    .app.is-landscape.variant-v9 .scan-shell-v3--v9-student .v9-student-actions > .counter-pill {
+    /* Student template now has the counter-pill as a direct child of
+       .scan-panel--checkout (sibling of kiosk-zone) so it sits above the
+       kiosk illustration in portrait. In landscape we move it to row 3 col 2
+       via grid placement. v9-student-actions wraps only the cancel button. */
+    .app.is-landscape.variant-v9 .scan-shell-v3--v9-student .scan-panel--checkout > .counter-pill {
       grid-column: 2; grid-row: 3;
       justify-self: center; align-self: center;
       width: 300px;
       height: 300px;
       aspect-ratio: 1 / 1;
       padding: 0;
+    }
+    .app.is-landscape.variant-v9 .scan-shell-v3--v9-student .v9-student-actions {
+      display: contents;          /* let the cancel button be a grid child of the card */
     }
     .app.is-landscape.variant-v9 .scan-shell-v3--v9-student .v9-student-actions > .v9-cancel-btn {
       grid-column: 1 / -1; grid-row: 4;
@@ -3462,13 +3465,15 @@
         spec-harmonization §7 pass — see .scan-panel--checkout and the
         [data-card-borders="off"] toggle block above.)                    */
 
-    /* --- Counter as a SQUARE BOX (cashier + student) --- */
+    /* --- Landscape counter as a SQUARE BOX (cashier + student) ----------
+       The square layout is landscape-only. Portrait keeps the natural pill
+       shape from the base counter-pill--v2 rules.                        */
     .app.is-landscape.variant-v9 .v9-card-counter .counter-pill,
-    .app.is-landscape.variant-v9 .v9-student-actions > .counter-pill {
+    .app.is-landscape.variant-v9 .scan-shell-v3--v9-student .scan-panel--checkout > .counter-pill {
       padding: 0;
     }
     .app.is-landscape.variant-v9 .v9-card-counter .counter-pill__inner,
-    .app.is-landscape.variant-v9 .v9-student-actions > .counter-pill .counter-pill__inner {
+    .app.is-landscape.variant-v9 .scan-shell-v3--v9-student .scan-panel--checkout > .counter-pill .counter-pill__inner {
       width: 100%;
       height: 100%;
       border-radius: 22px;
@@ -3479,12 +3484,12 @@
       padding: 18px 22px;
     }
     .app.is-landscape.variant-v9 .v9-card-counter .counter-pill__count,
-    .app.is-landscape.variant-v9 .v9-student-actions > .counter-pill .counter-pill__count {
+    .app.is-landscape.variant-v9 .scan-shell-v3--v9-student .scan-panel--checkout > .counter-pill .counter-pill__count {
       font-size: 144px;            /* scaled down to fit the 300×300 box */
       line-height: 0.9;
     }
     .app.is-landscape.variant-v9 .v9-card-counter .counter-pill__label,
-    .app.is-landscape.variant-v9 .v9-student-actions > .counter-pill .counter-pill__label {
+    .app.is-landscape.variant-v9 .scan-shell-v3--v9-student .scan-panel--checkout > .counter-pill .counter-pill__label {
       font-size: 32px;
       letter-spacing: 0.2px;
       text-align: center;
@@ -3493,24 +3498,21 @@
       max-width: 100%;
     }
 
-    /* --- Counter color: light-teal background, teal text, regardless of
-       muted/active state OR variant (override the sky-blue idle + the
-       golden student) so cashier and student match.                    */
-    .app.is-landscape.variant-v9 .v9-card-counter .counter-pill__inner,
-    .app.is-landscape.variant-v9 .v9-card-counter.is-muted .counter-pill__inner,
-    .app.is-landscape.variant-v9 .v9-student-actions > .counter-pill .counter-pill__inner,
-    .app.is-landscape.variant-v9 .v9-student-actions > .counter-pill--gold .counter-pill__inner {
+    /* --- Counter color: light-teal background + teal text on BOTH orientations
+           and BOTH screens (cashier + student), regardless of muted/active.
+           Override the legacy sky-muted and golden-student treatments.    */
+    .app.variant-v9 .v9-card-counter .counter-pill__inner,
+    .app.variant-v9 .v9-card-counter.is-muted .counter-pill__inner,
+    .app.variant-v9 .scan-shell-v3--v9-student .scan-panel--checkout > .counter-pill .counter-pill__inner {
       background: var(--teal-light);
       border: 2px solid rgba(0, 140, 149, 0.22);
     }
-    .app.is-landscape.variant-v9 .v9-card-counter .counter-pill__count,
-    .app.is-landscape.variant-v9 .v9-card-counter .counter-pill__label,
-    .app.is-landscape.variant-v9 .v9-card-counter.is-muted .counter-pill__count,
-    .app.is-landscape.variant-v9 .v9-card-counter.is-muted .counter-pill__label,
-    .app.is-landscape.variant-v9 .v9-student-actions > .counter-pill .counter-pill__count,
-    .app.is-landscape.variant-v9 .v9-student-actions > .counter-pill .counter-pill__label,
-    .app.is-landscape.variant-v9 .v9-student-actions > .counter-pill--gold .counter-pill__count,
-    .app.is-landscape.variant-v9 .v9-student-actions > .counter-pill--gold .counter-pill__label {
+    .app.variant-v9 .v9-card-counter .counter-pill__count,
+    .app.variant-v9 .v9-card-counter .counter-pill__label,
+    .app.variant-v9 .v9-card-counter.is-muted .counter-pill__count,
+    .app.variant-v9 .v9-card-counter.is-muted .counter-pill__label,
+    .app.variant-v9 .scan-shell-v3--v9-student .scan-panel--checkout > .counter-pill .counter-pill__count,
+    .app.variant-v9 .scan-shell-v3--v9-student .scan-panel--checkout > .counter-pill .counter-pill__label {
       color: var(--teal);
     }
 
@@ -3594,6 +3596,7 @@
                 <option value="returning_user">Returning User</option>
                 <option value="campus_user_not_found">User Not Found</option>
                 <option value="account_frozen">Account Frozen</option>
+                <option value="gift_card_scanned">Gift Card Scanned</option>
               </select>
             </div>
             <div class="settings-popover__field">
@@ -3961,6 +3964,12 @@
                       ${studentIconHtml}
                       ${studentLabelHtml}
                       <div class="scan-panel__text">Tap your ID or credit card to check out</div>
+                      <div class="counter-pill counter-pill--v2">
+                        <div class="counter-pill__inner">
+                          <div class="counter-pill__count is-pop">${containerCount}</div>
+                          <div class="counter-pill__label">${containerUnitLower} scanned</div>
+                        </div>
+                      </div>
                       <div class="kiosk-zone">
                         <div class="kiosk-zone__stage">
                           <img class="kiosk-zone__img" src="images/illustrations/concept-art/checkout-station-kiosk.png" alt="USEFULL checkout station" />
@@ -3971,12 +3980,6 @@
                         </div>
                       </div>
                       <div class="v9-student-actions">
-                        <div class="counter-pill counter-pill--v2 counter-pill--gold">
-                          <div class="counter-pill__inner">
-                            <div class="counter-pill__count is-pop">${containerCount}</div>
-                            <div class="counter-pill__label">${containerUnitLower} scanned</div>
-                          </div>
-                        </div>
                         <button class="v9-cancel-btn" id="v9CancelBtn" type="button">Cancel</button>
                       </div>
                     </div>
