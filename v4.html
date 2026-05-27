@@ -2874,9 +2874,15 @@
     }
 
     /* ── Clean mode: hide UI chrome for mockup mode ───── */
+    body.clean-mode .action-bar,
     body.clean-mode .settings-wheel,
     body.clean-mode .version-badge,
-    body.clean-mode .debug-badge {
+    body.clean-mode .debug-badge,
+    /* Screenshot mode: temporary toggle via `h` or tapping the USEFULL logo */
+    body.screenshot-controls-hidden .action-bar,
+    body.screenshot-controls-hidden .settings-wheel,
+    body.screenshot-controls-hidden .version-badge,
+    body.screenshot-controls-hidden .debug-badge {
       display: none !important;
     }
 
@@ -3784,6 +3790,19 @@
       return appState === STATE.SCAN && !termsModalOpen && !checkoutLocked && !simulationActive;
     }
 
+    /* ── Screenshot mode: temporarily hide the bottom-left control cluster
+       (action-bar + settings wheel + version/debug badges). Toggled by the
+       `h` key or by tapping the USEFULL brand logo.                       */
+    function setScreenshotControlsHidden(hidden) {
+      document.body.classList.toggle('screenshot-controls-hidden', hidden);
+      if (hidden) {
+        document.getElementById('settingsWheel')?.classList.remove('is-open');
+      }
+    }
+    function toggleScreenshotControls() {
+      setScreenshotControlsHidden(!document.body.classList.contains('screenshot-controls-hidden'));
+    }
+
     /* ── Countdown display (called by core.js) ─────── */
     window.updateCountdownDisplay = function () {
       const textEl = document.getElementById('countdownText');
@@ -4499,8 +4518,14 @@
         handleIdTap({ type: 'credit' });
       });
 
-      // Keypad delegation — catches clicks on any keypad key in any screen
+      // Keypad delegation — catches clicks on any keypad key in any screen.
+      // Also: tapping the USEFULL brand logo toggles screenshot mode.
       screen.addEventListener('click', (e) => {
+        if (e.target.closest('.brand-strip__logo')) {
+          toggleScreenshotControls();
+          return;
+        }
+
         const keyEl = e.target.closest('[data-keypad-value]');
         if (!keyEl) return;
         const target = keyEl.dataset.keypadTarget;
@@ -4516,6 +4541,20 @@
       document.getElementById('settingsToggle').onclick = () => {
         document.getElementById('settingsWheel').classList.toggle('is-open');
       };
+
+      // Screenshot mode: `h` toggles the bottom-left controls
+      document.addEventListener('keydown', (e) => {
+        const target = e.target;
+        const isEditing = target && (
+          target.matches?.('input, select, textarea') ||
+          target.isContentEditable
+        );
+        if (isEditing || e.repeat || e.altKey || e.ctrlKey || e.metaKey) return;
+        if (e.key.toLowerCase() === 'h') {
+          toggleScreenshotControls();
+        }
+      });
+
       document.getElementById('collegeSelect').onchange = (e) => {
         selectedCollege = e.target.value;
         window.render();
