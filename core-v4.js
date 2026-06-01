@@ -76,6 +76,7 @@ const IDLE_TIMEOUT_MS = 30000;
 const SUCCESS_RESET_MS = IDLE_TIMEOUT_MS;
 const ERROR_RESET_MS = IDLE_TIMEOUT_MS;
 const SCAN_NOTICE_MS = 2500;
+const ACCOUNT_FOUND_AUTO_ADVANCE_MS = 10000;
 let accountLookupDelay = 1500;
 
 /* ── State variables (globals) ─────────────────────────────────── */
@@ -106,6 +107,9 @@ let countdownInterval = null;
 let successTimer = null;
 let scanNoticeTimer = null;
 let accountLookupTimer = null;
+let accountFoundTimer = null;
+let accountFoundDeadline = null;
+let accountFoundCountdownInterval = null;
 let termsModalOpen = false;
 
 /* ── Simulation state ──────────────────────────────────────────── */
@@ -290,6 +294,46 @@ function scheduleAutoReset(delay) {
   resetTimers();
 }
 
+function clearAccountFoundTimer() {
+  if (accountFoundTimer) {
+    clearTimeout(accountFoundTimer);
+    accountFoundTimer = null;
+  }
+  if (accountFoundCountdownInterval) {
+    clearInterval(accountFoundCountdownInterval);
+    accountFoundCountdownInterval = null;
+  }
+  accountFoundDeadline = null;
+}
+
+function scheduleAccountFoundAutoAdvance() {
+  clearAccountFoundTimer();
+  if (debugEnabled) {
+    if (typeof window.updateAccountFoundCountdown === 'function') {
+      window.updateAccountFoundCountdown();
+    }
+    return;
+  }
+
+  accountFoundDeadline = Date.now() + ACCOUNT_FOUND_AUTO_ADVANCE_MS;
+  if (typeof window.updateAccountFoundCountdown === 'function') {
+    window.updateAccountFoundCountdown();
+  }
+
+  accountFoundCountdownInterval = setInterval(() => {
+    if (typeof window.updateAccountFoundCountdown === 'function') {
+      window.updateAccountFoundCountdown();
+    }
+  }, 250);
+
+  accountFoundTimer = setTimeout(() => {
+    clearAccountFoundTimer();
+    if (appState === STATE.ACCOUNT_FOUND) {
+      advanceFromAccountFound();
+    }
+  }, ACCOUNT_FOUND_AUTO_ADVANCE_MS);
+}
+
 /* ── Scan notice ───────────────────────────────────────────────── */
 
 function clearScanNotice(shouldRender) {
@@ -339,9 +383,15 @@ function setTermsOpen(isOpen) {
 /* ── State transitions ─────────────────────────────────────────── */
 
 function setState(next) {
+  if (appState === STATE.ACCOUNT_FOUND && next !== STATE.ACCOUNT_FOUND) {
+    clearAccountFoundTimer();
+  }
   appState = next;
   window.render();
   resetTimers();
+  if (next === STATE.ACCOUNT_FOUND) {
+    scheduleAccountFoundAutoAdvance();
+  }
 }
 
 function resetSession() {
@@ -357,6 +407,7 @@ function resetSession() {
   stopCountdown();
   clearSuccessTimer();
   clearAccountLookupTimer();
+  clearAccountFoundTimer();
   setState(STATE.SCAN);
 }
 
@@ -457,11 +508,11 @@ function beginCreditScenarioFlow() {
 
   RETURN SAME UNDERLYING:
     SCAN → card tap → IDENTIFIER_ENTRY → ACCOUNT_LOOKUP → ACCOUNT_FOUND
-         → SMS_CONFIRM_METHOD → OTP_VERIFY → SUCCESS_RETURNING
+         → SUCCESS_RETURNING
 
   RETURN DIFFERENT CARD:
     SCAN → card tap → IDENTIFIER_ENTRY → ACCOUNT_LOOKUP
-         → OTP_VERIFY → SUCCESS_RETURNING
+         → SMS_CONFIRM_METHOD → OTP_VERIFY → UPDATE_DEFAULT_CARD → SUCCESS_RETURNING
 */
 
 function clearAccountLookupTimer() {
@@ -501,10 +552,12 @@ function advanceFromAccountLookup() {
 }
 
 function advanceFromAccountFound() {
+  clearAccountFoundTimer();
   const scenario = currentFlow?.scenario;
   if (scenario === CREDIT_SCENARIO.RETURN_SAME_UNDERLYING) {
-    // "Link this Apple Pay?" → SMS confirm first
-    setState(STATE.SMS_CONFIRM_METHOD);
+    // Phone + physical last4 matched, so no OTP is required.
+    setState(STATE.SUCCESS_RETURNING);
+    scheduleAutoReset(SUCCESS_RESET_MS);
   } else {
     // Different card → "Card doesn't match, verify via SMS" → OTP first
     setState(STATE.OTP_VERIFY);
@@ -695,6 +748,7 @@ function jumpTo(stateName) {
   // Stop any in-flight timers
   clearSuccessTimer();
   clearAccountLookupTimer();
+  clearAccountFoundTimer();
   cancelSimulation();
 
   // Populate sensible mock data for every state
@@ -755,6 +809,9 @@ function jumpTo(stateName) {
   appState = target;
   window.render();
   resetTimers();
+  if (target === STATE.ACCOUNT_FOUND) {
+    scheduleAccountFoundAutoAdvance();
+  }
 }
 
 // Expose jumpTo on window for console use

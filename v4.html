@@ -1519,6 +1519,14 @@
       gap: clamp(12px, 1.8vh, 20px);
       justify-content: flex-start;
     }
+    .app.is-auth-mode .id-entry-layout .auth-card.auth-wide-card {
+      width: min(100%, 760px);
+      padding: clamp(32px, 4.6vmin, 48px) clamp(32px, 5vmin, 56px) clamp(28px, 4vmin, 42px);
+      gap: clamp(16px, 2.3vh, 28px);
+    }
+    .app.is-auth-mode .id-entry-layout .auth-card.account-found-card {
+      width: min(100%, 680px);
+    }
     .id-entry-layout .phone-display {
       width: 100%;
     }
@@ -1543,7 +1551,7 @@
       white-space: nowrap;
     }
     .app.is-auth-mode .id-entry-layout .otp-card {
-      width: min(100%, 600px);
+      width: min(100%, 760px);
     }
     .id-entry-layout .otp-card .keypad,
     .app.is-auth-mode .id-entry-layout .otp-card .keypad {
@@ -1628,11 +1636,41 @@
       gap: clamp(12px, 2vmin, 16px);
       padding-top: clamp(4px, 1vmin, 10px);
     }
+    .auth-action-stack {
+      width: min(100%, 620px);
+      display: grid;
+      gap: clamp(10px, 1.6vmin, 14px);
+      justify-items: center;
+      padding-top: clamp(4px, 1vmin, 10px);
+    }
+    .auth-action-stack .btn {
+      width: 100%;
+      flex: none;
+      white-space: nowrap;
+    }
+    .app.is-auth-mode .auth-action-stack .btn:focus {
+      outline: none;
+    }
+    .app.is-auth-mode .auth-action-stack .btn--primary {
+      min-height: clamp(66px, 8.4vmin, 84px);
+      font-size: clamp(30px, 4.8vmin, 42px);
+    }
+    .app.is-auth-mode .auth-action-stack .btn--secondary {
+      min-height: clamp(58px, 7vmin, 72px);
+      font-size: clamp(25px, 4vmin, 34px);
+    }
+    .app.is-auth-mode .auth-action-stack .btn--cancel {
+      width: min(100%, 340px);
+    }
     .app.is-auth-mode .id-entry-card .btn {
       min-height: clamp(62px, 8vmin, 78px);
       font-family: 'League Spartan', sans-serif;
       font-size: clamp(28px, 4.8vmin, 40px);
       font-weight: 700;
+    }
+    .app.is-auth-mode .id-entry-card .auth-action-stack .btn--primary {
+      min-height: clamp(66px, 8.4vmin, 84px);
+      font-size: clamp(30px, 4.8vmin, 42px);
     }
     .app.is-portrait .id-entry-layout {
       padding: 20px 27px 72px;
@@ -1676,8 +1714,14 @@
     .app.is-auth-mode.is-landscape .id-entry-layout .auth-card {
       width: min(80%, 900px);
     }
+    .app.is-auth-mode.is-landscape .id-entry-layout .auth-card.auth-wide-card {
+      width: min(88%, 960px);
+    }
+    .app.is-auth-mode.is-landscape .id-entry-layout .auth-card.account-found-card {
+      width: min(74%, 760px);
+    }
     .app.is-auth-mode.is-landscape .id-entry-layout .otp-card {
-      width: min(80%, 900px);
+      width: min(88%, 960px);
     }
     /* Title + subtitle max-widths assume a narrow card; relax them in
        landscape so wider cards actually use their width.                */
@@ -1779,11 +1823,11 @@
     .app.is-auth-mode .auth-flow-card .auth-card__subtitle {
       font-size: clamp(20px, 3.4vmin, 30px); /* kiosk-distance bump (was 16/2.6/24) */
       padding: 0;
-      max-width: 600px;                      /* was 520; bumped to match wider card + bigger font */
+      max-width: 680px;                      /* was 520; bumped to match wider card + bigger font */
       text-wrap: balance;                    /* even line lengths when subtitle wraps */
     }
     .auth-flow-card .sms-confirm-body {
-      max-width: 520px;
+      max-width: 640px;
     }
     .auth-card__initial {
       width: clamp(68px, 14vmin, 120px);
@@ -1825,6 +1869,53 @@
     .auth-card__detail-row strong {
       color: var(--slate);
       font-weight: 600;
+    }
+    .account-found-card .auth-card__title {
+      color: var(--slate);
+    }
+    .account-found-card .auth-card__subtitle {
+      max-width: 560px;
+    }
+    .account-found-chips {
+      width: min(100%, 560px);
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: clamp(10px, 1.8vmin, 14px);
+    }
+    .account-found-chip {
+      display: grid;
+      gap: 5px;
+      align-content: center;
+      min-height: clamp(82px, 10vmin, 102px);
+      padding: 16px 18px 12px;
+      background: var(--white);
+      border: 2px solid var(--teal);
+      border-radius: 10px;
+      box-shadow: 0 3px 12px rgba(20, 40, 50, 0.06);
+      text-align: left;
+    }
+    .account-found-chip__label {
+      font-family: 'Roboto', sans-serif;
+      font-size: clamp(12px, 1.8vmin, 15px);
+      font-weight: 700;
+      color: var(--teal);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+    .account-found-chip__value {
+      font-family: 'League Spartan', sans-serif;
+      font-size: clamp(23px, 3.7vmin, 32px);
+      font-weight: 700;
+      color: var(--slate);
+      line-height: 1;
+    }
+    .account-found-countdown {
+      font-size: 0.78em;
+      font-weight: 700;
+    }
+    .app.is-auth-mode .account-found-card .auth-action-stack .btn--cancel {
+      width: min(100%, 560px);
+      font-size: clamp(25px, 4vmin, 34px);
     }
     .auth-card__card-display {
       font-family: 'League Spartan', sans-serif;
@@ -4220,6 +4311,20 @@
       }
     };
 
+    window.updateAccountFoundCountdown = function () {
+      const valueEl = document.getElementById('accountFoundCountdownValue');
+      if (!valueEl) return;
+
+      if (!accountFoundDeadline) {
+        valueEl.textContent = '';
+        return;
+      }
+
+      const remaining = Math.max(0, accountFoundDeadline - Date.now());
+      const secs = Math.ceil(remaining / 1000);
+      valueEl.textContent = ` (${secs}s)`;
+    };
+
     /* ── Simulation state callback ─────────────────── */
     window.onSimulationStateChange = function () {
       // two-buttons doesn't show a countdown badge on the sim button,
@@ -4567,7 +4672,7 @@
                 <div class="auth-card__subtitle">${idBody}</div>
                 <div class="phone-display">${phoneFmt}</div>
                 ${renderKeypad('identifier')}
-                <div class="btn-row">
+                <div class="auth-action-stack">
                   <button class="btn btn--primary" id="continueIdBtn" type="button" ${canContinue ? '' : 'disabled'}>Continue</button>
                   <button class="btn btn--cancel btn--cancel-orange" id="cancelBtn" type="button">Cancel</button>
                 </div>
@@ -4601,27 +4706,36 @@
         }
 
         case STATE.ACCOUNT_FOUND: {
-          const phoneLast4 = identifierValue ? identifierValue.slice(-4) : '3456';
+          const matchedCardLabel = `${cardBrand} *${cardLast4}`;
           screen.innerHTML = `
             <div class="brand-strip">
               <img class="brand-strip__logo" src="images/USEFULL-icons/USEFULL-Logo-Registered_Color.svg" alt="USEFULL" />
             </div>
-            <div class="auth-card auth-card--found">
-              <div class="auth-card__title">We found your account!</div>
-              <div class="auth-card__detail-row">
-                <span><strong>Phone:</strong> ***${phoneLast4}</span>
-                <span><strong>Member since</strong> 2024</span>
+            <div class="id-entry-layout">
+              <div class="auth-card auth-card--found auth-flow-card auth-wide-card account-found-card">
+                ${creditCardIconHtml}
+                <div class="auth-card__title">We found your account</div>
+                <div class="auth-card__subtitle">Your ${cardBrand} ending in ${cardLast4} matches an existing USEFULL account.</div>
+                <div class="account-found-chips">
+                  <div class="account-found-chip">
+                    <div class="account-found-chip__label">Matched card</div>
+                    <div class="account-found-chip__value">${matchedCardLabel}</div>
+                  </div>
+                  <div class="account-found-chip">
+                    <div class="account-found-chip__label">Member since</div>
+                    <div class="account-found-chip__value">2024</div>
+                  </div>
+                </div>
+                <div class="auth-action-stack">
+                  <button class="btn btn--primary" id="continueFoundBtn" type="button">Continue<span class="account-found-countdown" id="accountFoundCountdownValue"></span></button>
+                  <button class="btn btn--cancel" id="cancelBtn" type="button">Not you? Try a different number</button>
+                </div>
               </div>
-              <div class="btn-row">
-                <button class="btn btn--primary" id="continueFoundBtn" type="button">Continue</button>
-                <button class="btn btn--cancel" id="cancelBtn" type="button">Cancel</button>
-              </div>
-              <button class="btn--link" id="notYouBtn" type="button">Not you? Try a different number</button>
             </div>
           `;
           document.getElementById('continueFoundBtn').onclick = () => advanceFromAccountFound();
-          document.getElementById('cancelBtn').onclick = resetSession;
-          document.getElementById('notYouBtn').onclick = () => { identifierValue = ''; setState(STATE.IDENTIFIER_ENTRY); };
+          document.getElementById('cancelBtn').onclick = () => { identifierValue = ''; setState(STATE.IDENTIFIER_ENTRY); };
+          window.updateAccountFoundCountdown();
           break;
         }
 
@@ -4633,12 +4747,12 @@
               <img class="brand-strip__logo" src="images/USEFULL-icons/USEFULL-Logo-Registered_Color.svg" alt="USEFULL" />
             </div>
             <div class="id-entry-layout">
-              <div class="auth-card auth-card--method auth-flow-card">
+              <div class="auth-card auth-card--method auth-flow-card auth-wide-card">
                 ${phoneIconHtml}
                 <div class="auth-card__title">Verify Phone Number</div>
                 <div class="auth-card__subtitle">This phone number is associated with a different card. For your security, please confirm your phone number.</div>
                 <div class="sms-confirm-body">We'll send a confirmation code to <strong>${phoneMasked}</strong></div>
-                <div class="btn-row sms-confirm-btns">
+                <div class="auth-action-stack sms-confirm-btns">
                   <button class="btn btn--primary" id="sendCodeBtn" type="button">Send Code</button>
                   <button class="btn btn--cancel btn--cancel-orange" id="cancelBtn" type="button">Cancel</button>
                 </div>
@@ -4662,13 +4776,13 @@
               <img class="brand-strip__logo" src="images/USEFULL-icons/USEFULL-Logo-Registered_Color.svg" alt="USEFULL" />
             </div>
             <div class="id-entry-layout">
-              <div class="auth-card auth-card--dense otp-card auth-flow-card">
+              <div class="auth-card auth-card--dense otp-card auth-flow-card auth-wide-card">
                 ${phoneIconHtml}
                 <div class="auth-card__title">Verify Phone Number</div>
                 <div class="auth-card__subtitle">Please enter the code we sent to your phone.</div>
                 <div class="otp-boxes">${otpBoxes}</div>
                 ${renderKeypad('otp')}
-                <div class="btn-row">
+                <div class="auth-action-stack">
                   <button class="btn btn--primary" id="verifyBtn" type="button" ${canVerify ? '' : 'disabled'}>Verify</button>
                   <button class="btn btn--cancel btn--cancel-orange" id="cancelBtn" type="button">Cancel</button>
                 </div>
@@ -4686,12 +4800,12 @@
               <img class="brand-strip__logo" src="images/USEFULL-icons/USEFULL-Logo-Registered_Color.svg" alt="USEFULL" />
             </div>
             <div class="id-entry-layout">
-              <div class="auth-card auth-card--method auth-flow-card">
+              <div class="auth-card auth-card--method auth-flow-card auth-wide-card">
                 ${creditCardIconHtml}
                 <div class="auth-card__title">Update default card?</div>
                 <div class="auth-card__subtitle">Would you like to save ${cardBrand} *${cardLast4} as the default card for USEFULL late &amp; lost fees?</div>
                 <div class="sms-confirm-body">Your current default card is ${prevCardBrand} *${prevCardLast4}</div>
-                <div class="btn-row sms-confirm-btns btn-row--stacked">
+                <div class="auth-action-stack sms-confirm-btns">
                   <button class="btn btn--primary" id="updateCardBtn" type="button">Update</button>
                   <button class="btn btn--secondary" id="skipUpdateBtn" type="button">Don't Update</button>
                   <button class="btn btn--cancel" id="cancelBtn" type="button">Cancel</button>
