@@ -72,9 +72,9 @@ const CONTAINER_CATALOG = [
 
 /* ── Timing constants ──────────────────────────────────────────── */
 
-const IDLE_TIMEOUT_MS = 15000;
-const SUCCESS_RESET_MS = 5000;
-const ERROR_RESET_MS = 8000;
+const IDLE_TIMEOUT_MS = 30000;
+const SUCCESS_RESET_MS = IDLE_TIMEOUT_MS;
+const ERROR_RESET_MS = IDLE_TIMEOUT_MS;
 const SCAN_NOTICE_MS = 2500;
 let accountLookupDelay = 1500;
 
@@ -232,26 +232,37 @@ function getDueDateString() {
 
 function resetTimers() {
   clearTimeout(idleTimer);
-  idleDeadline = Date.now() + IDLE_TIMEOUT_MS;
-  if (!termsModalOpen) {
-    if (!debugEnabled && !urlParams.get('demo')) {
-      idleTimer = setTimeout(() => { resetSession(); }, IDLE_TIMEOUT_MS);
-    }
-    if (appState === STATE.SCAN && containerCount > 0 && !checkoutLocked) {
-      startCountdown();
-    } else {
-      stopCountdown();
-    }
+  idleTimer = null;
+
+  const shouldCountdown =
+    !termsModalOpen &&
+    !debugEnabled &&
+    !urlParams.get('demo') &&
+    shouldShowSessionCountdown();
+
+  if (shouldCountdown) {
+    idleDeadline = Date.now() + IDLE_TIMEOUT_MS;
+    idleTimer = setTimeout(() => { resetSession(); }, IDLE_TIMEOUT_MS);
+    startCountdown();
   } else {
+    idleDeadline = null;
     stopCountdown();
+  }
+
+  if (typeof window.updateSessionControl === 'function') {
+    window.updateSessionControl();
   }
 }
 
+function shouldShowSessionCountdown() {
+  return appState !== STATE.SCAN || containerCount > 0;
+}
+
 function startCountdown() {
-  if (countdownInterval) return;
   if (typeof window.updateCountdownDisplay === 'function') {
     window.updateCountdownDisplay();
   }
+  if (countdownInterval) return;
   countdownInterval = setInterval(() => {
     if (typeof window.updateCountdownDisplay === 'function') {
       window.updateCountdownDisplay();
@@ -274,9 +285,9 @@ function clearSuccessTimer() {
 }
 
 function scheduleAutoReset(delay) {
+  void delay;
   clearSuccessTimer();
-  if (debugEnabled) return;
-  successTimer = setTimeout(() => { resetSession(); }, delay);
+  resetTimers();
 }
 
 /* ── Scan notice ───────────────────────────────────────────────── */
@@ -668,6 +679,7 @@ function setDebugEnabled(enabled) {
   } else {
     window.localStorage.removeItem('debugEnabled');
   }
+  resetTimers();
 }
 
 function jumpTo(stateName) {
@@ -742,6 +754,7 @@ function jumpTo(stateName) {
 
   appState = target;
   window.render();
+  resetTimers();
 }
 
 // Expose jumpTo on window for console use

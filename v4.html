@@ -114,22 +114,6 @@
       gap: 8px;
       justify-self: end;
     }
-    .brand-strip__reset-btn {
-      background: var(--teal);
-      color: var(--white);
-      border: none;
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: 600;
-      padding: 4px 10px;
-      cursor: pointer;
-      font-family: inherit;
-      transition: opacity 0.15s;
-    }
-    .brand-strip__reset-btn:active {
-      opacity: 0.8;
-    }
-
     /* Countdown ring — compact circle in the brand strip */
     .countdown-ring {
       position: relative;
@@ -164,6 +148,79 @@
       font-weight: 700;
       color: var(--slate-light);
       line-height: 1;
+    }
+    .session-control {
+      position: absolute;
+      top: calc(env(safe-area-inset-top) + 12px);
+      right: calc(env(safe-area-inset-right) + 24px);
+      z-index: 60;
+      min-width: 70px;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      pointer-events: none;
+    }
+    .session-control[hidden] {
+      display: none;
+    }
+    .session-control > * {
+      pointer-events: auto;
+    }
+    .session-exit-btn {
+      min-height: 44px;
+      padding: 8px 14px 7px 12px;
+      border: 2px solid rgba(38, 50, 56, 0.18);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.94);
+      color: var(--slate);
+      box-shadow: 0 6px 18px rgba(38, 50, 56, 0.12);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'League Spartan', sans-serif;
+      font-size: clamp(18px, 2.4vmin, 23px);
+      font-weight: 700;
+      line-height: 1;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .session-exit-btn svg {
+      width: 20px;
+      height: 20px;
+      stroke-width: 2.8;
+      flex-shrink: 0;
+    }
+    .session-countdown {
+      min-width: 72px;
+      height: 40px;
+      padding: 8px 14px 6px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.76);
+      border: 1.5px solid rgba(0, 140, 149, 0.26);
+      box-shadow: 0 3px 10px rgba(0, 140, 149, 0.10);
+      display: inline-flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 2px;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+    .session-countdown__value {
+      font-size: 24px;
+      line-height: 1;
+      color: var(--teal);
+      font-family: 'League Spartan', sans-serif;
+      font-weight: 700;
+    }
+    .session-countdown__unit {
+      font-size: 15px;
+      line-height: 1;
+      color: rgba(0, 140, 149, 0.72);
+      font-family: 'League Spartan', sans-serif;
+      font-weight: 700;
+      text-transform: uppercase;
     }
 
     /* ── Idle state ─────────────────────────────────── */
@@ -1920,10 +1977,46 @@
       font-weight: 700;
       padding: 12px 36px 8px;
     }
+    .btn--cancel,
+    .btn--dismiss {
+      min-width: clamp(180px, 28vmin, 240px);
+      min-height: 56px;
+      border: 2px solid var(--golden);
+      border-radius: 10px;
+      background: var(--white);
+      color: var(--golden);
+      font-family: 'League Spartan', sans-serif;
+      font-size: clamp(22px, 3.4vmin, 30px);
+      font-weight: 700;
+      padding: 12px 34px 8px;
+    }
+    .btn--cancel:active,
+    .btn--dismiss:active {
+      background: rgba(214, 154, 45, 0.10);
+    }
+    .btn--cancel-orange {
+      background: var(--white);
+      border-color: var(--golden);
+      color: var(--golden);
+    }
+    .btn--cancel-orange:active {
+      background: rgba(214, 154, 45, 0.10);
+    }
     .app.is-auth-mode .btn--secondary {
       background: rgba(255, 255, 255, 0.64);
       border: 2px solid rgba(0, 140, 149, 0.20);
       color: var(--slate-light);
+    }
+    .app.is-auth-mode .btn--cancel,
+    .app.is-auth-mode .btn--dismiss {
+      background: var(--white);
+      border: 2px solid var(--golden);
+      color: var(--golden);
+    }
+    .app.is-auth-mode .btn--cancel-orange {
+      background: var(--white);
+      border-color: var(--golden);
+      color: var(--golden);
     }
     .app.is-auth-mode .btn--link {
       font-family: 'League Spartan', sans-serif;
@@ -1947,6 +2040,12 @@
     }
     .btn--secondary:active {
       background: var(--gray-200);
+    }
+    .btn-row--stacked {
+      flex-wrap: wrap;
+    }
+    .btn-row--solo {
+      padding-top: 0;
     }
     .btn--link {
       background: none;
@@ -2333,6 +2432,10 @@
       width: 100%;
       min-height: 0;
     }
+    .success-dismiss-btn {
+      margin-top: clamp(14px, 2.4vmin, 22px);
+      flex-shrink: 0;
+    }
     .success-card {
       width: min(100%, 760px);
       min-height: min(100%, 980px);
@@ -2666,7 +2769,7 @@
       position: relative;
     }
     .app-download-panel__icon {
-      width: clamp(58px, 9vmin, 74px);
+      width: clamp(82px, 12vmin, 118px);
       height: auto;
     }
     .app-download-panel__title {
@@ -2770,7 +2873,158 @@
       transform: rotate(-45deg);
     }
 
+    /* ── Access code exit modal ───────────────────────── */
+    .access-code-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 220;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .access-code-overlay[hidden] {
+      display: none;
+    }
+    .access-code-panel {
+      width: min(100%, 620px);
+      overflow: hidden;
+      border-radius: 3px;
+      background: var(--white);
+      box-shadow: 0 18px 44px rgba(0, 0, 0, 0.24);
+    }
+    .access-code-panel__title {
+      padding: 28px 32px 24px;
+      border-bottom: 1px solid #eef2f3;
+      text-align: center;
+      font-family: 'League Spartan', sans-serif;
+      font-size: clamp(24px, 3.6vmin, 34px);
+      font-weight: 700;
+      line-height: 1.12;
+      color: var(--slate);
+    }
+    .access-code-panel__body {
+      padding: 28px 40px 30px;
+    }
+    .access-code-field {
+      position: relative;
+    }
+    .access-code-input {
+      width: 100%;
+      min-height: 78px;
+      padding: 18px 64px 16px 24px;
+      border: 2px solid #cbd5d8;
+      border-radius: 2px;
+      outline: none;
+      color: var(--slate);
+      font-family: 'Roboto', system-ui, sans-serif;
+      font-size: clamp(24px, 3.4vmin, 34px);
+      letter-spacing: 0.36em;
+      transition: border-color 0.16s, color 0.16s;
+    }
+    .access-code-input::placeholder {
+      color: #9aa8ad;
+      letter-spacing: normal;
+    }
+    .access-code-input.is-visible {
+      letter-spacing: 0.16em;
+    }
+    .access-code-panel.is-error .access-code-input {
+      border-color: #E14D42;
+      color: #E14D42;
+    }
+    .access-code-toggle {
+      position: absolute;
+      top: 50%;
+      right: 18px;
+      width: 38px;
+      height: 38px;
+      padding: 0;
+      border: none;
+      background: transparent;
+      color: var(--slate);
+      transform: translateY(-50%);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+    }
+    .access-code-toggle svg {
+      width: 24px;
+      height: 24px;
+    }
+    .access-code-error {
+      min-height: 24px;
+      margin-top: 8px;
+      font-size: clamp(15px, 2vmin, 19px);
+      font-weight: 600;
+      color: #E14D42;
+    }
+    .access-code-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-top: 1px solid #eef2f3;
+    }
+    .access-code-action {
+      min-height: 76px;
+      border: none;
+      background: var(--white);
+      color: #98A3AA;
+      font-family: 'League Spartan', sans-serif;
+      font-size: clamp(20px, 2.8vmin, 28px);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+    }
+    .access-code-action + .access-code-action {
+      border-left: 1px solid #eef2f3;
+    }
+    .access-code-action--submit {
+      color: var(--teal);
+    }
+    .access-code-action--submit:disabled {
+      color: #cbd5d8;
+      cursor: default;
+    }
+    .access-code-toast {
+      position: absolute;
+      top: calc(env(safe-area-inset-top) + 68px);
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 230;
+      max-width: min(92%, 640px);
+      padding: 12px 18px 10px;
+      border-radius: 12px;
+      background: var(--teal);
+      color: var(--white);
+      box-shadow: 0 10px 26px rgba(0, 140, 149, 0.24);
+      font-family: 'League Spartan', sans-serif;
+      font-size: clamp(18px, 2.4vmin, 24px);
+      font-weight: 700;
+      text-align: center;
+    }
+    .access-code-toast[hidden] {
+      display: none;
+    }
+
     /* ── Loading spinner ──────────────────────────────── */
+    .spinner-button {
+      width: clamp(56px, 9vmin, 80px);
+      height: clamp(56px, 9vmin, 80px);
+      padding: 0;
+      border: none;
+      background: transparent;
+      display: grid;
+      place-items: center;
+      cursor: default;
+    }
+    .spinner-button .spinner {
+      width: 100%;
+      height: 100%;
+    }
     .spinner {
       width: clamp(40px, 8vmin, 64px);
       height: clamp(40px, 8vmin, 64px);
@@ -3549,6 +3803,41 @@
       <!-- Rendered by JS -->
     </main>
 
+    <div id="sessionControl" class="session-control" hidden></div>
+
+    <div id="accessCodeToast" class="access-code-toast" hidden>Success: you'd normally exit Checkout Station mode now</div>
+
+    <div id="accessCodeModal" class="access-code-overlay" hidden>
+      <div class="access-code-panel" id="accessCodePanel" role="dialog" aria-modal="true" aria-labelledby="accessCodeTitle">
+        <div class="access-code-panel__title" id="accessCodeTitle">Enter the checkout station access code</div>
+        <div class="access-code-panel__body">
+          <div class="access-code-field">
+            <input
+              class="access-code-input"
+              id="accessCodeInput"
+              type="password"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              maxlength="4"
+              autocomplete="off"
+              placeholder="Enter code here"
+            />
+            <button class="access-code-toggle" id="accessCodeToggle" type="button" aria-label="Show access code">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </button>
+          </div>
+          <div class="access-code-error" id="accessCodeError" aria-live="polite"></div>
+        </div>
+        <div class="access-code-actions">
+          <button class="access-code-action" id="accessCodeCancel" type="button">Cancel</button>
+          <button class="access-code-action access-code-action--submit" id="accessCodeSubmit" type="button" disabled>Submit</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Action buttons -->
     <div class="action-bar">
       <button class="action-btn" id="btnScanContainer" type="button" title="Scan a container">
@@ -3744,7 +4033,16 @@
     const screen = document.getElementById('screen');
     const appRoot = document.getElementById('app');
     const termsModal = document.getElementById('termsModal');
+    const sessionControl = document.getElementById('sessionControl');
+    const accessCodeModal = document.getElementById('accessCodeModal');
+    const accessCodePanel = document.getElementById('accessCodePanel');
+    const accessCodeInput = document.getElementById('accessCodeInput');
+    const accessCodeToggle = document.getElementById('accessCodeToggle');
+    const accessCodeError = document.getElementById('accessCodeError');
+    const accessCodeSubmit = document.getElementById('accessCodeSubmit');
+    const accessCodeToast = document.getElementById('accessCodeToast');
     const DEDUPE_MS = 450;
+    const ACCESS_CODE = '1234';
     let lastScanTap = 0;
     let v9StudentStep = false;
 
@@ -3759,6 +4057,7 @@
     appRoot.dataset.cardBorders = 'on';
     if (cleanMode) document.body.classList.add('clean-mode');
     let lastIdTap = 0;
+    let accessCodeToastTimer = null;
 
     /* ── Sound system ──────────────────────────────────── */
     let soundEnabled = true;
@@ -3788,6 +4087,109 @@
 
     function canUseHotspots() {
       return appState === STATE.SCAN && !termsModalOpen && !checkoutLocked && !simulationActive;
+    }
+
+    function isIdleMode() {
+      return appState === STATE.SCAN && containerCount === 0 && !checkoutLocked && !simulationActive && !termsModalOpen;
+    }
+
+    function renderCountdownControl() {
+      return `
+        <div class="session-countdown" aria-label="Session countdown">
+          <span class="session-countdown__value" id="countdownText">30</span>
+          <span class="session-countdown__unit">s</span>
+        </div>
+      `;
+    }
+
+    function renderExitControl() {
+      return `
+        <button class="session-exit-btn" id="exitBtn" type="button" aria-label="Exit Checkout Station mode">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M18 6 6 18" />
+            <path d="m6 6 12 12" />
+          </svg>
+          <span>Exit</span>
+        </button>
+      `;
+    }
+
+    window.updateSessionControl = function () {
+      if (!sessionControl) return;
+      const showCountdown =
+        typeof shouldShowSessionCountdown === 'function' &&
+        shouldShowSessionCountdown() &&
+        !debugEnabled &&
+        !_urlParams.get('demo') &&
+        !termsModalOpen;
+
+      if (showCountdown) {
+        sessionControl.hidden = false;
+        sessionControl.innerHTML = renderCountdownControl();
+        window.updateCountdownDisplay();
+        return;
+      }
+
+      if (isIdleMode()) {
+        sessionControl.hidden = false;
+        sessionControl.innerHTML = renderExitControl();
+        const exitBtn = document.getElementById('exitBtn');
+        if (exitBtn) exitBtn.onclick = openAccessCodeModal;
+        return;
+      }
+
+      sessionControl.hidden = true;
+      sessionControl.innerHTML = '';
+    };
+
+    function setAccessCodeError(isError) {
+      accessCodePanel.classList.toggle('is-error', isError);
+      accessCodeError.textContent = isError ? 'Incorrect code, please try again.' : '';
+    }
+
+    function syncAccessCodeSubmit() {
+      const hasCode = accessCodeInput.value.length === 4;
+      accessCodeSubmit.disabled = !hasCode;
+      if (hasCode) return;
+      setAccessCodeError(false);
+    }
+
+    function closeAccessCodeModal() {
+      accessCodeModal.hidden = true;
+      accessCodeInput.value = '';
+      accessCodeInput.type = 'password';
+      accessCodeInput.classList.remove('is-visible');
+      accessCodeToggle.setAttribute('aria-label', 'Show access code');
+      setAccessCodeError(false);
+      syncAccessCodeSubmit();
+    }
+
+    function openAccessCodeModal() {
+      closeAccessCodeModal();
+      accessCodeModal.hidden = false;
+      setTimeout(() => accessCodeInput.focus(), 80);
+    }
+
+    function showAccessCodeToast() {
+      if (accessCodeToastTimer) {
+        clearTimeout(accessCodeToastTimer);
+        accessCodeToastTimer = null;
+      }
+      accessCodeToast.hidden = false;
+      accessCodeToastTimer = setTimeout(() => {
+        accessCodeToast.hidden = true;
+        accessCodeToastTimer = null;
+      }, 2800);
+    }
+
+    function submitAccessCode() {
+      if (accessCodeInput.value.length !== 4) return;
+      if (accessCodeInput.value === ACCESS_CODE) {
+        closeAccessCodeModal();
+        showAccessCodeToast();
+        return;
+      }
+      setAccessCodeError(true);
     }
 
     /* ── Screenshot mode: temporarily hide the bottom-left control cluster
@@ -3967,14 +4369,6 @@
                   <img class="brand-strip__logo" src="images/USEFULL-icons/USEFULL-Logo-Registered_Color.svg" alt="USEFULL" />
                   <div></div>
                   <div class="brand-strip__right">
-                    <button class="brand-strip__reset-btn" id="countdownResetBtn" type="button">Reset</button>
-                    <div class="countdown-ring" id="countdownRing">
-                      <svg class="countdown-ring__svg" viewBox="0 0 28 28">
-                        <circle class="countdown-ring__track" cx="14" cy="14" r="12" />
-                        <circle class="countdown-ring__fill" id="countdownArc" cx="14" cy="14" r="12" stroke-dasharray="75.4" stroke-dashoffset="0" />
-                      </svg>
-                      <div class="countdown-ring__text" id="countdownText">15</div>
-                    </div>
                   </div>
                 </div>
                 <div class="scan-shell-v3 scan-shell-v3--v9-student">
@@ -4011,14 +4405,6 @@
                   <img class="brand-strip__logo" src="images/USEFULL-icons/USEFULL-Logo-Registered_Color.svg" alt="USEFULL" />
                   <div></div>
                   <div class="brand-strip__right">
-                    <button class="brand-strip__reset-btn" id="countdownResetBtn" type="button">Reset</button>
-                    <div class="countdown-ring" id="countdownRing">
-                      <svg class="countdown-ring__svg" viewBox="0 0 28 28">
-                        <circle class="countdown-ring__track" cx="14" cy="14" r="12" />
-                        <circle class="countdown-ring__fill" id="countdownArc" cx="14" cy="14" r="12" stroke-dasharray="75.4" stroke-dashoffset="0" />
-                      </svg>
-                      <div class="countdown-ring__text" id="countdownText">15</div>
-                    </div>
                   </div>
                 </div>
                 <div class="scan-shell-v3 scan-shell-v3--v9-cashier">
@@ -4050,14 +4436,6 @@
                 <img class="brand-strip__logo" src="images/USEFULL-icons/USEFULL-Logo-Registered_Color.svg" alt="USEFULL" />
                 <div></div>
                 <div class="brand-strip__right">
-                  <button class="brand-strip__reset-btn" id="countdownResetBtn" type="button">Reset</button>
-                  <div class="countdown-ring" id="countdownRing">
-                    <svg class="countdown-ring__svg" viewBox="0 0 28 28">
-                      <circle class="countdown-ring__track" cx="14" cy="14" r="12" />
-                      <circle class="countdown-ring__fill" id="countdownArc" cx="14" cy="14" r="12" stroke-dasharray="75.4" stroke-dashoffset="0" />
-                    </svg>
-                    <div class="countdown-ring__text" id="countdownText">15</div>
-                  </div>
                 </div>
               </div>
               <div class="scan-layout scan-layout--v4">
@@ -4152,7 +4530,7 @@
                 </div>
                 <div class="welcome-actions">
                   <button class="btn btn--primary btn--xl" id="acceptBtn" type="button">Accept & Continue</button>
-                  <button class="welcome-cancel" id="cancelBtn" type="button">Cancel</button>
+                  <button class="btn btn--cancel" id="cancelBtn" type="button">Cancel</button>
                 </div>
                 <div class="welcome-fineprint">
                   By tapping "Accept & Continue," you agree to the <button class="brand-strip__terms" id="termsBtn" type="button">Terms & Conditions</button>.
@@ -4191,7 +4569,7 @@
                 ${renderKeypad('identifier')}
                 <div class="btn-row">
                   <button class="btn btn--primary" id="continueIdBtn" type="button" ${canContinue ? '' : 'disabled'}>Continue</button>
-                  <button class="btn btn--secondary" id="cancelBtn" type="button">Cancel</button>
+                  <button class="btn btn--cancel btn--cancel-orange" id="cancelBtn" type="button">Cancel</button>
                 </div>
               </div>
             </div>
@@ -4208,11 +4586,16 @@
               <img class="brand-strip__logo" src="images/USEFULL-icons/USEFULL-Logo-Registered_Color.svg" alt="USEFULL" />
             </div>
             <div class="auth-card auth-card--lookup">
-              <div class="spinner"></div>
+              <button class="spinner-button" id="accountLookupAdvanceBtn" type="button" aria-label="Advance account lookup">
+                <span class="spinner" aria-hidden="true"></span>
+              </button>
               <div class="auth-card__title">Looking up ${phoneFmt}...</div>
-              <button class="btn--link" id="cancelBtn" type="button">Cancel</button>
+              <button class="btn btn--cancel" id="cancelBtn" type="button">Cancel</button>
             </div>
           `;
+          document.getElementById('accountLookupAdvanceBtn').onclick = () => {
+            if (debugEnabled) advanceFromAccountLookup();
+          };
           document.getElementById('cancelBtn').onclick = resetSession;
           break;
         }
@@ -4231,7 +4614,7 @@
               </div>
               <div class="btn-row">
                 <button class="btn btn--primary" id="continueFoundBtn" type="button">Continue</button>
-                <button class="btn btn--secondary" id="cancelBtn" type="button">Cancel</button>
+                <button class="btn btn--cancel" id="cancelBtn" type="button">Cancel</button>
               </div>
               <button class="btn--link" id="notYouBtn" type="button">Not you? Try a different number</button>
             </div>
@@ -4257,7 +4640,7 @@
                 <div class="sms-confirm-body">We'll send a confirmation code to <strong>${phoneMasked}</strong></div>
                 <div class="btn-row sms-confirm-btns">
                   <button class="btn btn--primary" id="sendCodeBtn" type="button">Send Code</button>
-                  <button class="btn btn--secondary" id="cancelBtn" type="button">Cancel</button>
+                  <button class="btn btn--cancel btn--cancel-orange" id="cancelBtn" type="button">Cancel</button>
                 </div>
               </div>
             </div>
@@ -4281,13 +4664,13 @@
             <div class="id-entry-layout">
               <div class="auth-card auth-card--dense otp-card auth-flow-card">
                 ${phoneIconHtml}
-                <div class="auth-card__title">Verify Phone - Enter OTP</div>
+                <div class="auth-card__title">Verify Phone Number</div>
                 <div class="auth-card__subtitle">Please enter the code we sent to your phone.</div>
                 <div class="otp-boxes">${otpBoxes}</div>
                 ${renderKeypad('otp')}
                 <div class="btn-row">
                   <button class="btn btn--primary" id="verifyBtn" type="button" ${canVerify ? '' : 'disabled'}>Verify</button>
-                  <button class="btn btn--secondary" id="cancelBtn" type="button">Cancel</button>
+                  <button class="btn btn--cancel btn--cancel-orange" id="cancelBtn" type="button">Cancel</button>
                 </div>
               </div>
             </div>
@@ -4308,15 +4691,17 @@
                 <div class="auth-card__title">Update default card?</div>
                 <div class="auth-card__subtitle">Would you like to save ${cardBrand} *${cardLast4} as the default card for USEFULL late &amp; lost fees?</div>
                 <div class="sms-confirm-body">Your current default card is ${prevCardBrand} *${prevCardLast4}</div>
-                <div class="btn-row sms-confirm-btns">
+                <div class="btn-row sms-confirm-btns btn-row--stacked">
                   <button class="btn btn--primary" id="updateCardBtn" type="button">Update</button>
                   <button class="btn btn--secondary" id="skipUpdateBtn" type="button">Don't Update</button>
+                  <button class="btn btn--cancel" id="cancelBtn" type="button">Cancel</button>
                 </div>
               </div>
             </div>
           `;
           document.getElementById('updateCardBtn').onclick = () => advanceFromUpdateDefaultCard();
           document.getElementById('skipUpdateBtn').onclick = () => advanceFromUpdateDefaultCard();
+          document.getElementById('cancelBtn').onclick = resetSession;
           break;
         }
 
@@ -4367,6 +4752,7 @@
                   </div>
                 </div>
               </section>
+              <button class="btn btn--dismiss success-dismiss-btn" id="successDismissBtn" type="button">Dismiss</button>
             </div>
             <div class="app-download-overlay" id="appDownloadModal" hidden>
               <div class="app-download-panel" role="dialog" aria-modal="true" aria-labelledby="appDownloadTitle">
@@ -4396,6 +4782,7 @@
             </div>
           `;
           const appDownloadModal = document.getElementById('appDownloadModal');
+          document.getElementById('successDismissBtn').onclick = resetSession;
           const closeAppDownload = () => {
             appDownloadModal.hidden = true;
             setTermsOpen(false);
@@ -4461,6 +4848,8 @@
         }
       }
 
+      window.updateSessionControl();
+
       // Update action button states
       const btnScan = document.getElementById('btnScanContainer');
       const btnHID = document.getElementById('btnTapHID');
@@ -4469,9 +4858,6 @@
       if (btnHID) btnHID.disabled = checkoutLocked || appState !== STATE.SCAN;
       if (btnStripe) btnStripe.disabled = checkoutLocked || appState !== STATE.SCAN;
 
-      // Bind countdown reset button if present
-      const countdownResetBtn = document.getElementById('countdownResetBtn');
-      if (countdownResetBtn) countdownResetBtn.onclick = resetSession;
       const doneScanningBtn = document.getElementById('doneScanningBtn');
       if (doneScanningBtn) {
         doneScanningBtn.onclick = () => {
@@ -4532,6 +4918,29 @@
         const value = keyEl.dataset.keypadValue;
         handleKeypadInput(target, value);
       });
+
+      // Idle exit access-code modal
+      document.getElementById('accessCodeCancel').onclick = closeAccessCodeModal;
+      accessCodeSubmit.onclick = submitAccessCode;
+      accessCodeModal.addEventListener('click', (event) => {
+        if (event.target === accessCodeModal) closeAccessCodeModal();
+      });
+      accessCodeInput.addEventListener('input', (event) => {
+        const nextValue = event.target.value.replace(/\D/g, '').slice(0, 4);
+        accessCodeInput.value = nextValue;
+        setAccessCodeError(false);
+        syncAccessCodeSubmit();
+      });
+      accessCodeInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') submitAccessCode();
+      });
+      accessCodeToggle.onclick = () => {
+        const showCode = accessCodeInput.type === 'password';
+        accessCodeInput.type = showCode ? 'text' : 'password';
+        accessCodeInput.classList.toggle('is-visible', showCode);
+        accessCodeToggle.setAttribute('aria-label', showCode ? 'Hide access code' : 'Show access code');
+        accessCodeInput.focus();
+      };
 
       // Terms
       document.getElementById('termsClose').onclick = closeTerms;
