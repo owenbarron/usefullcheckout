@@ -259,7 +259,7 @@ function resetTimers() {
 }
 
 function shouldShowSessionCountdown() {
-  return appState !== STATE.SCAN || containerCount > 0;
+  return appState !== STATE.ACCOUNT_FOUND && (appState !== STATE.SCAN || containerCount > 0);
 }
 
 function startCountdown() {
@@ -304,6 +304,7 @@ function clearAccountFoundTimer() {
     accountFoundCountdownInterval = null;
   }
   accountFoundDeadline = null;
+  window.accountFoundDeadline = null;
 }
 
 function scheduleAccountFoundAutoAdvance() {
@@ -316,6 +317,7 @@ function scheduleAccountFoundAutoAdvance() {
   }
 
   accountFoundDeadline = Date.now() + ACCOUNT_FOUND_AUTO_ADVANCE_MS;
+  window.accountFoundDeadline = accountFoundDeadline;
   if (typeof window.updateAccountFoundCountdown === 'function') {
     window.updateAccountFoundCountdown();
   }

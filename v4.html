@@ -1426,7 +1426,9 @@
       justify-content: center;
     }
     .app.is-auth-mode .auth-card--lookup {
+      width: min(100%, 680px);
       min-height: min(520px, calc(100% - 64px));
+      border-color: var(--teal);
       gap: clamp(18px, 2.4vh, 28px);
     }
     .app.is-auth-mode .auth-card--found,
@@ -1877,7 +1879,7 @@
       max-width: 560px;
     }
     .account-found-chips {
-      width: min(100%, 560px);
+      width: min(100%, 620px);
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: clamp(10px, 1.8vmin, 14px);
@@ -1916,6 +1918,9 @@
     .app.is-auth-mode .account-found-card .auth-action-stack .btn--cancel {
       width: min(100%, 560px);
       font-size: clamp(25px, 4vmin, 34px);
+    }
+    .app.is-auth-mode .update-card-actions .btn--cancel {
+      margin-top: clamp(20px, 3.2vmin, 30px);
     }
     .auth-card__card-display {
       font-family: 'League Spartan', sans-serif;
@@ -3147,21 +3152,6 @@
       display: inline;
     }
 
-    /* ── Version badge ───────────────────────────────── */
-    .version-badge {
-      position: absolute;
-      bottom: 8px;
-      left: 10px;
-      font-size: 11px;
-      color: rgba(0, 0, 0, 0.22);
-      font-family: var(--font-sans);
-      font-weight: 500;
-      letter-spacing: 0.02em;
-      pointer-events: none;
-      z-index: 10;
-      user-select: none;
-    }
-
     /* ── Debug badge ──────────────────────────────────── */
     .debug-badge {
       position: fixed;
@@ -3221,12 +3211,10 @@
     /* ── Clean mode: hide UI chrome for mockup mode ───── */
     body.clean-mode .action-bar,
     body.clean-mode .settings-wheel,
-    body.clean-mode .version-badge,
     body.clean-mode .debug-badge,
     /* Screenshot mode: temporary toggle via `h` or tapping the USEFULL logo */
     body.screenshot-controls-hidden .action-bar,
     body.screenshot-controls-hidden .settings-wheel,
-    body.screenshot-controls-hidden .version-badge,
     body.screenshot-controls-hidden .debug-badge {
       display: none !important;
     }
@@ -3960,9 +3948,6 @@
       </div>
     </div>
 
-    <!-- Version badge -->
-    <div class="version-badge">v0.3.3</div>
-
     <!-- Settings wheel -->
     <div id="settingsWheel" class="settings-wheel">
       <button id="settingsToggle" class="settings-wheel__btn" type="button" aria-label="Demo settings">
@@ -4154,7 +4139,7 @@
     let soundEnabled = true;
     const SFX = {
       scan:    new Audio('sounds/successful-scan.m4a'),
-      success: new Audio('sounds/final-success-chime-1.mp3'),
+      success: new Audio('sounds/final-success-chime-2.mp3'),
       error:   new Audio('sounds/error.mp3'),
     };
     function playSound(name) {
@@ -4210,6 +4195,7 @@
       const showCountdown =
         typeof shouldShowSessionCountdown === 'function' &&
         shouldShowSessionCountdown() &&
+        appState !== STATE.ACCOUNT_FOUND &&
         !debugEnabled &&
         !_urlParams.get('demo') &&
         !termsModalOpen;
@@ -4315,12 +4301,13 @@
       const valueEl = document.getElementById('accountFoundCountdownValue');
       if (!valueEl) return;
 
-      if (!accountFoundDeadline) {
+      const deadline = window.accountFoundDeadline || accountFoundDeadline;
+      if (!deadline) {
         valueEl.textContent = '';
         return;
       }
 
-      const remaining = Math.max(0, accountFoundDeadline - Date.now());
+      const remaining = Math.max(0, deadline - Date.now());
       const secs = Math.ceil(remaining / 1000);
       valueEl.textContent = ` (${secs}s)`;
     };
@@ -4727,7 +4714,7 @@
                   </div>
                 </div>
                 <div class="auth-action-stack">
-                  <button class="btn btn--primary" id="continueFoundBtn" type="button">Continue<span class="account-found-countdown" id="accountFoundCountdownValue"></span></button>
+                  <button class="btn btn--primary" id="continueFoundBtn" type="button">Continue<span class="account-found-countdown" id="accountFoundCountdownValue"> (10s)</span></button>
                   <button class="btn btn--cancel" id="cancelBtn" type="button">Not you? Try a different number</button>
                 </div>
               </div>
@@ -4805,7 +4792,7 @@
                 <div class="auth-card__title">Update default card?</div>
                 <div class="auth-card__subtitle">Would you like to save ${cardBrand} *${cardLast4} as the default card for USEFULL late &amp; lost fees?</div>
                 <div class="sms-confirm-body">Your current default card is ${prevCardBrand} *${prevCardLast4}</div>
-                <div class="auth-action-stack sms-confirm-btns">
+                <div class="auth-action-stack sms-confirm-btns update-card-actions">
                   <button class="btn btn--primary" id="updateCardBtn" type="button">Update</button>
                   <button class="btn btn--secondary" id="skipUpdateBtn" type="button">Don't Update</button>
                   <button class="btn btn--cancel" id="cancelBtn" type="button">Cancel</button>
@@ -4851,7 +4838,7 @@
                     <div class="success-due__date">${dueDate}</div>
                     <div class="success-due__hint">to avoid late fees</div>
                   </div>
-                  <div class="success-email-note">We sent the checkout details to your email.</div>
+                  <div class="success-email-note">We sent your checkout details via SMS.</div>
                 </div>
                 <div class="success-receipt" aria-label="Checked out containers">
                   <div class="success-receipt__header">
