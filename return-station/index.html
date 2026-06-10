@@ -247,7 +247,7 @@
     .success-card__body { font-size: clamp(23px, 3.4vh, 34px); }
     /* Celebrate: all-caps green */
     .success-card.is-celebrate { border-color: var(--green); }
-    .success-card.is-celebrate .success-card__title { color: var(--green); text-transform: uppercase; }
+    .success-card.is-celebrate .success-card__title { color: var(--green); }
     /* Pending: title-case teal — no all-caps */
     .success-card.is-pending { border-color: var(--teal); }
     .success-card.is-pending .success-card__title { color: var(--teal-dark); }
@@ -287,7 +287,7 @@
       padding: 12px 30px;
       border-radius: 14px;
       border: none;
-      background: var(--teal);
+      background: var(--teal); /* overridden per-tone below */
       color: var(--white);
       font-family: 'League Spartan', sans-serif;
       font-size: clamp(22px, 3vh, 30px);
@@ -298,6 +298,7 @@
       transition: transform 0.12s ease;
     }
     .dismiss-btn:active { transform: scale(0.97); }
+    .dismiss-btn--golden { background: var(--golden); }
     .countdown-ring { position: relative; width: 38px; height: 38px; flex-shrink: 0; }
     .countdown-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
     .countdown-ring__track { fill: none; stroke: rgba(255,255,255,0.35); stroke-width: 3.5; }
@@ -525,6 +526,7 @@
         ? `<div class="card-mark card-mark--teal">${ICON_RETURN}</div>`
         : `<div class="card-mark card-mark--green">${ICON_CHECK}</div>`;
       const title = isPending ? 'Return pending' : 'Returned!';
+      const dismissClass = isPending ? '' : ' dismiss-btn--golden';
       const body = isPending ? 'Deposit your container in the bin below.' : 'Drop your container in the bin below.';
       const note = isPending
         ? 'Your return will be validated when containers are collected.'
@@ -544,7 +546,7 @@
             </div>
             <p class="success-note">${note}</p>
           </section>
-          <button class="dismiss-btn" id="dismissBtn" type="button">
+          <button class="dismiss-btn${dismissClass}" id="dismissBtn" type="button">
             <span class="countdown-ring">
               <svg viewBox="0 0 38 38">
                 <circle class="countdown-ring__track" cx="19" cy="19" r="15"/>
