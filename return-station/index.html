@@ -1,0 +1,692 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <title>USEFULL Return Station</title>
+  <meta name="theme-color" content="#DDF0EE" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="USEFULL Return" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" type="image/png" href="../images/USEFULL-icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="../images/USEFULL-icons/icon-180.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700&family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal: #008C95;
+      --golden: #D69A2D;
+      --golden-light: #FBF1DC;
+      --teal-dark: #006E75;
+      --teal-light: #E6F5F6;
+      --foam: #DDF0EE;
+      --wave: #8FCCC8;
+      --green: #2E7D32;
+      --green-light: #E8F5E9;
+      --slate: #263238;
+      --slate-light: #546E7A;
+      --gray-300: #D0D8DB;
+      --white: #FFFFFF;
+      --radius: 14px;
+      --shadow-lg: 0 2px 12px rgba(0,0,0,0.10);
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Roboto', system-ui, sans-serif;
+      color: var(--slate);
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ════════════════════════════════════════════════
+       Portrait device frame (Galaxy Tab A9, 800×1340).
+       Add ?bare=1 (or body.bare) to drop the frame and
+       run edge-to-edge on the real tablet.
+       ════════════════════════════════════════════════ */
+    .device-mount {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #c2ccd1;
+      padding: 18px;
+    }
+    .device-frame {
+      position: relative;
+      /* Fixed portrait aspect — frame never resizes as content changes */
+      width: min(440px, 92vw);
+      height: min(740px, 96dvh);
+      background: #0d0f10;
+      border-radius: 46px;
+      padding: 16px;
+      box-shadow: 0 30px 70px rgba(0,0,0,0.45), inset 0 0 0 2px #303335;
+      flex-shrink: 0;
+    }
+    body.bare .device-mount { padding: 0; background: var(--foam); }
+    body.bare .device-frame {
+      aspect-ratio: auto;
+      height: 100dvh;
+      width: 100vw;
+      max-width: none;
+      border-radius: 0;
+      padding: 0;
+      box-shadow: none;
+      background: transparent;
+    }
+
+    /* ── App shell ─────────────────────────────────── */
+    .app {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+      background: var(--foam);
+      border-radius: 32px;
+      overflow: hidden;
+    }
+    body.bare .app { border-radius: 0; }
+
+    .screen {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 18px 22px 14px;
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    /* ── Branding strip ────────────────────────────── */
+    .brand-strip {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      padding: 4px 0 6px;
+      flex-shrink: 0;
+    }
+    .brand-strip__logo {
+      height: clamp(32px, 4.8vmin, 46px);
+      opacity: 0.78;
+      justify-self: start;
+      cursor: default;
+    }
+    .session-control { justify-self: end; min-height: 44px; display: flex; align-items: center; }
+    .exit-btn {
+      min-height: 44px;
+      padding: 8px 14px 7px 12px;
+      border: 2px solid rgba(38, 50, 56, 0.18);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.94);
+      color: var(--slate);
+      box-shadow: 0 6px 18px rgba(38, 50, 56, 0.12);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'League Spartan', sans-serif;
+      font-size: clamp(17px, 2.4vmin, 22px);
+      font-weight: 700;
+      line-height: 1;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .exit-btn svg { width: 19px; height: 19px; stroke-width: 2.8; flex-shrink: 0; }
+
+    /* ════════════════════════════════════════════════
+       Shared white card + inset icon cap
+       (templated from the checkout-station success card)
+       ════════════════════════════════════════════════ */
+    .card {
+      position: relative;
+      width: min(100%, 560px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: clamp(12px, 2vh, 20px);
+      padding: clamp(48px, 7vh, 72px) clamp(28px, 6vw, 48px) clamp(24px, 3.5vh, 38px);
+      background: rgba(255, 255, 255, 0.92);
+      border: 2px solid var(--teal);
+      border-radius: var(--radius);
+      box-shadow: 0 8px 24px rgba(0, 140, 149, 0.08);
+    }
+    .card-mark {
+      position: absolute;
+      top: -36px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 72px;
+      height: 72px;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+      color: var(--white);
+      z-index: 5;
+    }
+    .card-mark svg { width: 56%; height: 56%; display: block; }
+    .card-mark--teal { background: var(--teal); }
+    .card-mark--green { background: var(--green); box-shadow: 0 8px 18px rgba(46,125,50,0.22); }
+    .card-mark--golden { background: var(--golden); box-shadow: 0 8px 18px rgba(214,154,45,0.24); }
+
+    .card__title {
+      font-family: 'League Spartan', sans-serif;
+      font-weight: 700;
+      line-height: 0.98;
+      color: var(--slate);
+    }
+    .card__body {
+      font-family: 'League Spartan', sans-serif;
+      font-weight: 600;
+      line-height: 1.12;
+      color: var(--slate-light);
+    }
+
+    /* ── Idle card ─────────────────────────────────── */
+    .center-wrap {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(14px, 2vh, 22px);
+      padding-top: 42px; /* room for card-mark cap that overlaps top of card */
+    }
+    .idle-card__title { font-size: clamp(40px, 6.6vh, 62px); }
+    .idle-card__sub { font-size: clamp(20px, 3vh, 28px); max-width: 18ch; }
+    .idle-card__station {
+      position: relative;
+      width: 100%;
+      margin-top: clamp(4px, 1.4vh, 12px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 0;
+    }
+    .idle-card__station img {
+      max-height: clamp(190px, 30vh, 340px);
+      max-width: 66%;
+      width: auto;
+      object-fit: contain;
+      display: block;
+      filter: drop-shadow(0 14px 24px rgba(0, 110, 117, 0.16));
+    }
+    /* Pulsing highlight over the QR reader on the rendering (tune to art) */
+    .idle-card__pulse {
+      position: absolute;
+      top: 21%;
+      left: 47%;
+      width: clamp(46px, 7vh, 70px);
+      height: clamp(46px, 7vh, 70px);
+      transform: translate(-50%, -50%);
+      border-radius: 14px;
+      border: 3px solid var(--golden);
+      animation: scanPulse 1.8s ease-out infinite;
+      pointer-events: none;
+    }
+    @keyframes scanPulse {
+      0%   { box-shadow: 0 0 0 0 rgba(214, 154, 45, 0.5); border-color: rgba(214,154,45,0.95); }
+      70%  { box-shadow: 0 0 0 20px rgba(214, 154, 45, 0); border-color: rgba(214,154,45,0.55); }
+      100% { box-shadow: 0 0 0 0 rgba(214, 154, 45, 0); border-color: rgba(214,154,45,0.95); }
+    }
+
+    /* ── Success card ──────────────────────────────── */
+    .success-card__title { font-size: clamp(52px, 8vh, 86px); letter-spacing: 0.01em; }
+    .success-card__body { font-size: clamp(23px, 3.4vh, 34px); }
+    /* Celebrate: all-caps green */
+    .success-card.is-celebrate { border-color: var(--green); }
+    .success-card.is-celebrate .success-card__title { color: var(--green); text-transform: uppercase; }
+    /* Pending: title-case teal — no all-caps */
+    .success-card.is-pending { border-color: var(--teal); }
+    .success-card.is-pending .success-card__title { color: var(--teal-dark); }
+
+    .tally-block {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      padding: clamp(14px, 2.2vh, 22px);
+      border-radius: 12px;
+      margin-top: 2px;
+    }
+    .tally-block__num { font-family: 'League Spartan', sans-serif; font-weight: 700; font-size: clamp(38px, 5.6vh, 56px); line-height: 1; }
+    .tally-block__label { font-family: 'League Spartan', sans-serif; font-weight: 600; font-size: clamp(15px, 2.1vh, 21px); text-transform: uppercase; letter-spacing: 0.04em; color: var(--slate-light); }
+    .success-card.is-celebrate .tally-block { background: var(--green-light); }
+    .success-card.is-celebrate .tally-block__num { color: var(--green); }
+    .success-card.is-pending .tally-block { background: var(--teal-light); }
+    .success-card.is-pending .tally-block__num { color: var(--teal-dark); }
+
+    .success-note {
+      font-family: 'Roboto', sans-serif;
+      font-weight: 400;
+      font-size: clamp(14px, 2vh, 19px);
+      line-height: 1.4;
+      color: var(--slate-light);
+      max-width: 32ch;
+    }
+
+    /* ── Dismiss control + countdown ring ──────────── */
+    .dismiss-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 60px;
+      padding: 12px 30px;
+      border-radius: 14px;
+      border: none;
+      background: var(--teal);
+      color: var(--white);
+      font-family: 'League Spartan', sans-serif;
+      font-size: clamp(22px, 3vh, 30px);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      transition: transform 0.12s ease;
+    }
+    .dismiss-btn:active { transform: scale(0.97); }
+    .countdown-ring { position: relative; width: 38px; height: 38px; flex-shrink: 0; }
+    .countdown-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+    .countdown-ring__track { fill: none; stroke: rgba(255,255,255,0.35); stroke-width: 3.5; }
+    .countdown-ring__fill { fill: none; stroke: var(--white); stroke-width: 3.5; stroke-linecap: round; transition: stroke-dashoffset 0.2s linear; }
+    .countdown-ring__text {
+      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700; font-family: 'League Spartan', sans-serif; color: var(--white);
+    }
+    .success-hint { font-family: 'League Spartan', sans-serif; font-weight: 600; font-size: clamp(14px, 2vh, 19px); color: var(--slate-light); opacity: 0.85; }
+
+    /* ════════════════════════════════════════════════
+       Exit access-code modal + toast (within frame)
+       ════════════════════════════════════════════════ */
+    .overlay {
+      position: absolute; inset: 0; background: rgba(0,0,0,0.5);
+      z-index: 200; display: flex; align-items: center; justify-content: center; padding: 24px;
+      border-radius: inherit;
+    }
+    .overlay[hidden] { display: none; }
+    .code-panel {
+      background: var(--white); border-radius: var(--radius); padding: 28px 26px;
+      width: min(420px, 92%); box-shadow: var(--shadow-lg); text-align: center;
+    }
+    .code-panel.is-error .code-input { border-color: #C62828; }
+    .code-panel__title { font-family: 'League Spartan', sans-serif; font-size: 24px; font-weight: 700; color: var(--slate); margin-bottom: 18px; }
+    .code-field { display: flex; gap: 8px; align-items: center; }
+    .code-input { flex: 1; font-size: 24px; text-align: center; letter-spacing: 0.4em; padding: 12px; border: 2px solid var(--gray-300); border-radius: 10px; font-family: inherit; }
+    .code-toggle { background: none; border: none; padding: 8px; cursor: pointer; color: var(--slate-light); }
+    .code-toggle svg { width: 24px; height: 24px; }
+    .code-error { color: #C62828; font-size: 14px; min-height: 18px; margin: 8px 0 0; }
+    .code-actions { display: flex; gap: 10px; margin-top: 18px; }
+    .code-action { flex: 1; padding: 12px; border-radius: 10px; font-family: 'League Spartan', sans-serif; font-size: 18px; font-weight: 700; cursor: pointer; border: 2px solid var(--gray-300); background: var(--white); color: var(--slate); }
+    .code-action--submit { background: var(--teal); border-color: var(--teal); color: var(--white); }
+    .code-action--submit:disabled { opacity: 0.45; cursor: default; }
+
+    .toast {
+      position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
+      background: var(--slate); color: var(--white); padding: 13px 20px; border-radius: 12px;
+      font-size: 15px; z-index: 300; box-shadow: var(--shadow-lg); max-width: 88%; text-align: center;
+    }
+    .toast[hidden] { display: none; }
+
+    /* ════════════════════════════════════════════════
+       Settings wheel + popover (anchored inside frame)
+       ════════════════════════════════════════════════ */
+    /* Sim button sits right of the gear, same row */
+    .sim-bar { position: absolute; bottom: 16px; left: 16px; z-index: 150; display: flex; align-items: center; gap: 8px; }
+    .sim-btn {
+      width: 40px; height: 40px; border-radius: 50%; border: none; background: none;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: opacity 0.15s, transform 0.1s; padding: 0;
+    }
+    .sim-btn:active { transform: scale(0.92); }
+    .sim-btn img { width: 32px; height: 32px; object-fit: contain; }
+    body.controls-hidden .sim-bar { display: none; }
+    .settings-wheel { position: relative; z-index: 150; }
+    .settings-wheel__btn {
+      width: 40px; height: 40px; border-radius: 50%; border: none; background: var(--slate);
+      color: var(--white); cursor: pointer; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15); transition: transform 0.3s ease;
+    }
+    .settings-wheel__btn:active { transform: scale(0.92); }
+    .settings-wheel__btn svg { width: 20px; height: 20px; }
+    .settings-wheel.is-open .settings-wheel__btn { transform: rotate(60deg); }
+    .settings-popover {
+      position: absolute; bottom: 50px; left: 0; background: var(--slate); color: var(--white);
+      border-radius: 12px; padding: 18px 20px 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+      display: none; min-width: 280px;
+    }
+    .settings-wheel.is-open .settings-popover { display: block; }
+    .settings-col { display: flex; flex-direction: column; gap: 12px; }
+    .settings-col__heading { font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: rgba(255,255,255,0.45); font-weight: 700; padding-bottom: 4px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .settings-field { display: flex; flex-direction: column; gap: 4px; }
+    .settings-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: rgba(255,255,255,0.6); font-weight: 600; }
+    .settings-select { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); color: var(--white); padding: 6px 8px; border-radius: 6px; font-size: 13px; font-family: inherit; cursor: pointer; }
+    .settings-select option { background: var(--slate); color: var(--white); }
+    .settings-toggle { display: flex; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2); }
+    .settings-toggle__opt { flex: 1; padding: 8px 10px; font-size: 13px; font-weight: 600; font-family: inherit; text-align: center; cursor: pointer; border: none; background: transparent; color: rgba(255,255,255,0.5); transition: background 0.15s, color 0.15s; }
+    .settings-toggle__opt.is-active { background: var(--teal); color: var(--white); }
+    .settings-btn { padding: 9px 14px; border-radius: 8px; border: 1px solid var(--teal); background: var(--teal); color: var(--white); font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; width: 100%; }
+    .settings-btn:active { opacity: 0.85; }
+    .settings-check { display: flex; align-items: center; gap: 8px; color: var(--white); font-size: 13px; cursor: pointer; }
+
+    body.controls-hidden .settings-wheel { display: none; }
+  </style>
+</head>
+<body>
+  <div class="device-mount">
+    <div class="device-frame">
+      <div id="app" class="app">
+        <main class="screen" id="screen"><!-- rendered by JS --></main>
+
+        <!-- Exit access-code modal -->
+        <div id="codeModal" class="overlay" hidden>
+          <div class="code-panel" id="codePanel" role="dialog" aria-modal="true">
+            <div class="code-panel__title">Enter the return station access code</div>
+            <div class="code-field">
+              <input class="code-input" id="codeInput" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" placeholder="••••" />
+              <button class="code-toggle" id="codeToggle" type="button" aria-label="Show code">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+            <div class="code-error" id="codeError" aria-live="polite"></div>
+            <div class="code-actions">
+              <button class="code-action" id="codeCancel" type="button">Cancel</button>
+              <button class="code-action code-action--submit" id="codeSubmit" type="button" disabled>Submit</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="toast" class="toast" hidden>Success: you'd normally exit Return Station mode now</div>
+
+        <!-- Controls bar: gear + container sim button -->
+        <div class="sim-bar">
+          <div id="settingsWheel" class="settings-wheel">
+            <button id="settingsToggle" class="settings-wheel__btn" type="button" aria-label="Demo settings">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+              </svg>
+            </button>
+            <div class="settings-popover">
+              <div class="settings-col">
+                <div class="settings-col__heading">Return Station</div>
+                <div class="settings-field">
+                  <span class="settings-label">Success style</span>
+                  <div class="settings-toggle" id="styleToggle">
+                    <button class="settings-toggle__opt is-active" data-style="celebrate" type="button">Celebrate</button>
+                    <button class="settings-toggle__opt" data-style="pending" type="button">Pending</button>
+                  </div>
+                </div>
+                <div class="settings-field">
+                  <span class="settings-label">Auto-dismiss</span>
+                  <select class="settings-select" id="dismissSelect">
+                    <option value="3">3 seconds</option>
+                    <option value="4">4 seconds</option>
+                    <option value="5">5 seconds</option>
+                    <option value="6" selected>6 seconds</option>
+                    <option value="8">8 seconds</option>
+                    <option value="10">10 seconds</option>
+                    <option value="15">15 seconds</option>
+                  </select>
+                </div>
+                <label class="settings-check"><input type="checkbox" id="soundToggle" checked /> Sound effects</label>
+              </div>
+            </div>
+          </div>
+          <button class="sim-btn" id="simScanBtn" type="button" title="Simulate container scan">
+            <img src="../images/interface-icons/Usefull-Icons-Golden_1_Cup.png" alt="Simulate container scan" />
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ═══════════════════════════════════════════════════════════════
+       USEFULL Return Station — self-contained prototype
+       Flow: IDLE → (scan) → SUCCESS → (auto-dismiss / Done) → IDLE
+       The QR reader is hardware; scanning both initiates AND completes a
+       return. No auth, no counter on idle. Each scan re-chimes, bumps the
+       session tally, and restarts the auto-dismiss timer.
+       ═══════════════════════════════════════════════════════════════ */
+    const params = new URLSearchParams(location.search);
+    if (params.get('bare') === '1') document.body.classList.add('bare');
+
+    const app = document.getElementById('app');
+    const screen = document.getElementById('screen');
+
+    /* ── State ─────────────────────────────────────── */
+    let state = 'idle';            // 'idle' | 'success'
+    let tally = 0;                 // containers returned this visit
+    let successStyle = 'celebrate';// 'celebrate' | 'pending'
+    let autoDismissSecs = 6;
+    let soundEnabled = true;
+    let dismissDeadline = 0;
+    let dismissRaf = null;
+
+    /* ── Sound (per-container scan chime from checkout station) ── */
+    const SFX = { scan: new Audio('../sounds/successful-scan.m4a') };
+    function playScanChime() {
+      if (!soundEnabled) return;
+      const s = SFX.scan;
+      s.currentTime = 0;
+      s.play().catch(() => {});
+    }
+
+    /* ── Icons (stroke inherits card-mark color) ───── */
+    const ICON_BIN = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1 12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 8z"/><path d="M3.5 8h17"/><path d="M9 5a3 3 0 0 1 6 0"/><path d="M12 12.5v5"/><path d="M9.5 15l2.5-2.5 2.5 2.5"/></svg>`;
+    const ICON_CHECK = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>`;
+    const ICON_RETURN = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>`;
+    const ICON_EXIT = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>`;
+
+    function brandStrip() {
+      return `
+        <div class="brand-strip">
+          <img class="brand-strip__logo" id="brandLogo" src="../images/USEFULL-icons/USEFULL-Logo-Registered_Color.svg" alt="USEFULL" />
+          <div class="session-control">
+            <button class="exit-btn" id="exitBtn" type="button" aria-label="Exit Return Station mode">${ICON_EXIT}<span>Exit</span></button>
+          </div>
+        </div>`;
+    }
+
+    /* ── Renderers ─────────────────────────────────── */
+    function renderIdle() {
+      screen.innerHTML = `
+        ${brandStrip()}
+        <div class="center-wrap">
+          <section class="card idle-card">
+            <div class="card-mark card-mark--teal">${ICON_BIN}</div>
+            <h1 class="card__title idle-card__title">Scan to return</h1>
+            <p class="card__body idle-card__sub">Hold your container's QR code up to the scanner</p>
+            <div class="idle-card__station">
+              <img src="returnstation-transparent.png" alt="USEFULL Return Station" />
+              <div class="idle-card__pulse" aria-hidden="true"></div>
+            </div>
+          </section>
+        </div>`;
+      wireExit();
+    }
+
+    function renderSuccess() {
+      const isPending = successStyle === 'pending';
+      const tone = isPending ? 'is-pending' : 'is-celebrate';
+      const mark = isPending
+        ? `<div class="card-mark card-mark--teal">${ICON_RETURN}</div>`
+        : `<div class="card-mark card-mark--green">${ICON_CHECK}</div>`;
+      const title = isPending ? 'Return pending' : 'Returned!';
+      const body = isPending ? 'Deposit your container in the bin below.' : 'Drop your container in the bin below.';
+      const note = isPending
+        ? 'Your return will be validated when containers are collected.'
+        : 'Your return is confirmed once containers are collected.';
+      const unit = tally === 1 ? 'container returned' : 'containers returned';
+
+      screen.innerHTML = `
+        ${brandStrip()}
+        <div class="center-wrap">
+          <section class="card success-card ${tone}">
+            ${mark}
+            <h1 class="card__title success-card__title">${title}</h1>
+            <p class="card__body success-card__body">${body}</p>
+            <div class="tally-block">
+              <span class="tally-block__num">${tally}</span>
+              <span class="tally-block__label">${unit}</span>
+            </div>
+            <p class="success-note">${note}</p>
+          </section>
+          <button class="dismiss-btn" id="dismissBtn" type="button">
+            <span class="countdown-ring">
+              <svg viewBox="0 0 38 38">
+                <circle class="countdown-ring__track" cx="19" cy="19" r="15"/>
+                <circle class="countdown-ring__fill" id="ringFill" cx="19" cy="19" r="15"/>
+              </svg>
+              <span class="countdown-ring__text" id="ringText">${autoDismissSecs}</span>
+            </span>
+            Done
+          </button>
+          <span class="success-hint">Scanning another? Just scan it — no need to tap.</span>
+        </div>`;
+      wireExit();
+      document.getElementById('dismissBtn').onclick = goIdle;
+    }
+
+    function render() { state === 'idle' ? renderIdle() : renderSuccess(); }
+
+    function goIdle() {
+      stopDismissTimer();
+      tally = 0;
+      state = 'idle';
+      render();
+    }
+
+    // A container was scanned at the hardware reader.
+    function onScan() {
+      tally += 1;
+      playScanChime();
+      state = 'success';
+      render();
+      startDismissTimer();
+    }
+
+    /* ── Auto-dismiss countdown ────────────────────── */
+    const RING_CIRC = 2 * Math.PI * 15; // r=15
+    function startDismissTimer() {
+      stopDismissTimer();
+      dismissDeadline = Date.now() + autoDismissSecs * 1000;
+      const fill = document.getElementById('ringFill');
+      if (fill) { fill.style.strokeDasharray = RING_CIRC; fill.style.strokeDashoffset = 0; }
+      const tick = () => {
+        const remaining = Math.max(0, dismissDeadline - Date.now());
+        const secs = Math.ceil(remaining / 1000);
+        const text = document.getElementById('ringText');
+        const f = document.getElementById('ringFill');
+        if (text) text.textContent = secs;
+        if (f) f.style.strokeDashoffset = RING_CIRC * (1 - remaining / (autoDismissSecs * 1000));
+        if (remaining <= 0) { goIdle(); return; }
+        dismissRaf = requestAnimationFrame(tick);
+      };
+      dismissRaf = requestAnimationFrame(tick);
+    }
+    function stopDismissTimer() {
+      if (dismissRaf) cancelAnimationFrame(dismissRaf);
+      dismissRaf = null;
+    }
+
+    /* ── Exit access-code modal (matches checkout station) ── */
+    const ACCESS_CODE = '1234';
+    const codeModal = document.getElementById('codeModal');
+    const codePanel = document.getElementById('codePanel');
+    const codeInput = document.getElementById('codeInput');
+    const codeToggle = document.getElementById('codeToggle');
+    const codeError = document.getElementById('codeError');
+    const codeSubmit = document.getElementById('codeSubmit');
+    const codeCancel = document.getElementById('codeCancel');
+    const toast = document.getElementById('toast');
+    let toastTimer = null;
+
+    function wireExit() {
+      const btn = document.getElementById('exitBtn');
+      if (btn) btn.onclick = openCodeModal;
+    }
+    function openCodeModal() {
+      closeCodeModal();
+      codeModal.hidden = false;
+      setTimeout(() => codeInput.focus(), 80);
+    }
+    function closeCodeModal() {
+      codeModal.hidden = true;
+      codeInput.value = '';
+      codeInput.type = 'password';
+      codePanel.classList.remove('is-error');
+      codeError.textContent = '';
+      codeSubmit.disabled = true;
+    }
+    function submitCode() {
+      if (codeInput.value.length !== 4) return;
+      if (codeInput.value === ACCESS_CODE) { closeCodeModal(); showToast(); return; }
+      codePanel.classList.add('is-error');
+      codeError.textContent = 'Incorrect code, please try again.';
+    }
+    function showToast() {
+      if (toastTimer) clearTimeout(toastTimer);
+      toast.hidden = false;
+      toastTimer = setTimeout(() => { toast.hidden = true; toastTimer = null; }, 2800);
+    }
+    codeInput.addEventListener('input', () => {
+      codeInput.value = codeInput.value.replace(/\D/g, '').slice(0, 4);
+      codeSubmit.disabled = codeInput.value.length !== 4;
+      if (codeInput.value.length < 4) { codePanel.classList.remove('is-error'); codeError.textContent = ''; }
+    });
+    codeInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') submitCode(); });
+    codeToggle.onclick = () => { codeInput.type = codeInput.type === 'password' ? 'text' : 'password'; };
+    codeSubmit.onclick = submitCode;
+    codeCancel.onclick = closeCodeModal;
+    codeModal.addEventListener('click', (e) => { if (e.target === codeModal) closeCodeModal(); });
+
+    /* ── Settings wiring ───────────────────────────── */
+    const settingsWheel = document.getElementById('settingsWheel');
+    document.getElementById('settingsToggle').onclick = (e) => {
+      e.stopPropagation();
+      settingsWheel.classList.toggle('is-open');
+    };
+    document.addEventListener('click', (e) => {
+      if (!settingsWheel.contains(e.target)) settingsWheel.classList.remove('is-open');
+    });
+    document.querySelectorAll('#styleToggle .settings-toggle__opt').forEach((opt) => {
+      opt.onclick = () => {
+        successStyle = opt.dataset.style;
+        document.querySelectorAll('#styleToggle .settings-toggle__opt').forEach((o) => o.classList.toggle('is-active', o === opt));
+        if (state === 'success') { render(); startDismissTimer(); } // live preview
+      };
+    });
+    document.getElementById('dismissSelect').onchange = (e) => {
+      autoDismissSecs = parseInt(e.target.value, 10);
+      if (state === 'success') startDismissTimer();
+    };
+    document.getElementById('soundToggle').onchange = (e) => { soundEnabled = e.target.checked; };
+    document.getElementById('simScanBtn').onclick = () => { settingsWheel.classList.remove('is-open'); onScan(); };
+
+    /* ── Screenshot mode: hide settings via "h" or logo tap; "s" scans ── */
+    function toggleControls() { document.body.classList.toggle('controls-hidden'); }
+    document.addEventListener('keydown', (e) => {
+      if (codeInput.matches(':focus')) return;
+      if (e.key === 'h') toggleControls();
+      if (e.key === 's') onScan();
+    });
+    screen.addEventListener('click', (e) => { if (e.target.id === 'brandLogo') toggleControls(); });
+
+    /* ── Boot ──────────────────────────────────────── */
+    render();
+  </script>
+</body>
+</html>
