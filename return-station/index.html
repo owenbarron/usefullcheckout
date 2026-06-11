@@ -497,17 +497,17 @@
                   <span class="settings-label">Auto-dismiss</span>
                   <select class="settings-select" id="dismissSelect">
                     <option value="0">Never ∞</option>
-                    <option value="3">3 seconds</option>
+                    <option value="3" selected>3 seconds</option>
                     <option value="4">4 seconds</option>
                     <option value="5">5 seconds</option>
-                    <option value="6" selected>6 seconds</option>
+                    <option value="6">6 seconds</option>
                     <option value="8">8 seconds</option>
                     <option value="10">10 seconds</option>
                     <option value="15">15 seconds</option>
                   </select>
                 </div>
 
-                <label class="settings-check"><input type="checkbox" id="nameToggle" checked /> Show container name</label>
+                <label class="settings-check"><input type="checkbox" id="nameToggle" /> Show container name</label>
                 <label class="settings-check"><input type="checkbox" id="popToggle" checked /> Pop effect on scan</label>
                 <label class="settings-check"><input type="checkbox" id="soundToggle" checked /> Sound effects</label>
               </div>
@@ -540,9 +540,9 @@
     let tally = 0;                 // containers returned this visit
     let successStyle = 'celebrate';// controls wording only
     let cardColor   = 'teal';      // 'green' | 'teal' | 'golden'
-    let autoDismissSecs = 6;       // 0 = never
+    let autoDismissSecs = 3;       // 0 = never
     let soundEnabled = true;
-    let showName = true;           // show the scanned container's name
+    let showName = false;          // show the scanned container's name
     let popEnabled = true;         // pop animation on each scan
     let dismissDeadline = 0;
     let dismissRaf = null;
