@@ -144,7 +144,7 @@
       flex-shrink: 0;
     }
     .brand-strip__logo {
-      height: clamp(32px, 4.8cqmin, 46px);
+      height: 52px;
       opacity: 0.78;
       justify-self: start;
       cursor: default;
@@ -162,14 +162,14 @@
       align-items: center;
       gap: 8px;
       font-family: 'League Spartan', sans-serif;
-      font-size: clamp(17px, 2.4cqmin, 22px);
+      font-size: 26px;
       font-weight: 700;
       line-height: 1;
       cursor: pointer;
       text-transform: uppercase;
       letter-spacing: 0.04em;
     }
-    .exit-btn svg { width: 19px; height: 19px; stroke-width: 2.8; flex-shrink: 0; }
+    .exit-btn svg { width: 24px; height: 24px; stroke-width: 2.8; flex-shrink: 0; }
 
     /* Auto-dismiss countdown pill (top-right on success) —
        pattern lifted from the v4 checkout session-countdown */
@@ -203,13 +203,13 @@
        ════════════════════════════════════════════════ */
     .card {
       position: relative;
-      width: min(100%, 680px);
+      width: min(100%, 730px);
       display: flex;
       flex-direction: column;
       align-items: center;
       text-align: center;
-      gap: 24px;
-      padding: 72px 48px 44px;
+      gap: 26px;
+      padding: 80px 52px 48px;
       background: rgba(255, 255, 255, 0.92);
       border: 2px solid var(--teal);
       border-radius: var(--radius);
@@ -217,12 +217,12 @@
     }
     .card-mark {
       position: absolute;
-      top: -48px;
+      top: -54px;
       left: 50%;
       transform: translateX(-50%);
-      width: 96px;
-      height: 96px;
-      border-radius: 22px;
+      width: 108px;
+      height: 108px;
+      border-radius: 24px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -256,22 +256,22 @@
       flex-direction: column;
       align-items: center;
       justify-content: center; /* vertically center card + hint as a group */
-      gap: 28px;
+      gap: 30px;
     }
-    .idle-card__title { font-size: 88px; }
-    .idle-card__sub { font-size: 40px; max-width: 18ch; }
+    .idle-card__title { font-size: 104px; }
+    .idle-card__sub { font-size: 48px; max-width: 18ch; }
     .idle-card__station {
       position: relative;
       width: 100%;
-      margin-top: 16px;
+      margin-top: 18px;
       display: flex;
       align-items: center;
       justify-content: center;
       min-height: 0;
     }
     .idle-card__station img {
-      max-height: 470px;
-      max-width: 72%;
+      max-height: 540px;
+      max-width: 78%;
       width: auto;
       object-fit: contain;
       display: block;
@@ -298,8 +298,8 @@
 
     /* ── Success card ──────────────────────────────── */
     /* Title is always slate — color comes from card color token, not success style */
-    .success-card__title { font-size: 84px; letter-spacing: 0.01em; color: var(--slate); }
-    .success-card__body { font-size: 38px; }
+    .success-card__title { font-size: 100px; letter-spacing: 0.01em; color: var(--slate); }
+    .success-card__body { font-size: 46px; }
 
     /* Card color tokens — set by cardColor state, applied via data-card-color attr */
     [data-card-color="green"]  { border-color: var(--green); }
@@ -316,8 +316,8 @@
       border-radius: 12px;
       margin-top: 2px;
     }
-    .tally-block__num { font-family: 'League Spartan', sans-serif; font-weight: 700; font-size: 66px; line-height: 1; }
-    .tally-block__label { font-family: 'League Spartan', sans-serif; font-weight: 600; font-size: 24px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--slate-light); }
+    .tally-block__num { font-family: 'League Spartan', sans-serif; font-weight: 700; font-size: 84px; line-height: 1; }
+    .tally-block__label { font-family: 'League Spartan', sans-serif; font-weight: 600; font-size: 28px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--slate-light); }
     /* Tally block colors by card color */
     [data-card-color="green"]  .tally-block { background: var(--green-light); }
     [data-card-color="green"]  .tally-block__num { color: var(--green); }
@@ -331,7 +331,7 @@
     .container-name {
       font-family: 'League Spartan', sans-serif;
       font-weight: 700;
-      font-size: 34px;
+      font-size: 42px;
       line-height: 1.05;
     }
     [data-card-color="green"]  .container-name { color: var(--green); }
@@ -341,12 +341,12 @@
     .success-note {
       font-family: 'Proxima Nova', sans-serif;
       font-weight: 500;
-      font-size: 22px;
+      font-size: 26px;
       line-height: 1.4;
       color: var(--slate-light);
       max-width: 32ch;
     }
-    .success-hint { font-family: 'League Spartan', sans-serif; font-weight: 600; font-size: 22px; color: var(--slate-light); opacity: 0.85; }
+    .success-hint { font-family: 'League Spartan', sans-serif; font-weight: 600; font-size: 26px; color: var(--slate-light); opacity: 0.85; }
 
     /* ── Scan "pop" feedback ───────────────────────────
        On each new scan: the tally box swells briefly and the
@@ -517,6 +517,7 @@
                 <label class="settings-check"><input type="checkbox" id="nameToggle" /> Show container name</label>
                 <label class="settings-check"><input type="checkbox" id="popToggle" checked /> Pop effect on scan</label>
                 <label class="settings-check"><input type="checkbox" id="soundToggle" checked /> Sound effects</label>
+                <label class="settings-check"><input type="checkbox" id="frameToggle" /> Device frame (preview)</label>
               </div>
             </div>
           </div>
@@ -537,7 +538,10 @@
        session tally, and restarts the auto-dismiss timer.
        ═══════════════════════════════════════════════════════════════ */
     const params = new URLSearchParams(location.search);
-    if (params.get('bare') === '1') document.body.classList.add('bare');
+    /* Frame is OFF by default (fullscreen, as the PWA runs on the tablet).
+       ?frame=1 starts with the preview frame on; the settings toggle flips it. */
+    const startFramed = params.get('frame') === '1';
+    document.body.classList.toggle('bare', !startFramed);
 
     const app = document.getElementById('app');
     const screen = document.getElementById('screen');
@@ -786,6 +790,11 @@
     document.getElementById('nameToggle').onchange = (e) => { showName = e.target.checked; if (state === 'success') render(); };
     document.getElementById('popToggle').onchange = (e) => { popEnabled = e.target.checked; };
     document.getElementById('soundToggle').onchange = (e) => { soundEnabled = e.target.checked; };
+    document.getElementById('frameToggle').checked = startFramed;
+    document.getElementById('frameToggle').onchange = (e) => {
+      document.body.classList.toggle('bare', !e.target.checked);
+      fitFrame();
+    };
     document.getElementById('simScanBtn').onclick = () => { settingsWheel.classList.remove('is-open'); onScan(); };
 
     /* ── Screenshot mode: hide settings via "h" or logo tap; "s" scans ── */
