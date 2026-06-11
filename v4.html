@@ -14,9 +14,31 @@
   <link rel="apple-touch-icon" href="images/USEFULL-icons/icon-180.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700&family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* Proxima Nova — body/UI font (replaces Roboto). Headings stay League Spartan. */
+    @font-face {
+      font-family: 'Proxima Nova';
+      src: url('fonts/Proxima-Nova-Font-Family/ProximaNova-Regular.ttf') format('truetype');
+      font-weight: 400; font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: 'Proxima Nova';
+      src: url('fonts/Proxima-Nova-Font-Family/ProximaNova-Medium.ttf') format('truetype');
+      font-weight: 500; font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: 'Proxima Nova';
+      src: url('fonts/Proxima-Nova-Font-Family/ProximaNova-Semibold.ttf') format('truetype');
+      font-weight: 600; font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: 'Proxima Nova';
+      src: url('fonts/Proxima-Nova-Font-Family/ProximaNova-Bold.ttf') format('truetype');
+      font-weight: 700; font-style: normal; font-display: swap;
+    }
 
     :root {
       --teal: #008C95;
@@ -53,7 +75,7 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      font-family: 'Roboto', system-ui, sans-serif;
+      font-family: 'Proxima Nova', system-ui, sans-serif;
       background: var(--foam);
       color: var(--slate);
       -webkit-user-select: none;
@@ -1897,7 +1919,7 @@
       text-align: left;
     }
     .account-found-chip__label {
-      font-family: 'Roboto', sans-serif;
+      font-family: 'Proxima Nova', sans-serif;
       font-size: clamp(12px, 1.8vmin, 15px);
       font-weight: 700;
       color: var(--teal);
@@ -2039,7 +2061,7 @@
       font-size: clamp(13px, 2.2vmin, 17px);
       font-weight: 500;
       color: var(--slate-light);
-      font-family: 'Roboto', sans-serif;
+      font-family: 'Proxima Nova', sans-serif;
       letter-spacing: 0;
     }
     .keypad__key--utility:active {
@@ -2058,7 +2080,7 @@
       padding: clamp(10px, 2.4vmin, 20px) clamp(30px, 6.5vmin, 60px);
       border-radius: var(--radius);
       border: none;
-      font-family: 'Roboto', sans-serif;
+      font-family: 'Proxima Nova', sans-serif;
       font-size: clamp(18px, 3.8vmin, 30px);
       font-weight: 600;
       cursor: pointer;
@@ -2366,7 +2388,7 @@
       flex: 0 0 auto;
       text-align: center;
       font-size: clamp(13px, 1.9vmin, 17px);
-      font-family: 'Roboto', system-ui, sans-serif;
+      font-family: 'Proxima Nova', system-ui, sans-serif;
       font-weight: 500;
       color: var(--slate-light);
       line-height: 1.4;
@@ -2615,7 +2637,7 @@
       box-shadow: 0 10px 24px rgba(0, 140, 149, 0.16);
     }
     .success-email-note {
-      font-family: 'Roboto', system-ui, sans-serif;
+      font-family: 'Proxima Nova', system-ui, sans-serif;
       font-size: clamp(15px, 2.4vmin, 20px);
       font-weight: 600;
       color: var(--slate-light);
@@ -3016,7 +3038,7 @@
       border-radius: 2px;
       outline: none;
       color: var(--slate);
-      font-family: 'Roboto', system-ui, sans-serif;
+      font-family: 'Proxima Nova', system-ui, sans-serif;
       font-size: clamp(24px, 3.4vmin, 34px);
       letter-spacing: 0.36em;
       transition: border-color 0.16s, color 0.16s;
