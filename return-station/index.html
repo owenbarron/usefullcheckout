@@ -203,13 +203,13 @@
        ════════════════════════════════════════════════ */
     .card {
       position: relative;
-      width: min(100%, 560px);
+      width: min(100%, 680px);
       display: flex;
       flex-direction: column;
       align-items: center;
       text-align: center;
-      gap: clamp(12px, 2cqh, 20px);
-      padding: clamp(48px, 7cqh, 72px) clamp(28px, 6cqw, 48px) clamp(24px, 3.5cqh, 38px);
+      gap: 24px;
+      padding: 72px 48px 44px;
       background: rgba(255, 255, 255, 0.92);
       border: 2px solid var(--teal);
       border-radius: var(--radius);
@@ -217,12 +217,12 @@
     }
     .card-mark {
       position: absolute;
-      top: -36px;
+      top: -48px;
       left: 50%;
       transform: translateX(-50%);
-      width: 72px;
-      height: 72px;
-      border-radius: 18px;
+      width: 96px;
+      height: 96px;
+      border-radius: 22px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -256,22 +256,22 @@
       flex-direction: column;
       align-items: center;
       justify-content: center; /* vertically center card + hint as a group */
-      gap: clamp(14px, 2cqh, 22px);
+      gap: 28px;
     }
-    .idle-card__title { font-size: clamp(40px, 6.6cqh, 62px); }
-    .idle-card__sub { font-size: clamp(20px, 3cqh, 28px); max-width: 18ch; }
+    .idle-card__title { font-size: 88px; }
+    .idle-card__sub { font-size: 40px; max-width: 18ch; }
     .idle-card__station {
       position: relative;
       width: 100%;
-      margin-top: clamp(4px, 1.4cqh, 12px);
+      margin-top: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
       min-height: 0;
     }
     .idle-card__station img {
-      max-height: clamp(190px, 30cqh, 340px);
-      max-width: 66%;
+      max-height: 470px;
+      max-width: 72%;
       width: auto;
       object-fit: contain;
       display: block;
@@ -282,8 +282,8 @@
       position: absolute;
       top: 21%;
       left: 47%;
-      width: clamp(46px, 7cqh, 70px);
-      height: clamp(46px, 7cqh, 70px);
+      width: 84px;
+      height: 84px;
       transform: translate(-50%, -50%);
       border-radius: 14px;
       border: 3px solid var(--golden);
@@ -298,8 +298,8 @@
 
     /* ── Success card ──────────────────────────────── */
     /* Title is always slate — color comes from card color token, not success style */
-    .success-card__title { font-size: clamp(52px, 8cqh, 86px); letter-spacing: 0.01em; color: var(--slate); }
-    .success-card__body { font-size: clamp(23px, 3.4cqh, 34px); }
+    .success-card__title { font-size: 84px; letter-spacing: 0.01em; color: var(--slate); }
+    .success-card__body { font-size: 38px; }
 
     /* Card color tokens — set by cardColor state, applied via data-card-color attr */
     [data-card-color="green"]  { border-color: var(--green); }
@@ -311,13 +311,13 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 2px;
-      padding: clamp(14px, 2.2cqh, 22px);
+      gap: 4px;
+      padding: 22px;
       border-radius: 12px;
       margin-top: 2px;
     }
-    .tally-block__num { font-family: 'League Spartan', sans-serif; font-weight: 700; font-size: clamp(38px, 5.6cqh, 56px); line-height: 1; }
-    .tally-block__label { font-family: 'League Spartan', sans-serif; font-weight: 600; font-size: clamp(15px, 2.1cqh, 21px); text-transform: uppercase; letter-spacing: 0.04em; color: var(--slate-light); }
+    .tally-block__num { font-family: 'League Spartan', sans-serif; font-weight: 700; font-size: 66px; line-height: 1; }
+    .tally-block__label { font-family: 'League Spartan', sans-serif; font-weight: 600; font-size: 24px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--slate-light); }
     /* Tally block colors by card color */
     [data-card-color="green"]  .tally-block { background: var(--green-light); }
     [data-card-color="green"]  .tally-block__num { color: var(--green); }
@@ -331,7 +331,7 @@
     .container-name {
       font-family: 'League Spartan', sans-serif;
       font-weight: 700;
-      font-size: clamp(20px, 2.9cqh, 28px);
+      font-size: 34px;
       line-height: 1.05;
     }
     [data-card-color="green"]  .container-name { color: var(--green); }
@@ -341,12 +341,12 @@
     .success-note {
       font-family: 'Proxima Nova', sans-serif;
       font-weight: 500;
-      font-size: clamp(14px, 2cqh, 19px);
+      font-size: 22px;
       line-height: 1.4;
       color: var(--slate-light);
       max-width: 32ch;
     }
-    .success-hint { font-family: 'League Spartan', sans-serif; font-weight: 600; font-size: clamp(14px, 2cqh, 19px); color: var(--slate-light); opacity: 0.85; }
+    .success-hint { font-family: 'League Spartan', sans-serif; font-weight: 600; font-size: 22px; color: var(--slate-light); opacity: 0.85; }
 
     /* ── Scan "pop" feedback ───────────────────────────
        On each new scan: the tally box swells briefly and the
