@@ -4714,7 +4714,7 @@
                   </div>
                 </div>
                 <div class="auth-action-stack">
-                  <button class="btn btn--primary" id="continueFoundBtn" type="button">Continue<span class="account-found-countdown" id="accountFoundCountdownValue"> (10s)</span></button>
+                  <button class="btn btn--primary" id="continueFoundBtn" type="button">Continue<span class="account-found-countdown" id="accountFoundCountdownValue"></span></button>
                   <button class="btn btn--cancel" id="cancelBtn" type="button">Not you? Try a different number</button>
                 </div>
               </div>
@@ -4838,7 +4838,7 @@
                     <div class="success-due__date">${dueDate}</div>
                     <div class="success-due__hint">to avoid late fees</div>
                   </div>
-                  <div class="success-email-note">We sent your checkout details via SMS.</div>
+                  <div class="success-email-note">${currentFlow?.paymentMode === 'campus' ? 'We sent your checkout details to your email.' : 'We sent your checkout details via SMS.'}</div>
                 </div>
                 <div class="success-receipt" aria-label="Checked out containers">
                   <div class="success-receipt__header">
