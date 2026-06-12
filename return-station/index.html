@@ -317,7 +317,7 @@
       margin-top: 2px;
     }
     .tally-block__num { font-family: 'League Spartan', sans-serif; font-weight: 700; font-size: 84px; line-height: 1; }
-    .tally-block__label { font-family: 'League Spartan', sans-serif; font-weight: 600; font-size: 28px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--slate-light); }
+    .tally-block__label { font-family: 'League Spartan', sans-serif; font-weight: 600; font-size: 34px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--slate-light); text-wrap: balance; }
     /* Tally block colors by card color */
     [data-card-color="green"]  .tally-block { background: var(--green-light); }
     [data-card-color="green"]  .tally-block__num { color: var(--green); }
@@ -341,12 +341,13 @@
     .success-note {
       font-family: 'Proxima Nova', sans-serif;
       font-weight: 500;
-      font-size: 26px;
-      line-height: 1.4;
+      font-size: 32px;
+      line-height: 1.32;
       color: var(--slate-light);
-      max-width: 32ch;
+      max-width: 26ch;
+      text-wrap: balance;
     }
-    .success-hint { font-family: 'League Spartan', sans-serif; font-weight: 600; font-size: 26px; color: var(--slate-light); opacity: 0.85; }
+    .success-hint { font-family: 'League Spartan', sans-serif; font-weight: 600; font-size: 32px; color: var(--slate-light); opacity: 0.85; text-wrap: balance; }
 
     /* ── Scan "pop" feedback ───────────────────────────
        On each new scan: the tally box swells briefly and the
