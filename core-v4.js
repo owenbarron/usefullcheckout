@@ -19,6 +19,7 @@ const STATE = {
   OTP_VERIFY: 'otp_verify',
   ACCOUNT_LOOKUP: 'account_lookup',
   ACCOUNT_FOUND: 'account_found',
+  NOTIFICATION_SETTINGS: 'notification_settings',
   SMS_CONFIRM_METHOD: 'sms_confirm_method',
   UPDATE_DEFAULT_CARD: 'update_default_card',
   SUCCESS_NEW: 'success_new',
@@ -38,6 +39,7 @@ const CREDIT_SCENARIO = {
   RETURN_SAME_EXACT: 'return_same_exact',
   RETURN_SAME_UNDERLYING: 'return_same_underlying',
   RETURN_DIFFERENT_CARD: 'return_different_card',
+  RETURN_SMS_DISABLED: 'return_sms_disabled',
 };
 
 const BRANDING_PROFILES = {
@@ -98,6 +100,9 @@ let cardBrand = 'Visa';
 let cardLast4 = '1234';
 let prevCardBrand = 'Mastercard';
 let prevCardLast4 = '5678';
+let notificationPreference = 'sms';
+let notificationEmail = '';
+let notificationSettingsMode = 'sms_only';
 
 /* ── Timer state ───────────────────────────────────────────────── */
 
@@ -405,6 +410,9 @@ function resetSession() {
   currentFlow = null;
   identifierValue = '';
   otpValue = '';
+  notificationPreference = 'sms';
+  notificationEmail = '';
+  notificationSettingsMode = notificationSettingsMode || 'sms_only';
   clearScanNotice(false);
   stopCountdown();
   clearSuccessTimer();
@@ -487,6 +495,14 @@ function beginCreditScenarioFlow() {
       currentFlow = { paymentMode: PAYMENT_MODE.CREDIT, scenario: creditScenario };
       setState(STATE.IDENTIFIER_ENTRY);
       break;
+    case CREDIT_SCENARIO.RETURN_SMS_DISABLED:
+      activeUserName = 'Cody';
+      identifierValue = identifierValue || '5551233456';
+      notificationPreference = 'email';
+      notificationEmail = '';
+      currentFlow = { paymentMode: PAYMENT_MODE.CREDIT, scenario: creditScenario };
+      setState(STATE.NOTIFICATION_SETTINGS);
+      break;
     case CREDIT_SCENARIO.RETURN_DIFFERENT_CARD:
     default:
       activeUserName = 'Cody';
@@ -503,7 +519,7 @@ function beginCreditScenarioFlow() {
 
   NEW USER:
     SCAN → card tap → IDENTIFIER_ENTRY → ACCOUNT_LOOKUP (auto ~1.5s)
-         → (no account) → PROGRAM_OVERVIEW → Accept → SUCCESS_NEW
+         → (no account) → NOTIFICATION_SETTINGS → PROGRAM_OVERVIEW → Accept → SUCCESS_NEW
 
   RETURN SAME EXACT:
     SCAN → card tap → SUCCESS_RETURNING (instant)
@@ -511,6 +527,9 @@ function beginCreditScenarioFlow() {
   RETURN SAME UNDERLYING:
     SCAN → card tap → IDENTIFIER_ENTRY → ACCOUNT_LOOKUP → ACCOUNT_FOUND
          → SUCCESS_RETURNING
+
+  RETURN SMS DISABLED:
+    SCAN → card tap → NOTIFICATION_SETTINGS (email default) → SUCCESS_RETURNING
 
   RETURN DIFFERENT CARD:
     SCAN → card tap → IDENTIFIER_ENTRY → ACCOUNT_LOOKUP
@@ -541,8 +560,8 @@ function advanceFromAccountLookup() {
   clearAccountLookupTimer();
   const scenario = currentFlow?.scenario;
   if (scenario === CREDIT_SCENARIO.NEW_USER) {
-    // No account found → program overview (credit variant)
-    setState(STATE.PROGRAM_OVERVIEW);
+    // No account found → confirm notification preferences before program overview
+    setState(STATE.NOTIFICATION_SETTINGS);
   } else if (scenario === CREDIT_SCENARIO.RETURN_DIFFERENT_CARD) {
     // Different card → SMS confirm first, then OTP
     setState(STATE.SMS_CONFIRM_METHOD);
@@ -570,6 +589,16 @@ function advanceFromProgramOverview() {
   // Both campus and credit new users: accept → success
   setState(STATE.SUCCESS_NEW);
   scheduleAutoReset(SUCCESS_RESET_MS);
+}
+
+function advanceFromNotificationSettings() {
+  const scenario = currentFlow?.scenario;
+  if (scenario === CREDIT_SCENARIO.RETURN_SMS_DISABLED) {
+    setState(STATE.SUCCESS_RETURNING);
+    scheduleAutoReset(SUCCESS_RESET_MS);
+    return;
+  }
+  setState(STATE.PROGRAM_OVERVIEW);
 }
 
 function advanceFromOtpVerify() {
@@ -783,6 +812,18 @@ function jumpTo(stateName) {
       activeUserName = 'Cody';
       identifierValue = identifierValue || '5551233456';
       currentFlow = { paymentMode: PAYMENT_MODE.CREDIT, scenario: CREDIT_SCENARIO.RETURN_SAME_UNDERLYING };
+      break;
+
+    case STATE.NOTIFICATION_SETTINGS:
+      activeUserName = 'Cody';
+      identifierValue = identifierValue || '5551233456';
+      notificationPreference = notificationPreference || (
+        creditScenario === CREDIT_SCENARIO.RETURN_SMS_DISABLED ? 'email' : 'sms'
+      );
+      currentFlow = { paymentMode: PAYMENT_MODE.CREDIT, scenario: CREDIT_SCENARIO.NEW_USER };
+      if (creditScenario === CREDIT_SCENARIO.RETURN_SMS_DISABLED) {
+        currentFlow.scenario = CREDIT_SCENARIO.RETURN_SMS_DISABLED;
+      }
       break;
 
     case STATE.SMS_CONFIRM_METHOD:

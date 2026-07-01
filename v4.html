@@ -1798,6 +1798,195 @@
       text-align: center;
       line-height: 1.4;
     }
+    .notification-settings-card {
+      border-color: var(--sky);
+    }
+    .app.is-auth-mode .notification-settings-card.notification-settings-card--sms-disabled {
+      border-color: #C62828;
+    }
+    .notification-settings-card--sms-disabled .auth-role-icon {
+      background: #C62828;
+    }
+    .notification-settings-card .auth-card__subtitle {
+      max-width: 600px;
+    }
+    .notification-subheader {
+      display: grid;
+      gap: 6px;
+      max-width: 680px;
+      text-align: center;
+    }
+    .notification-subheader__alert {
+      color: #C62828;
+      font-size: clamp(22px, 3.5vmin, 30px);
+      font-weight: 700;
+      line-height: 1.12;
+      margin-top: 10px;
+      margin-bottom: 15px;
+    }
+    .notification-subheader__body {
+      color: var(--slate);
+      font-size: clamp(19px, 3vmin, 26px);
+      font-weight: 600;
+      line-height: 1.22;
+      margin-bottom: 10px;
+    }
+    .notification-phone-row {
+      width: min(100%, 620px);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px 12px 20px;
+      border-radius: 14px;
+      background: rgba(35, 141, 193, 0.08);
+      border: 2px solid rgba(35, 141, 193, 0.18);
+      text-align: left;
+    }
+    .notification-phone-row__eyebrow {
+      font-family: 'League Spartan', sans-serif;
+      font-size: clamp(15px, 2.4vmin, 20px);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--sky);
+      line-height: 1;
+    }
+    .notification-phone-row__number {
+      margin-top: 3px;
+      font-family: 'League Spartan', sans-serif;
+      font-size: clamp(30px, 5.2vmin, 46px);
+      font-weight: 700;
+      color: var(--slate);
+      line-height: 1;
+    }
+    .notification-phone-row__edit {
+      border: 2px solid rgba(35, 141, 193, 0.28);
+      background: var(--white);
+      color: var(--teal);
+      border-radius: 999px;
+      padding: 9px 18px 7px;
+      font-family: 'League Spartan', sans-serif;
+      font-size: clamp(18px, 3vmin, 24px);
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .notification-channel-toggle {
+      width: min(100%, 620px);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      padding: 0;
+      border-radius: 14px;
+      background: var(--white);
+      border: none;
+      overflow: hidden;
+      box-shadow: 0 0 0 2px rgba(35, 141, 193, 0.25);
+    }
+    .notification-channel-option {
+      min-height: clamp(62px, 8vmin, 78px);
+      border: none;
+      background: var(--white);
+      border-radius: 0;
+      color: var(--sky);
+      cursor: pointer;
+      font-family: 'League Spartan', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      box-shadow: none;
+    }
+    .notification-channel-option__label {
+      font-size: clamp(28px, 4.5vmin, 40px);
+      font-weight: 700;
+      line-height: 1;
+    }
+    .notification-channel-option__sub {
+      display: none;
+    }
+    .notification-channel-option.is-selected {
+      background: var(--sky);
+      color: var(--white);
+      box-shadow: none;
+    }
+    .notification-channel-option.is-selected .notification-channel-option__sub {
+      color: rgba(255, 255, 255, 0.86);
+    }
+    .notification-settings-card--sms-disabled .notification-channel-toggle {
+      box-shadow: 0 0 0 2px rgba(198, 40, 40, 0.24);
+    }
+    .notification-settings-card--sms-disabled .notification-channel-option {
+      color: #C62828;
+    }
+    .notification-settings-card--sms-disabled .notification-channel-option.is-selected {
+      background: #C62828;
+      color: var(--white);
+    }
+    .notification-email-field {
+      width: min(100%, 620px);
+      display: grid;
+      gap: 8px;
+      text-align: left;
+    }
+    .notification-email-field[hidden] {
+      display: none;
+    }
+    .notification-email-label {
+      font-family: 'League Spartan', sans-serif;
+      font-size: clamp(18px, 3vmin, 24px);
+      font-weight: 700;
+      color: var(--slate);
+    }
+    .notification-email-input {
+      width: 100%;
+      min-height: clamp(62px, 8vmin, 76px);
+      padding: 10px 18px 8px;
+      border: 2px solid rgba(0, 140, 149, 0.18);
+      border-radius: 12px;
+      background: rgba(0, 140, 149, 0.06);
+      color: var(--slate);
+      font-family: 'Proxima Nova', system-ui, sans-serif;
+      font-size: clamp(22px, 3.6vmin, 32px);
+      font-weight: 600;
+      text-align: center;
+    }
+    .notification-email-input:focus {
+      outline: 3px solid rgba(0, 140, 149, 0.18);
+      border-color: var(--teal);
+      background: var(--white);
+    }
+    .notification-settings-card--sms-disabled .notification-email-input {
+      border-color: rgba(198, 40, 40, 0.2);
+      background: rgba(198, 40, 40, 0.08);
+    }
+    .notification-settings-card--sms-disabled .notification-email-input:focus {
+      outline-color: rgba(198, 40, 40, 0.16);
+      border-color: #C62828;
+      background: var(--white);
+    }
+    .notification-consent-copy {
+      max-width: 680px;
+      font-size: clamp(18px, 2.8vmin, 24px);
+      line-height: 1.28;
+      color: var(--slate-light);
+      text-align: center;
+    }
+    .notification-consent-copy strong {
+      color: var(--slate);
+      font-weight: 700;
+    }
+    .app.is-landscape .notification-settings-card {
+      padding-top: 46px;
+      gap: 12px;
+    }
+    .app.is-landscape .notification-settings-card .auth-card__title {
+      font-size: 48px;
+    }
+    .app.is-landscape .notification-phone-row__number {
+      font-size: 36px;
+    }
     .auth-role-icon {
       width: 82px;
       height: 82px;
@@ -2151,6 +2340,9 @@
     .btn--primary:disabled {
       opacity: 0.4;
       cursor: default;
+    }
+    .notification-settings-card .btn--primary:not(:disabled) {
+      opacity: 1;
     }
     .btn--secondary {
       background: var(--gray-100);
@@ -3999,7 +4191,15 @@
                 <option value="return_same_exact">Return - Same Exact Card</option>
                 <option value="return_same_underlying">Return - Same Underlying Card</option>
                 <option value="return_different_card">Return - Different Card</option>
+                <option value="return_sms_disabled">Returning User - Disabled SMS</option>
               </select>
+            </div>
+            <div class="settings-popover__field">
+              <span class="settings-popover__label">Notifications</span>
+              <div class="settings-toggle" id="notificationModeToggle">
+                <button class="settings-toggle__opt" id="smsOnlyModeBtn" type="button">SMS only</button>
+                <button class="settings-toggle__opt" id="changeableModeBtn" type="button">Changeable</button>
+              </div>
             </div>
             <div class="settings-section-label">Debug</div>
             <div class="settings-popover__field">
@@ -4019,6 +4219,7 @@
                 <option value="identifier_entry">Identifier Entry</option>
                 <option value="account_lookup">Account Lookup</option>
                 <option value="account_found">Account Found</option>
+                <option value="notification_settings">Notification Settings</option>
                 <option value="sms_confirm_method">Verify Phone - Send OTP</option>
                 <option value="otp_verify">Verify Phone - Enter OTP</option>
                 <option value="update_default_card">Update Default Card</option>
@@ -4099,21 +4300,6 @@
               <label style="display:flex;align-items:center;gap:6px;color:var(--white);font-size:13px;cursor:pointer">
                 <input type="checkbox" id="cardBordersToggle" checked /> Card borders
               </label>
-            </div>
-            <div class="settings-popover__field">
-              <span class="settings-popover__label">Pill Style</span>
-              <select class="settings-popover__select" id="pillStyleSelect">
-                <option value="white-black">White / Black</option>
-                <option value="white-teal">White / Teal</option>
-                <option value="teal-white">Teal / White</option>
-                <option value="golden-white" selected>Golden / White</option>
-                <option value="white-teal-border-black">White + Teal border / Black</option>
-                <option value="white-teal-border-teal">White + Teal border / Teal</option>
-              </select>
-            </div>
-            <div class="settings-popover__field">
-              <span class="settings-popover__label">Pill Size <span id="pillSizeValue" style="opacity:0.7">45px</span></span>
-              <input type="range" class="settings-popover__range" id="pillSizeSlider" min="20" max="80" step="1" value="45" />
             </div>
           </div>
         </div>
@@ -4355,6 +4541,7 @@
         STATE.IDENTIFIER_ENTRY,
         STATE.ACCOUNT_LOOKUP,
         STATE.ACCOUNT_FOUND,
+        STATE.NOTIFICATION_SETTINGS,
         STATE.SMS_CONFIRM_METHOD,
         STATE.OTP_VERIFY,
         STATE.UPDATE_DEFAULT_CARD,
@@ -4372,10 +4559,12 @@
       const chefIconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/><line x1="6" y1="17" x2="18" y2="17"/></svg>`;
       const studentIconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>`;
       const phoneIconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.35 1.89.66 2.78a2 2 0 0 1-.45 2.11L8.05 9.88a16 16 0 0 0 6.07 6.07l1.27-1.27a2 2 0 0 1 2.11-.45c.89.31 1.82.53 2.78.66A2 2 0 0 1 22 16.92z"/></svg>`;
+      const messageIconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/><path d="M8 9h8"/><path d="M8 13h5"/></svg>`;
       const creditCardIconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M6 15h4"/></svg>`;
       const chefIconHtml = `<div class="role-icon role-icon--chef" aria-hidden="true">${chefIconSvg}</div>`;
       const studentIconHtml = `<div class="role-icon role-icon--student" aria-hidden="true">${studentIconSvg}</div>`;
       const phoneIconHtml = `<div class="auth-role-icon auth-role-icon--phone" aria-hidden="true">${phoneIconSvg}</div>`;
+      const messageIconHtml = `<div class="auth-role-icon auth-role-icon--phone" aria-hidden="true">${messageIconSvg}</div>`;
       const creditCardIconHtml = `<div class="auth-role-icon auth-role-icon--card" aria-hidden="true">${creditCardIconSvg}</div>`;
       const cashierLabelHtml = `<div class="role-kicker role-kicker--cashier">Cashier</div>`;
       const studentLabelHtml = `<div class="role-kicker role-kicker--student">Student</div>`;
@@ -4748,6 +4937,112 @@
           break;
         }
 
+        case STATE.NOTIFICATION_SETTINGS: {
+          const phoneFmt = formatPhoneNumber(identifierValue || '5551233456');
+          const isSmsDisabledScenario = currentFlow?.scenario === CREDIT_SCENARIO.RETURN_SMS_DISABLED;
+          const isChangeableNotifications = isSmsDisabledScenario || notificationSettingsMode === 'changeable';
+          const selectedPreference = isChangeableNotifications ? (notificationPreference || 'sms') : 'sms';
+          const emailValue = notificationEmail || '';
+          const emailAttrValue = emailValue.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+          const isEmailSelected = selectedPreference === 'email';
+          const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue);
+          const canContinue = !isEmailSelected || isEmailValid;
+          const title = isChangeableNotifications ? 'Notification Settings' : 'Allow Notifications';
+          const subheaderHtml = isSmsDisabledScenario
+            ? `
+                <div class="notification-subheader">
+                  <div class="notification-subheader__alert">You’ve disabled SMS notifications.</div>
+                  <div class="notification-subheader__body">Let us know how you prefer to get notifications for checkouts, returns, and other important info.</div>
+                </div>
+              `
+            : `<div class="auth-card__subtitle">${isChangeableNotifications
+                ? 'Choose how we send checkouts, returns, and other important info.'
+                : "We'll send you notifications for checkouts, returns, and other important info via SMS."}</div>`;
+          const selectorHtml = isChangeableNotifications
+            ? `
+                <div class="notification-channel-toggle" role="group" aria-label="Notification method">
+                  <button class="notification-channel-option ${selectedPreference === 'sms' ? 'is-selected' : ''}" id="chooseSmsBtn" type="button" aria-pressed="${selectedPreference === 'sms'}">
+                    <span class="notification-channel-option__label">Text me</span>
+                  </button>
+                  <button class="notification-channel-option ${isEmailSelected ? 'is-selected' : ''}" id="chooseEmailBtn" type="button" aria-pressed="${isEmailSelected}">
+                    <span class="notification-channel-option__label">Email me</span>
+                  </button>
+                </div>
+              `
+            : '';
+          const contactHtml = isEmailSelected
+            ? `
+                <div class="notification-email-field">
+                  <label class="notification-email-label" for="notificationEmailInput">Email address</label>
+                  <input class="notification-email-input" id="notificationEmailInput" type="email" value="${emailAttrValue}" placeholder="student@email.edu" autocomplete="email" inputmode="email" />
+                </div>
+              `
+            : `
+                <div class="notification-phone-row">
+                  <div>
+                    <div class="notification-phone-row__eyebrow">Phone number</div>
+                    <div class="notification-phone-row__number">${phoneFmt}</div>
+                  </div>
+                  <button class="notification-phone-row__edit" id="editNotificationPhoneBtn" type="button">Edit</button>
+                </div>
+              `;
+          const legalCopy = isEmailSelected
+            ? 'We’ll email your checkout details, return reminders, due dates, billing, and account status updates.'
+            : '<strong>By continuing, I agree</strong> USEFULL may text me rental, return, due-date, billing, and account status updates. Msg/data rates may apply. Reply STOP to opt out.';
+          const continueLabel = isChangeableNotifications ? 'Continue' : 'Agree and Continue';
+          screen.innerHTML = `
+            <div class="brand-strip">
+              <img class="brand-strip__logo" src="images/USEFULL-icons/USEFULL-Logo-Registered_Color.svg" alt="USEFULL" />
+            </div>
+            <div class="id-entry-layout">
+              <div class="auth-card auth-card--method auth-flow-card auth-wide-card notification-settings-card ${isSmsDisabledScenario ? 'notification-settings-card--sms-disabled' : ''}">
+                ${messageIconHtml}
+                <div class="auth-card__title">${title}</div>
+                ${subheaderHtml}
+                ${selectorHtml}
+                ${contactHtml}
+                <div class="notification-consent-copy">
+                  ${legalCopy}
+                </div>
+                <div class="auth-action-stack sms-confirm-btns">
+                  <button class="btn btn--primary" id="notificationContinueBtn" type="button" ${canContinue ? '' : 'disabled'}>${continueLabel}</button>
+                  <button class="btn btn--cancel btn--cancel-orange" id="cancelBtn" type="button">Cancel</button>
+                </div>
+              </div>
+            </div>
+          `;
+          const editNotificationPhoneBtn = document.getElementById('editNotificationPhoneBtn');
+          if (editNotificationPhoneBtn) editNotificationPhoneBtn.onclick = () => setState(STATE.IDENTIFIER_ENTRY);
+          const chooseSmsBtn = document.getElementById('chooseSmsBtn');
+          if (chooseSmsBtn) chooseSmsBtn.onclick = () => {
+            notificationPreference = 'sms';
+            window.render();
+          };
+          const chooseEmailBtn = document.getElementById('chooseEmailBtn');
+          if (chooseEmailBtn) chooseEmailBtn.onclick = () => {
+            notificationPreference = 'email';
+            window.render();
+            setTimeout(() => document.getElementById('notificationEmailInput')?.focus(), 0);
+          };
+          const emailInput = document.getElementById('notificationEmailInput');
+          if (emailInput) {
+            emailInput.addEventListener('input', (event) => {
+              notificationEmail = event.target.value;
+              const nextCanContinue = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(notificationEmail);
+              const continueBtn = document.getElementById('notificationContinueBtn');
+              continueBtn.disabled = !nextCanContinue;
+              continueBtn.style.opacity = nextCanContinue ? '1' : '';
+            });
+          }
+          document.getElementById('notificationContinueBtn').onclick = () => {
+            if (notificationPreference === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(notificationEmail || '')) return;
+            if (!isChangeableNotifications) notificationPreference = 'sms';
+            advanceFromNotificationSettings();
+          };
+          document.getElementById('cancelBtn').onclick = resetSession;
+          break;
+        }
+
         case STATE.SMS_CONFIRM_METHOD: {
           const phoneLast4 = identifierValue ? identifierValue.slice(-4) : '3456';
           const phoneMasked = `(***) ***-${phoneLast4}`;
@@ -4832,6 +5127,16 @@
         case STATE.SUCCESS_RETURNING: {
           const dueDate = getDueDateString();
           const items = getScannedContainerItems(containerCount);
+          const notificationEmailDisplay = (notificationEmail || 'your email')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+          const successContactNote = currentFlow?.paymentMode === 'campus'
+            ? 'We sent your checkout details to your email.'
+            : notificationPreference === 'email'
+              ? `We sent your checkout details to ${notificationEmailDisplay}.`
+              : 'We sent your checkout details via SMS.';
           const containerListHtml = items.map((item) => `
             <div class="container-item">
               <img class="container-item__icon" src="${item.icon}" alt="" />
@@ -4860,7 +5165,7 @@
                     <div class="success-due__date">${dueDate}</div>
                     <div class="success-due__hint">to avoid late fees</div>
                   </div>
-                  <div class="success-email-note">${currentFlow?.paymentMode === 'campus' ? 'We sent your checkout details to your email.' : 'We sent your checkout details via SMS.'}</div>
+                  <div class="success-email-note">${successContactNote}</div>
                 </div>
                 <div class="success-receipt" aria-label="Checked out containers">
                   <div class="success-receipt__header">
@@ -5099,6 +5404,24 @@
       document.getElementById('creditScenarioSelect').onchange = (e) => {
         creditScenario = e.target.value;
       };
+      const smsOnlyModeBtn = document.getElementById('smsOnlyModeBtn');
+      const changeableModeBtn = document.getElementById('changeableModeBtn');
+      function syncNotificationModeToggle() {
+        if (!smsOnlyModeBtn || !changeableModeBtn) return;
+        smsOnlyModeBtn.classList.toggle('is-active', notificationSettingsMode === 'sms_only');
+        changeableModeBtn.classList.toggle('is-active', notificationSettingsMode === 'changeable');
+      }
+      if (smsOnlyModeBtn && changeableModeBtn) {
+        syncNotificationModeToggle();
+        smsOnlyModeBtn.onclick = () => {
+          notificationSettingsMode = 'sms_only';
+          syncNotificationModeToggle();
+        };
+        changeableModeBtn.onclick = () => {
+          notificationSettingsMode = 'changeable';
+          syncNotificationModeToggle();
+        };
+      }
 
       // Debug toggle
       const debugToggle = document.getElementById('debugToggle');
@@ -5183,19 +5506,6 @@
         };
       }
 
-      // Pill style variant selector
-      document.getElementById('pillStyleSelect').onchange = (e) => {
-        appRoot.setAttribute('data-pill-style', e.target.value);
-      };
-      // Pill size live slider
-      const pillSizeSlider = document.getElementById('pillSizeSlider');
-      const pillSizeValue = document.getElementById('pillSizeValue');
-      pillSizeSlider.oninput = (e) => {
-        const v = e.target.value;
-        appRoot.style.setProperty('--tap-label-size', v + 'px');
-        pillSizeValue.textContent = v + 'px';
-      };
-
       // Lenovo Legion Tab 3 — 2560×1600 @ DPR 2 → 1280×800 CSS px
       // window.resizeTo() is blocked by Chrome on regular tabs, so we frame
       // the app at exact tablet dimensions and scale it to fit the viewport.
@@ -5235,8 +5545,7 @@
           display: flex;
           background: #F0F4F5;
         `;
-        const pillSize = document.getElementById('pillSizeSlider')?.value || '45';
-        app.style.setProperty('--tap-label-size', pillSize + 'px');
+        app.style.setProperty('--tap-label-size', '45px');
         document.body.style.background = '#1c1c1e';
         document.body.style.overflow = 'hidden';
         // Orientation class for layout switching
