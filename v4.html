@@ -1914,16 +1914,6 @@
     .notification-channel-option.is-selected .notification-channel-option__sub {
       color: rgba(255, 255, 255, 0.86);
     }
-    .notification-settings-card--sms-disabled .notification-channel-toggle {
-      box-shadow: 0 0 0 2px rgba(198, 40, 40, 0.24);
-    }
-    .notification-settings-card--sms-disabled .notification-channel-option {
-      color: #C62828;
-    }
-    .notification-settings-card--sms-disabled .notification-channel-option.is-selected {
-      background: #C62828;
-      color: var(--white);
-    }
     .notification-email-field {
       width: min(100%, 620px);
       display: grid;
@@ -4940,25 +4930,29 @@
         case STATE.NOTIFICATION_SETTINGS: {
           const phoneFmt = formatPhoneNumber(identifierValue || '5551233456');
           const isSmsDisabledScenario = currentFlow?.scenario === CREDIT_SCENARIO.RETURN_SMS_DISABLED;
-          const isChangeableNotifications = isSmsDisabledScenario || notificationSettingsMode === 'changeable';
-          const selectedPreference = isChangeableNotifications ? (notificationPreference || 'sms') : 'sms';
+          const isChannelChoiceAvailable = !isSmsDisabledScenario && notificationSettingsMode === 'changeable';
+          const selectedPreference = isSmsDisabledScenario
+            ? 'email'
+            : isChannelChoiceAvailable
+              ? (notificationPreference || 'sms')
+              : 'sms';
           const emailValue = notificationEmail || '';
           const emailAttrValue = emailValue.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
           const isEmailSelected = selectedPreference === 'email';
           const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue);
           const canContinue = !isEmailSelected || isEmailValid;
-          const title = isChangeableNotifications ? 'Notification Settings' : 'Allow Notifications';
+          const title = isSmsDisabledScenario || isChannelChoiceAvailable ? 'Notification Settings' : 'Allow Notifications';
           const subheaderHtml = isSmsDisabledScenario
             ? `
                 <div class="notification-subheader">
                   <div class="notification-subheader__alert">You’ve disabled SMS notifications.</div>
-                  <div class="notification-subheader__body">Let us know how you prefer to get notifications for checkouts, returns, and other important info.</div>
+                  <div class="notification-subheader__body">Enter an email so we can send checkout details, return reminders, due dates, billing, and account updates.</div>
                 </div>
               `
-            : `<div class="auth-card__subtitle">${isChangeableNotifications
+            : `<div class="auth-card__subtitle">${isChannelChoiceAvailable
                 ? 'Choose how we send checkouts, returns, and other important info.'
                 : "We'll send you notifications for checkouts, returns, and other important info via SMS."}</div>`;
-          const selectorHtml = isChangeableNotifications
+          const selectorHtml = isChannelChoiceAvailable
             ? `
                 <div class="notification-channel-toggle" role="group" aria-label="Notification method">
                   <button class="notification-channel-option ${selectedPreference === 'sms' ? 'is-selected' : ''}" id="chooseSmsBtn" type="button" aria-pressed="${selectedPreference === 'sms'}">
@@ -4987,9 +4981,11 @@
                 </div>
               `;
           const legalCopy = isEmailSelected
-            ? 'We’ll email your checkout details, return reminders, due dates, billing, and account status updates.'
+            ? isSmsDisabledScenario
+              ? 'To turn texts back on, text START to USEFULL.'
+              : 'We’ll email your checkout details, return reminders, due dates, billing, and account status updates.'
             : '<strong>By continuing, I agree</strong> USEFULL may text me rental, return, due-date, billing, and account status updates. Msg/data rates may apply. Reply STOP to opt out.';
-          const continueLabel = isChangeableNotifications ? 'Continue' : 'Agree and Continue';
+          const continueLabel = isSmsDisabledScenario || isChannelChoiceAvailable ? 'Continue' : 'Agree and Continue';
           screen.innerHTML = `
             <div class="brand-strip">
               <img class="brand-strip__logo" src="images/USEFULL-icons/USEFULL-Logo-Registered_Color.svg" alt="USEFULL" />
@@ -5035,8 +5031,9 @@
             });
           }
           document.getElementById('notificationContinueBtn').onclick = () => {
-            if (notificationPreference === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(notificationEmail || '')) return;
-            if (!isChangeableNotifications) notificationPreference = 'sms';
+            if (isEmailSelected && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(notificationEmail || '')) return;
+            if (isSmsDisabledScenario) notificationPreference = 'email';
+            else if (!isChannelChoiceAvailable) notificationPreference = 'sms';
             advanceFromNotificationSettings();
           };
           document.getElementById('cancelBtn').onclick = resetSession;

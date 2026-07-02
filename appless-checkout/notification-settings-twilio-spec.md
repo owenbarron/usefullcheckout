@@ -49,7 +49,7 @@ New scenario:
 2. Card fingerprint maps to an existing account.
 3. USEFULL account shows SMS disabled / opted out.
 4. Show SMS Disabled Notification Settings modal immediately after card tap.
-5. User chooses email, or explicitly reselects SMS if re-enablement is supported.
+5. User enters an email address.
 6. Continue the returning-user checkout path.
 
 This screen exists because returning users may still need checkout details, due dates, late fee notices, billing issues, and account status updates even after texting STOP.
@@ -90,17 +90,13 @@ Use when USEFULL believes the user has disabled SMS, either by app preference, i
 - Card border: red.
 - Title: `Notification Settings`
 - Subheader line 1, red: `You’ve disabled SMS notifications.`
-- Subheader line 2, black: `Let us know how you prefer to get notifications for checkouts, returns, and other important info.`
-- Selector: default to `Email me`.
-  - Disabled-flow selected state: red background, white text.
-  - Disabled-flow unselected state: white background, red text.
+- Subheader line 2, black: `Enter an email so we can send checkout details, return reminders, due dates, billing, and account updates.`
+- No SMS/email selector.
 - Email input: pale red background.
+- Helper copy: `To turn texts back on, text START to USEFULL.`
 - CTA: `Continue`
 
-Product decision needed for re-enabling SMS:
-
-- Safest approach: if the user selects `Text me` while Twilio/carrier opt-out is active, explain that they must text `START` or `UNSTOP` to USEFULL’s sender before SMS can resume.
-- Do not assume the kiosk can override a carrier/Twilio STOP block. For U.S. toll-free numbers, Twilio documents special behavior: only START/UNSTOP fully undo blocking.
+Do not offer SMS re-enable at the kiosk. Treat every SMS-disabled source as email-only in this checkout edge case. If the opt-out came from Twilio STOP or is only known from a Twilio 21610 failure, the kiosk cannot safely restore deliverability; the user needs to text `START` or `UNSTOP` to the USEFULL sender.
 
 ## Twilio integration requirements
 
@@ -224,7 +220,7 @@ OTP should remain logically separate from marketing/transactional lifecycle mess
 - User sees the phone number they typed before SMS consent is captured.
 - SMS-only variant has message icon, no selector, and `Agree and Continue`.
 - Changeable variant swaps the phone row for an email input when email is selected.
-- SMS-disabled returning-user path shows the red warning variant immediately after card recognition and defaults to email.
+- SMS-disabled returning-user path shows the red warning variant immediately after card recognition, requires email, and does not show a Text me option.
 - Outbound SMS is blocked when app DB says the user opted out.
 - Inbound STOP/START/HELP updates app DB from Twilio webhook/Event Stream.
 - Twilio 21610 marks the number SMS-disabled and triggers future email fallback where available.
@@ -233,7 +229,6 @@ OTP should remain logically separate from marketing/transactional lifecycle mess
 ## Open questions for the implementation ticket
 
 - Will production launch with SMS-only or changeable notifications at first checkout?
-- If SMS is disabled, can the kiosk offer SMS re-enable, or should it only tell users to text START/UNSTOP?
 - Is Twilio Consent Management API enabled/priced for USEFULL’s Twilio account?
 - Is the sender toll-free or A2P 10DLC at launch? Toll-free has special START/UNSTOP behavior.
 - What exact consent copy version should Legal approve for the kiosk?
