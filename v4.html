@@ -3755,7 +3755,7 @@
     }
     .app.variant-v9 .scan-shell-v3--v9-student .scan-panel--checkout {
       justify-content: flex-start;
-      gap: 14px;
+      gap: 12px;
       padding-top: 58px;     /* §2/§4 harmonization: 48 → 58 (matches cashier card) */
       padding-bottom: 24px;
     }
@@ -3770,9 +3770,25 @@
       letter-spacing: 0.18em;
     }
     .app.variant-v9 .scan-shell-v3--v9-student .scan-panel__text {
-      font-size: clamp(48px, 10vmin, 92px);  /* portrait target ~80px; landscape overrides at 52px */
-      line-height: 1.04;
+      margin: 0;
+      font-size: clamp(48px, 8.5vmin, 76px);
+      line-height: 1.06;
       max-width: 640px;
+      text-wrap: balance;
+    }
+    .v9-student-heading {
+      display: grid;
+      justify-items: center;
+      gap: 14px;
+      text-align: center;
+    }
+    .scan-panel__subtext {
+      max-width: 620px;
+      font-family: 'League Spartan', sans-serif;
+      font-size: clamp(34px, 5.4vmin, 46px);
+      font-weight: 700;
+      line-height: 1.12;
+      color: var(--slate-light);
       text-wrap: balance;
     }
     .app.variant-v9 .scan-shell-v3--v9-student .kiosk-zone {
@@ -3787,10 +3803,66 @@
       margin-top: 0;
     }
     .app.variant-v9 .scan-shell-v3--v9-student .tap-dot--campus {
-      top: 34%;
+      top: 47%;
     }
     .app.variant-v9 .scan-shell-v3--v9-student .tap-label--campus {
-      top: 34%;
+      top: 47%;
+    }
+    .app.variant-v9 .scan-shell-v3--v9-student .tap-dot--credit,
+    .app.variant-v9 .scan-shell-v3--v9-student .tap-label--credit {
+      top: 75%;
+    }
+    .tap-qr {
+      position: absolute;
+      top: 31%;
+      left: 30%;
+      width: 54px;
+      aspect-ratio: 1;
+      overflow: hidden;
+      border: 3px solid var(--white);
+      border-radius: 9px;
+      background: var(--golden);
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+    .tap-qr__mark {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 5px;
+      filter: grayscale(1) brightness(0.72) contrast(100);
+      mix-blend-mode: screen;
+    }
+    .tap-label--qr {
+      top: 31%;
+      left: calc(30% + 44px);
+    }
+    .app.variant-v9 .scan-shell-v3--v9-student .tap-qr,
+    .app.variant-v9 .scan-shell-v3--v9-student .tap-dot--campus,
+    .app.variant-v9 .scan-shell-v3--v9-student .tap-dot--credit {
+      animation: tap-sequence-pulse 3.6s ease-in-out infinite;
+    }
+    .app.variant-v9 .scan-shell-v3--v9-student .tap-qr {
+      animation-delay: 0s;
+    }
+    .app.variant-v9 .scan-shell-v3--v9-student .tap-dot--campus {
+      animation-delay: 1.2s;
+    }
+    .app.variant-v9 .scan-shell-v3--v9-student .tap-dot--credit {
+      animation-delay: 2.4s;
+    }
+    @keyframes tap-sequence-pulse {
+      0%, 28%, 100% { opacity: 1; }
+      12% { opacity: 0.15; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .app.variant-v9 .scan-shell-v3--v9-student .tap-qr,
+      .app.variant-v9 .scan-shell-v3--v9-student .tap-dot--campus,
+      .app.variant-v9 .scan-shell-v3--v9-student .tap-dot--credit {
+        animation: none;
+        opacity: 1;
+      }
     }
     .app.variant-v9 .counter-pill--gold .counter-pill__inner {
       background: rgba(214, 154, 45, 0.12);
@@ -3924,13 +3996,14 @@
       gap: 10px;
     }
 
-    /* --- Student card: IDENTICAL header / body / footer grid to cashier --- */
+    /* --- Student card: same two-column structure, with a taller heading row
+       for the QR-first instruction and its fallback subheader. --- */
     .app.is-landscape.variant-v9 .scan-shell-v3--v9-student .scan-panel--checkout {
       display: grid;
       width: 100%;                  /* override .app.variant-v9 .scan-panel--checkout { width: min(100%, 720px) } so card fills the stage like the cashier card does */
       max-width: 100%;
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      grid-template-rows: 26px 70px 314px 162px;   /* same fixed rows as cashier */
+      grid-template-rows: 26px 130px 254px 162px;  /* taller heading row accommodates the QR title + slate subheader */
       column-gap: 36px;
       row-gap: 10px;
       padding: 56px 44px 24px;     /* extra top pad so STUDENT label clears the student icon */
@@ -3944,14 +4017,21 @@
       justify-self: center; align-self: end;
       margin-top: 0;
     }
-    .app.is-landscape.variant-v9 .scan-shell-v3--v9-student .scan-panel__text {
+    .app.is-landscape.variant-v9 .scan-shell-v3--v9-student .v9-student-heading {
       grid-column: 1 / -1; grid-row: 2;
       justify-self: center; align-self: start;
       text-align: center;
-      font-size: 52px;
-      line-height: 1.04;
       max-width: 100%;
       margin: 4px 0 0;
+      gap: 2px;
+    }
+    .app.is-landscape.variant-v9 .scan-shell-v3--v9-student .scan-panel__text {
+      font-size: 43px;
+      line-height: 1;
+    }
+    .app.is-landscape.variant-v9 .scan-shell-v3--v9-student .scan-panel__subtext {
+      font-size: 24px;
+      line-height: 1;
     }
     .app.is-landscape.variant-v9 .scan-shell-v3--v9-student .kiosk-zone {
       grid-column: 1; grid-row: 3;        /* kiosk on the LEFT */
@@ -3979,6 +4059,11 @@
     .app.is-landscape.variant-v9 .scan-shell-v3--v9-student .tap-dot {
       width: 46px;
     }
+    .app.is-landscape.variant-v9 .scan-shell-v3--v9-student .tap-qr {
+      width: 40px;
+      border-width: 2px;
+      border-radius: 7px;
+    }
     /* Student template now has the counter-pill as a direct child of
        .scan-panel--checkout (sibling of kiosk-zone) so it sits above the
        kiosk illustration in portrait. In landscape we move it to row 3 col 2
@@ -3986,8 +4071,8 @@
     .app.is-landscape.variant-v9 .scan-shell-v3--v9-student .scan-panel--checkout > .counter-pill {
       grid-column: 2; grid-row: 3;
       justify-self: center; align-self: center;
-      width: 300px;
-      height: 300px;
+      width: 254px;
+      height: 254px;
       aspect-ratio: 1 / 1;
       padding: 0;
     }
@@ -3999,8 +4084,7 @@
       justify-self: center; align-self: end;
       /* Cashier row 4 = padding-top 10 + Done scanning 78 + gap 10 + Cancel 64 = 162px.
          Student row 4 with margin-top 98 + Cancel 64 = 162px.
-         Same row 4 height → row 3 shrinks identically → counter and kiosk
-         illustration land at the exact same y on both screens.          */
+         The same row 4 height keeps the action placement stable.         */
       margin-top: 98px;
     }
 
@@ -4669,7 +4753,10 @@
                     <div class="scan-panel scan-panel--checkout">
                       ${studentIconHtml}
                       ${studentLabelHtml}
-                      <div class="scan-panel__text">Tap your ID or credit card to check out</div>
+                      <div class="v9-student-heading">
+                        <h1 class="scan-panel__text">Scan your<br>USEFULL QR code</h1>
+                        <p class="scan-panel__subtext">No app? Tap your campus<br>card or credit card</p>
+                      </div>
                       <div class="counter-pill counter-pill--v2">
                         <div class="counter-pill__inner">
                           <div class="counter-pill__count is-pop">${containerCount}</div>
@@ -4679,6 +4766,8 @@
                       <div class="kiosk-zone">
                         <div class="kiosk-zone__stage">
                           <img class="kiosk-zone__img" src="images/illustrations/concept-art/checkout-station-kiosk.png" alt="USEFULL checkout station" />
+                          <span class="tap-qr"><img class="tap-qr__mark" src="images/interface-icons/usefull-qr-icon-abstract.png" alt="Abstract USEFULL scan icon" /></span>
+                          <span class="tap-label tap-label--qr">USEFULL QR</span>
                           <img class="tap-dot tap-dot--campus" src="images/illustrations/concept-art/nfc_oval_golden.png" alt="" />
                           <span class="tap-label tap-label--campus">${b.campusCard}</span>
                           <img class="tap-dot tap-dot--credit" src="images/illustrations/concept-art/nfc_oval_golden.png" alt="" />
