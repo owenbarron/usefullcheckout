@@ -1,4 +1,4 @@
-const CACHE_NAME = 'usefull-kiosk-v4-20260714-1';
+const CACHE_NAME = 'usefull-kiosk-v4-20260720-1';
 
 const APP_SHELL = [
   './',
@@ -34,6 +34,7 @@ const APP_SHELL = [
   './images/interface-icons/usefull-qr-code.png',
   './images/QR-codes/appdownload-QR.png',
   './images/QR-codes/terms-QR.png',
+  './images/QR-codes/terms-of-service-QR.png',
   './images/illustrations/nfc-tap.png',
   './images/illustrations/concept-art/checkmark-filled-transparent.png',
   './images/illustrations/concept-art/checkout-station-kiosk-scan.gif',
