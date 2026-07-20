@@ -3055,6 +3055,152 @@
     .app-download-overlay[hidden] {
       display: none;
     }
+    .updated-terms-qr {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      margin: 6px 0 2px;
+    }
+    .updated-terms-qr__img {
+      width: clamp(170px, 26vmin, 220px);
+      height: clamp(170px, 26vmin, 220px);
+      border-radius: 12px;
+      border: 1px solid rgba(0, 140, 149, 0.16);
+      background: var(--white);
+      padding: 8px;
+    }
+    .updated-terms-qr__caption {
+      font-family: 'League Spartan', sans-serif;
+      font-weight: 700;
+      font-size: clamp(18px, 2.6vmin, 24px);
+      color: var(--slate);
+    }
+    /* ── Review Terms modal (tap screen) — friendly QR overlay ──
+       Reuses the .auth-card / notification-card styling, re-declared here
+       because the overlay is NOT inside .app.is-auth-mode. */
+    .review-terms-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(27, 42, 48, 0.42);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 240;
+      padding: 32px;
+    }
+    .review-terms-overlay[hidden] {
+      display: none;
+    }
+    .review-terms-overlay .review-terms-card {
+      flex: 0 1 auto;
+      width: min(100%, 620px);
+      margin: auto;
+      position: relative;
+      overflow: visible;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: clamp(14px, 2.2vmin, 22px);
+      background: rgba(255, 255, 255, 0.97);
+      border: 2px solid var(--teal);              /* pairs with the teal icon, per the app's icon↔border convention */
+      border-radius: var(--radius);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+      padding: clamp(60px, 8vmin, 76px) clamp(28px, 4.8vmin, 48px) clamp(28px, 4.8vmin, 40px);
+    }
+    /* Badge sits centered on the top border (half above / half below) */
+    .review-terms-overlay .review-terms-card .auth-role-icon {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      margin: 0;
+    }
+    .app.is-auth-mode .updated-terms-card .auth-role-icon {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      margin: 0;
+    }
+    .app.is-portrait.is-auth-mode .id-entry-layout .auth-card.updated-terms-card {
+      min-height: min(860px, calc(100% - 64px));
+      justify-content: center;
+      gap: 24px;
+      padding: 64px 48px 42px;
+    }
+    .app.is-portrait.is-auth-mode .updated-terms-card .auth-card__title {
+      font-size: 64px;
+      max-width: 660px;
+    }
+    .app.is-portrait.is-auth-mode .updated-terms-card .auth-card__subtitle {
+      max-width: 620px;
+      font-size: 32px;
+      line-height: 1.25;
+    }
+    .app.is-portrait.is-auth-mode .updated-terms-card .updated-terms-qr__img {
+      width: 220px;
+      height: 220px;
+    }
+    .app.is-portrait.is-auth-mode .updated-terms-card .updated-terms-qr__caption {
+      font-size: 24px;
+    }
+    .app.is-portrait.is-auth-mode .updated-terms-card .btn {
+      min-height: 72px;
+      font-size: 35px;
+    }
+    .review-terms-overlay .review-terms-card .auth-card__title {
+      font-family: 'League Spartan', sans-serif;
+      font-weight: 700;
+      color: var(--slate);
+      font-size: clamp(40px, 7vmin, 64px);
+      line-height: 1;
+      text-align: center;
+      text-wrap: balance;
+    }
+    .review-terms-overlay .review-terms-card .auth-card__subtitle {
+      font-size: clamp(20px, 3.4vmin, 30px);
+      font-weight: 400;
+      color: var(--slate-light);
+      line-height: 1.3;
+      max-width: 520px;
+      text-wrap: balance;
+    }
+    .review-terms-overlay .review-terms-card .auth-action-stack {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 6px;
+    }
+    .app.is-portrait .review-terms-overlay .review-terms-card {
+      min-height: 700px;
+      justify-content: space-between;
+      gap: 0;
+      padding: 96px clamp(28px, 4.8vmin, 48px) 40px;
+    }
+    .app.is-portrait .review-terms-overlay .review-terms-card .updated-terms-qr__img {
+      width: 220px;
+      height: 220px;
+    }
+    .app.is-portrait .review-terms-overlay .review-terms-card .auth-card__title {
+      font-size: 56px;
+    }
+    .app.is-portrait .review-terms-overlay .review-terms-card .auth-card__subtitle {
+      font-size: 29px;
+      max-width: 430px;
+    }
+    .review-terms-overlay .review-terms-close {
+      min-width: 320px;
+      min-height: 68px;
+      font-family: 'League Spartan', sans-serif;
+      font-weight: 700;
+      font-size: 30px;
+      border-radius: 14px;
+    }
     .app-download-panel {
       width: min(100%, 660px);
       background: var(--white);
@@ -4218,11 +4364,29 @@
         <img src="images/interface-icons/Usefull-Icons-Golden_1_CreditCard.png" alt="Credit card tap" />
       </button>
     </div>
+    <!-- Review Terms modal (tap screen) — friendly QR overlay -->
+    <div id="reviewTermsModal" class="review-terms-overlay" hidden>
+      <div class="auth-card auth-card--method auth-flow-card auth-wide-card review-terms-card" role="dialog" aria-modal="true" aria-labelledby="reviewTermsTitle">
+        <div class="auth-role-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h5"/></svg>
+        </div>
+        <div class="auth-card__title" id="reviewTermsTitle">Review our Terms</div>
+        <div class="auth-card__subtitle">Scan the code with your phone's camera to read our full Terms of Service.</div>
+        <div class="updated-terms-qr">
+          <img class="updated-terms-qr__img" src="images/QR-codes/terms-of-service-QR.png" alt="Terms of Service QR code" />
+          <div class="updated-terms-qr__caption">Terms of Service</div>
+        </div>
+        <div class="auth-action-stack">
+          <button class="btn btn--primary review-terms-close" id="reviewTermsClose" type="button">Close</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Terms modal -->
     <div id="termsModal" class="terms-overlay" hidden>
       <div class="terms-panel">
         <div class="terms-panel__header">
-          <h2>USEFULL Terms & Conditions</h2>
+          <h2>USEFULL Terms of Service</h2>
           <button id="termsClose" class="terms-close" type="button" aria-label="Close">&times;</button>
         </div>
         <div class="terms-panel__body">
@@ -4253,6 +4417,7 @@
               <select class="settings-popover__select" id="campusScenarioSelect">
                 <option value="new_user">New User</option>
                 <option value="returning_user">Returning User</option>
+                <option value="returning_user_terms_updated">Returning User - Terms Updated</option>
                 <option value="campus_user_not_found">User Not Found</option>
                 <option value="account_frozen">Account Frozen</option>
                 <option value="gift_card_scanned">Gift Card Scanned</option>
@@ -4266,6 +4431,7 @@
                 <option value="return_same_underlying">Return - Same Underlying Card</option>
                 <option value="return_different_card">Return - Different Card</option>
                 <option value="return_sms_disabled">Returning User - Disabled SMS</option>
+                <option value="return_terms_updated">Returning User - Terms Updated</option>
               </select>
             </div>
             <div class="settings-popover__field">
@@ -4294,6 +4460,7 @@
                 <option value="account_lookup">Account Lookup</option>
                 <option value="account_found">Account Found</option>
                 <option value="notification_settings">Notification Settings</option>
+                <option value="updated_terms">Terms Updated</option>
                 <option value="sms_confirm_method">Verify Phone - Send OTP</option>
                 <option value="otp_verify">Verify Phone - Enter OTP</option>
                 <option value="update_default_card">Update Default Card</option>
@@ -4442,6 +4609,19 @@
       termsModal.hidden = true;
       setTermsOpen(false);
     }
+    const reviewTermsModal = document.getElementById('reviewTermsModal');
+    function openReviewTerms() {
+      reviewTermsModal.hidden = false;
+      setTermsOpen(true);   // pause the idle timeout while reviewing
+    }
+    function closeReviewTerms() {
+      reviewTermsModal.hidden = true;
+      setTermsOpen(false);  // restart the idle timeout fresh
+    }
+    document.getElementById('reviewTermsClose').onclick = closeReviewTerms;
+    reviewTermsModal.addEventListener('click', (event) => {
+      if (event.target === reviewTermsModal) closeReviewTerms();
+    });
 
     function canUseHotspots() {
       return appState === STATE.SCAN && !termsModalOpen && !checkoutLocked && !simulationActive;
@@ -4616,6 +4796,7 @@
         STATE.ACCOUNT_LOOKUP,
         STATE.ACCOUNT_FOUND,
         STATE.NOTIFICATION_SETTINGS,
+        STATE.UPDATED_TERMS,
         STATE.SMS_CONFIRM_METHOD,
         STATE.OTP_VERIFY,
         STATE.UPDATE_DEFAULT_CARD,
@@ -4912,10 +5093,10 @@
                 </div>
                 <div class="welcome-actions">
                   <button class="btn btn--primary btn--xl" id="acceptBtn" type="button">Accept & Continue</button>
-                  <button class="btn btn--cancel" id="cancelBtn" type="button">Cancel</button>
+                  <button class="btn btn--cancel" id="cancelBtn" type="button">Dismiss</button>
                 </div>
                 <div class="welcome-fineprint">
-                  By tapping "Accept & Continue," you agree to the <button class="brand-strip__terms" id="termsBtn" type="button">Terms & Conditions</button>.
+                  By tapping "Accept & Continue," you agree to the <button class="brand-strip__terms" id="tapTermsBtn" type="button">Terms of Service</button>.
                 </div>
               </section>
             </div>
@@ -5126,6 +5307,34 @@
             advanceFromNotificationSettings();
           };
           document.getElementById('cancelBtn').onclick = resetSession;
+          break;
+        }
+
+        case STATE.UPDATED_TERMS: {
+          const termsIconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h5"/></svg>`;
+          const termsIconHtml = `<div class="auth-role-icon" aria-hidden="true">${termsIconSvg}</div>`;
+          screen.innerHTML = `
+            <div class="brand-strip">
+              <img class="brand-strip__logo" src="images/USEFULL-icons/USEFULL-Logo-Registered_Color.svg" alt="USEFULL" />
+            </div>
+            <div class="id-entry-layout">
+              <div class="auth-card auth-card--method auth-flow-card auth-wide-card updated-terms-card">
+                ${termsIconHtml}
+                <div class="auth-card__title">We've updated our Terms of Service</div>
+                <div class="auth-card__subtitle">Our Terms of Service have changed. Scan the code to review the full Terms of Service, then accept to continue.</div>
+                <div class="updated-terms-qr">
+                  <img class="updated-terms-qr__img" src="images/QR-codes/terms-of-service-QR.png" alt="Terms of Service QR code" />
+                  <div class="updated-terms-qr__caption">Terms of Service</div>
+                </div>
+                <div class="auth-action-stack sms-confirm-btns">
+                  <button class="btn btn--primary" id="updatedTermsAccept" type="button">Accept and Continue</button>
+                  <button class="btn btn--cancel btn--cancel-orange" id="updatedTermsCancel" type="button">Cancel</button>
+                </div>
+              </div>
+            </div>
+          `;
+          document.getElementById('updatedTermsAccept').onclick = () => advanceFromUpdatedTerms();
+          document.getElementById('updatedTermsCancel').onclick = resetSession;
           break;
         }
 
@@ -5386,6 +5595,10 @@
       // Bind terms button wherever it appears
       const termsBtn = document.getElementById('termsBtn');
       if (termsBtn) termsBtn.onclick = openTerms;
+
+      // Tap-screen terms link → friendly QR review modal (pauses idle timeout)
+      const tapTermsBtn = document.getElementById('tapTermsBtn');
+      if (tapTermsBtn) tapTermsBtn.onclick = openReviewTerms;
     };
 
     /* ── onCoreReady — wire up event listeners ─────── */

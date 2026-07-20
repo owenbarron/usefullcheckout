@@ -20,6 +20,7 @@ const STATE = {
   ACCOUNT_LOOKUP: 'account_lookup',
   ACCOUNT_FOUND: 'account_found',
   NOTIFICATION_SETTINGS: 'notification_settings',
+  UPDATED_TERMS: 'updated_terms',
   SMS_CONFIRM_METHOD: 'sms_confirm_method',
   UPDATE_DEFAULT_CARD: 'update_default_card',
   SUCCESS_NEW: 'success_new',
@@ -40,6 +41,7 @@ const CREDIT_SCENARIO = {
   RETURN_SAME_UNDERLYING: 'return_same_underlying',
   RETURN_DIFFERENT_CARD: 'return_different_card',
   RETURN_SMS_DISABLED: 'return_sms_disabled',
+  RETURN_TERMS_UPDATED: 'return_terms_updated',
 };
 
 const BRANDING_PROFILES = {
@@ -454,6 +456,9 @@ function handleIdTap(outcome) {
       setState(STATE.SUCCESS_RETURNING);
       scheduleAutoReset(SUCCESS_RESET_MS);
       break;
+    case 'returning_user_terms_updated':
+      setState(STATE.UPDATED_TERMS);
+      break;
     case 'new_user':
       setState(STATE.PROGRAM_OVERVIEW);
       break;
@@ -503,6 +508,11 @@ function beginCreditScenarioFlow() {
       currentFlow = { paymentMode: PAYMENT_MODE.CREDIT, scenario: creditScenario };
       setState(STATE.NOTIFICATION_SETTINGS);
       break;
+    case CREDIT_SCENARIO.RETURN_TERMS_UPDATED:
+      activeUserName = 'Cody';
+      currentFlow = { paymentMode: PAYMENT_MODE.CREDIT, scenario: creditScenario };
+      setState(STATE.UPDATED_TERMS);
+      break;
     case CREDIT_SCENARIO.RETURN_DIFFERENT_CARD:
     default:
       activeUserName = 'Cody';
@@ -530,6 +540,9 @@ function beginCreditScenarioFlow() {
 
   RETURN SMS DISABLED:
     SCAN → card tap → NOTIFICATION_SETTINGS (email default) → SUCCESS_RETURNING
+
+  RETURN TERMS UPDATED:
+    SCAN → card tap → UPDATED_TERMS → SUCCESS_RETURNING
 
   RETURN DIFFERENT CARD:
     SCAN → card tap → IDENTIFIER_ENTRY → ACCOUNT_LOOKUP
@@ -588,6 +601,11 @@ function advanceFromAccountFound() {
 function advanceFromProgramOverview() {
   // Both campus and credit new users: accept → success
   setState(STATE.SUCCESS_NEW);
+  scheduleAutoReset(SUCCESS_RESET_MS);
+}
+
+function advanceFromUpdatedTerms() {
+  setState(STATE.SUCCESS_RETURNING);
   scheduleAutoReset(SUCCESS_RESET_MS);
 }
 
@@ -824,6 +842,11 @@ function jumpTo(stateName) {
       if (creditScenario === CREDIT_SCENARIO.RETURN_SMS_DISABLED) {
         currentFlow.scenario = CREDIT_SCENARIO.RETURN_SMS_DISABLED;
       }
+      break;
+
+    case STATE.UPDATED_TERMS:
+      activeUserName = activeUserName || 'Cody';
+      currentFlow = currentFlow || { paymentMode: PAYMENT_MODE.CREDIT, scenario: creditScenario };
       break;
 
     case STATE.SMS_CONFIRM_METHOD:
