@@ -12,13 +12,17 @@
   <link rel="manifest" href="manifest-v4.webmanifest" />
   <link rel="icon" type="image/png" href="images/illustrations/concept-art/checkout-station-kiosk-usefull-icon.png" />
   <link rel="apple-touch-icon" href="images/USEFULL-icons/icon-180.png" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    /* Proxima Nova — body/UI font (replaces Roboto). Headings stay League Spartan. */
+    /* League Spartan — headings, labels, buttons, all kiosk-distance text */
+    @font-face {
+      font-family: 'League Spartan';
+      src: url('fonts/League_Spartan/LeagueSpartan-VariableFont_wght.ttf') format('truetype');
+      font-weight: 100 900; font-style: normal; font-display: swap;
+    }
+
+    /* Proxima Nova — body/UI font. Fine print, inputs, a few specific overrides. */
     @font-face {
       font-family: 'Proxima Nova';
       src: url('fonts/Proxima-Nova-Font-Family/ProximaNova-Regular.ttf') format('truetype');
@@ -1220,6 +1224,7 @@
       flex-direction: column;
       gap: 3px;
     }
+    #guidedHeaderField[hidden] { display: none; }
     .settings-popover__label {
       font-size: 10px;
       text-transform: uppercase;
@@ -3871,29 +3876,6 @@
     .v9-card-counter.is-muted .counter-pill__label {
       color: rgba(35, 141, 193, 0.32);
     }
-    .done-scanning-btn {
-      min-width: 410px;
-      min-height: 72px;
-      padding: 0 38px;
-      border: 0;
-      border-radius: 14px;
-      background: var(--teal);
-      color: var(--white);
-      font-family: 'League Spartan', sans-serif;
-      font-size: 42px;
-      font-weight: 700;
-      line-height: 1;
-      cursor: pointer;
-      box-shadow: 0 6px 16px rgba(0, 140, 149, 0.22);
-    }
-    .done-scanning-btn:active {
-      transform: translateY(1px);
-    }
-    .done-scanning-btn:disabled {
-      background: rgba(0, 140, 149, 0.32);
-      box-shadow: none;
-      cursor: default;
-    }
     .app.variant-v9 .scan-panel--checkout {
       min-height: 0;
       height: 100%;
@@ -3947,6 +3929,19 @@
       justify-items: center;
       gap: 12px;
       margin-top: 0;
+    }
+    .tap-id-fineprint {
+      max-width: 620px;
+      text-align: center;
+      font-family: 'Proxima Nova', system-ui, sans-serif;
+      font-size: 26px;
+      font-weight: 500;
+      line-height: 1.35;
+      color: var(--slate-light);
+    }
+    .tap-id-fineprint .brand-strip__terms {
+      font-size: inherit;
+      font-weight: 700;
     }
     .app.variant-v9 .scan-shell-v3--v9-student .tap-dot--campus {
       top: 47%;
@@ -4228,9 +4223,6 @@
     .app.is-landscape.variant-v9 .scan-shell-v3--v9-student .v9-student-actions > .v9-cancel-btn {
       grid-column: 1 / -1; grid-row: 4;
       justify-self: center; align-self: end;
-      /* Cashier row 4 = padding-top 10 + Done scanning 78 + gap 10 + Cancel 64 = 162px.
-         Student row 4 with margin-top 98 + Cancel 64 = 162px.
-         The same row 4 height keeps the action placement stable.         */
       margin-top: 98px;
     }
 
@@ -4295,17 +4287,1164 @@
       flex-direction: column;
       align-items: center;
     }
-    .app.is-landscape.variant-v9 .done-scanning-btn {
-      width: min(720px, 92%);
-      min-width: 0;
-      min-height: 78px;
-      font-size: 44px;
-    }
     .app.is-landscape.variant-v9 .v9-cancel-btn {
       width: min(720px, 92%);
       min-width: 0;
       min-height: 64px;
       font-size: 36px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       Scan → authenticate concepts (July 2026)
+
+       Intent: a cashier in a noisy dining hall must begin a checkout
+       immediately, while the customer can authenticate after scan one.
+       Palette: foam, teal, and golden come directly from the reuse system.
+       Depth: quiet surface shifts and one soft shadow level.
+       Surfaces: foam canvas → tinted scan area → white action surface.
+       Typography: League Spartan at kiosk distance; 8px spacing rhythm.
+       ═══════════════════════════════════════════════════════════════ */
+    .scan-design {
+      --scan-ink: var(--slate);
+      --scan-muted: var(--slate-light);
+      --scan-line: rgba(0, 140, 149, 0.18);
+      --scan-status-blue: var(--sky);
+      --scan-status-surface: rgba(35, 141, 193, 0.08);
+      --scan-status-line: rgba(35, 141, 193, 0.18);
+      --scan-status-ink: var(--slate);
+      --scan-confirm-ink: #865d0b;
+      --scan-register-surface: #f4faf9;
+      flex: 1;
+      min-height: 0;
+      width: 100%;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      padding: 16px 28px 22px;
+      font-family: 'League Spartan', sans-serif;
+      animation: scan-design-enter 260ms cubic-bezier(.2,.75,.25,1) both;
+    }
+    @keyframes scan-design-enter {
+      from { opacity: .72; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .scan-design h1,
+    .scan-design h2,
+    .scan-design p { margin: 0; }
+    .scan-design__surface {
+      position: relative;
+      width: min(100%, 1160px);
+      min-height: 0;
+      overflow: hidden;
+      border-radius: 24px;
+      background: rgba(255,255,255,.96);
+      box-shadow: 0 10px 28px rgba(0, 110, 117, .09);
+    }
+    .scan-design__eyebrow {
+      color: var(--teal-dark);
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+    .scan-design__title {
+      color: var(--scan-ink);
+      font-size: clamp(52px, 6.2vmin, 72px);
+      font-weight: 700;
+      line-height: .98;
+      text-wrap: balance;
+    }
+    .scan-design__support {
+      color: var(--scan-muted);
+      font-size: clamp(26px, 3vmin, 34px);
+      font-weight: 600;
+      line-height: 1.12;
+      text-wrap: balance;
+    }
+    .scan-design__animation {
+      display: block;
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      object-fit: contain;
+    }
+    .scan-design__cancel {
+      min-width: 220px;
+      min-height: 64px;
+      padding: 10px 32px 7px;
+      border: 2px solid var(--teal);
+      border-radius: 14px;
+      background: var(--white);
+      color: var(--teal-dark);
+      font: 700 32px/1 'League Spartan', sans-serif;
+      cursor: pointer;
+    }
+    .scan-design__cancel:active { background: var(--teal-light); }
+    .scan-design__cancel:focus-visible {
+      outline: 5px solid rgba(0, 140, 149, .24);
+      outline-offset: 4px;
+    }
+    .scan-design__count {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      min-height: 92px;
+      padding: 12px 26px 8px;
+      border: 2px solid var(--scan-line);
+      border-radius: 18px;
+      background: var(--teal-light);
+      color: var(--teal-dark);
+      white-space: nowrap;
+    }
+    .scan-design__count-number {
+      font-size: 68px;
+      font-weight: 700;
+      line-height: .85;
+      font-variant-numeric: tabular-nums;
+    }
+    .scan-design__count-label {
+      max-width: 220px;
+      font-size: 31px;
+      font-weight: 700;
+      line-height: .94;
+      white-space: normal;
+    }
+    .scan-design__auth-title {
+      color: var(--scan-ink);
+      font-size: clamp(42px, 5vmin, 60px);
+      font-weight: 700;
+      line-height: .98;
+      text-wrap: balance;
+    }
+    .scan-design__auth-title strong { color: var(--teal); }
+    .scan-design__auth-fallback {
+      color: var(--scan-muted);
+      font-size: clamp(25px, 2.8vmin, 33px);
+      font-weight: 700;
+      line-height: 1.08;
+      text-wrap: balance;
+    }
+    .scan-design__qr-mark {
+      display: grid;
+      place-items: center;
+      width: 88px;
+      aspect-ratio: 1;
+      flex: 0 0 auto;
+      border-radius: 20px;
+      background: var(--golden);
+    }
+    .scan-design__qr-mark img {
+      width: 72%;
+      height: 72%;
+      object-fit: contain;
+      filter: grayscale(1) brightness(0) invert(1);
+    }
+    .scan-design__notice {
+      position: absolute;
+      left: 50%;
+      bottom: 10px;
+      z-index: 5;
+      max-width: calc(100% - 40px);
+      padding: 9px 16px 6px;
+      border-radius: 999px;
+      background: #fff4f1;
+      color: #a43428;
+      font-size: 22px;
+      font-weight: 700;
+      text-align: center;
+      transform: translateX(-50%);
+    }
+
+    /* A — Guided Station: real hardware image and sequenced tap bubbles. */
+    .scan-design--guided .scan-design__surface.is-idle {
+      display: grid;
+      grid-template-columns: minmax(0, .88fr) minmax(360px, 1.12fr);
+      align-items: center;
+      gap: 36px;
+      padding: 48px 60px;
+    }
+    .scan-design--guided .guided-idle__copy {
+      display: grid;
+      justify-items: start;
+      gap: 48px;
+    }
+    .guided-idle__station-mark {
+      display: grid;
+      justify-items: center;
+      width: 180px;
+    }
+    .guided-idle__station-icon {
+      display: block;
+      width: 180px;
+      height: 180px;
+    }
+    .guided-idle__station-words {
+      display: grid;
+      width: 180px;
+      margin-top: 10px;
+      color: var(--teal-dark);
+      text-transform: uppercase;
+    }
+    .guided-idle__station-word {
+      display: block;
+      width: 100%;
+      font-size: 30px;
+      font-weight: 750;
+      letter-spacing: .11em;
+      line-height: .94;
+      text-align: center;
+    }
+    .guided-idle__station-word:last-child {
+      letter-spacing: .29em;
+    }
+    .scan-design--guided .scan-design__surface.is-idle .scan-design__title {
+      font-size: 80px;
+    }
+    .scan-design--guided .guided-idle__media {
+      height: min(52vh, 470px);
+      min-height: 310px;
+    }
+    .guided-active {
+      display: grid;
+      grid-template-columns: minmax(300px, .78fr) minmax(500px, 1.22fr);
+      min-height: 100%;
+    }
+    .guided-active__status {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 26px;
+      padding: 38px;
+      background: rgba(247, 250, 250, .96);
+      border-right: 1px solid rgba(0, 140, 149, .12);
+    }
+    .guided-header {
+      position: relative;
+      width: 100%;
+      min-height: 138px;
+      overflow: hidden;
+      color: var(--slate);
+      isolation: isolate;
+    }
+    .guided-header__readout {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: baseline;
+      gap: 15px;
+      min-width: 0;
+      white-space: nowrap;
+    }
+    .guided-header__number {
+      color: var(--teal-dark);
+      font-size: 78px;
+      font-weight: 700;
+      line-height: .82;
+      letter-spacing: -.045em;
+      font-variant-numeric: tabular-nums;
+    }
+    .guided-header__unit {
+      color: var(--slate);
+      font-size: 30px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .guided-header__context {
+      position: relative;
+      z-index: 2;
+      color: var(--scan-muted);
+      font-size: 22px;
+      font-weight: 600;
+      line-height: 1;
+      white-space: nowrap;
+    }
+    .guided-header__confirmation {
+      position: relative;
+      z-index: 3;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--scan-confirm-ink);
+      font-size: 21px;
+      font-weight: 700;
+      line-height: 1;
+      animation: guided-confirm-settle 1800ms cubic-bezier(.2,.75,.25,1) 280ms forwards;
+    }
+    .guided-header__confirmation span {
+      display: grid;
+      place-items: center;
+      width: 28px;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: var(--golden);
+      color: var(--white);
+      font-size: 18px;
+      line-height: 1;
+    }
+    .guided-header__echo {
+      position: absolute;
+      z-index: 1;
+      pointer-events: none;
+    }
+    @keyframes guided-confirm-settle {
+      0%, 62% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-4px); }
+    }
+    @keyframes guided-scan-sweep {
+      0% { opacity: 0; transform: translateX(-140%); }
+      18% { opacity: 1; }
+      78% { opacity: 1; }
+      100% { opacity: 0; transform: translateX(760%); }
+    }
+    @keyframes guided-rim-echo {
+      0% { opacity: 0; transform: translate(-50%, 8px) scaleX(.86); }
+      24%, 65% { opacity: 1; transform: translate(-50%, 0) scaleX(1); }
+      100% { opacity: 0; transform: translate(-50%, -3px) scaleX(1.03); }
+    }
+
+    /* 1 — Scanner Seam: one continuous registration surface, never a KPI tile. */
+    .guided-header--seam {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      grid-template-areas: 'readout context confirm';
+      align-items: center;
+      column-gap: 24px;
+      padding: 24px 30px 21px;
+      border-bottom: 2px solid rgba(0, 140, 149, .18);
+      background: rgba(221, 240, 238, .64);
+    }
+    .guided-header--seam .guided-header__readout { grid-area: readout; }
+    .guided-header--seam .guided-header__context {
+      grid-area: context;
+      padding-left: 24px;
+      border-left: 2px solid rgba(0, 112, 119, .20);
+    }
+    .guided-header--seam .guided-header__confirmation { grid-area: confirm; }
+    .guided-header--seam .guided-header__echo {
+      left: 0;
+      bottom: 0;
+      width: 82px;
+      height: 5px;
+      background: var(--golden);
+      animation: guided-scan-sweep 1100ms cubic-bezier(.2,.7,.25,1) both;
+    }
+
+    /* 2 — Reusable Rim: a single vessel rim, not one object per scan. */
+    .guided-header--rim {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      grid-template-areas: 'context readout confirm';
+      align-items: center;
+      column-gap: 28px;
+      padding: 18px 32px 27px;
+      background: var(--white);
+    }
+    .guided-header--rim::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: -86px;
+      z-index: 0;
+      width: 72%;
+      height: 120px;
+      border: 2px solid rgba(0, 140, 149, .20);
+      border-radius: 50%;
+      transform: translateX(-50%);
+    }
+    .guided-header--rim .guided-header__readout { grid-area: readout; }
+    .guided-header--rim .guided-header__context {
+      grid-area: context;
+      justify-self: end;
+      color: var(--teal-dark);
+    }
+    .guided-header--rim .guided-header__confirmation {
+      grid-area: confirm;
+      justify-self: start;
+    }
+    .guided-header--rim .guided-header__echo {
+      left: 50%;
+      bottom: 8px;
+      width: 96px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--golden);
+      transform: translateX(-50%);
+      animation: guided-rim-echo 1350ms cubic-bezier(.2,.75,.25,1) both;
+    }
+
+    /* 3 — Side Register: the running total is docked to the surface edge. */
+    .guided-header--register {
+      display: grid;
+      grid-template-columns: minmax(118px, auto) 1fr auto;
+      grid-template-areas: 'readout context confirm';
+      align-items: center;
+      column-gap: 24px;
+      padding: 21px 30px 21px 36px;
+      border-left: 10px solid var(--teal);
+      background: var(--scan-register-surface);
+    }
+    .guided-header--register::before {
+      content: '';
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 10px;
+      background: var(--golden);
+      opacity: 0;
+      animation: guided-register-flash 1500ms ease-out both;
+    }
+    @keyframes guided-register-flash {
+      0%, 46% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+    .guided-header--register .guided-header__readout {
+      grid-area: readout;
+      padding-right: 25px;
+      border-right: 1px solid rgba(0, 140, 149, .20);
+    }
+    .guided-header--register .guided-header__context {
+      grid-area: context;
+      color: var(--teal-dark);
+    }
+    .guided-header--register .guided-header__confirmation { grid-area: confirm; }
+    .guided-header--register .guided-header__echo { display: none; }
+
+    /* 4 — Handoff Shelf: total and instruction share a boundary, not a hierarchy. */
+    .guided-header--shelf {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      grid-template-areas: 'context confirm' 'readout readout';
+      align-items: center;
+      column-gap: 24px;
+      row-gap: 13px;
+      padding: 21px 30px 24px;
+      background: rgba(221, 240, 238, .72);
+    }
+    .guided-header--shelf::before {
+      content: '';
+      position: absolute;
+      inset: 0 0 0 auto;
+      z-index: 0;
+      width: 32%;
+      background: rgba(255,255,255,.98);
+    }
+    .guided-header--shelf::after {
+      content: '';
+      position: absolute;
+      left: 30px;
+      right: 30px;
+      bottom: 18px;
+      z-index: 0;
+      height: 1px;
+      background: rgba(0, 140, 149, .18);
+    }
+    .guided-header--shelf .guided-header__readout {
+      grid-area: readout;
+      align-self: end;
+      padding-right: 28px;
+      width: max-content;
+    }
+    .guided-header--shelf .guided-header__context {
+      grid-area: context;
+      color: var(--teal-dark);
+      font-weight: 700;
+    }
+    .guided-header--shelf .guided-header__confirmation {
+      grid-area: confirm;
+      justify-self: end;
+    }
+    .guided-header--shelf .guided-header__echo {
+      right: 30px;
+      bottom: 16px;
+      width: 92px;
+      height: 5px;
+      background: var(--golden);
+      animation: guided-confirm-settle 1650ms cubic-bezier(.2,.75,.25,1) 180ms forwards;
+    }
+    .guided-active__animation { width: 100%; height: 200px; }
+    .guided-active__auth {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 12px;
+      padding: 38px 38px 30px;
+      text-align: center;
+    }
+    .guided-active__auth .scan-design__auth-title {
+      font-size: clamp(42px, 5vmin, 58px);
+      font-weight: 700;
+      line-height: 1.02;
+    }
+    .guided-active__auth .scan-design__auth-title strong {
+      font-weight: 650;
+    }
+    .guided-active__auth .scan-design__auth-title-tail {
+      display: block;
+      color: var(--slate);
+    }
+    .guided-active__auth .scan-design__auth-fallback {
+      font-weight: 700;
+    }
+    .guided-active__auth .scan-design__cancel {
+      min-width: 300px;
+      min-height: 66px;
+      margin-top: auto;
+      border: 2px solid var(--golden);
+      border-radius: 10px;
+      background: var(--white);
+      color: var(--golden);
+      font-size: 32px;
+    }
+    .guided-active__auth .scan-design__cancel:active {
+      background: rgba(214, 154, 45, .10);
+    }
+    .guided-station {
+      position: relative;
+      width: min(100%, 590px);
+      aspect-ratio: 3 / 2;
+      margin: 2px auto -6px;
+    }
+    .guided-station__image { width: 100%; height: 100%; object-fit: contain; }
+    .guided-station__zone {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transform: translate(-12px, -50%);
+      animation: guided-zone-pulse 3.9s ease-in-out infinite;
+    }
+    .guided-station__zone--qr { top: 30%; left: 22%; animation-delay: 0s; }
+    .guided-station__zone--id { top: 48%; left: 25%; animation-delay: 1.3s; }
+    .guided-station__zone--card { top: 73%; left: 32%; animation-delay: 2.6s; }
+    .guided-station__dot {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      aspect-ratio: 1;
+      border: 3px solid var(--white);
+      border-radius: 12px;
+      background: var(--golden);
+      box-shadow: 0 2px 10px rgba(0,0,0,.16);
+    }
+    .guided-station__dot img { width: 72%; height: 72%; object-fit: contain; filter: brightness(0) invert(1); }
+    .guided-station__bubble {
+      padding: 8px 14px 5px;
+      border-radius: 999px;
+      background: var(--golden);
+      color: var(--white);
+      box-shadow: 0 2px 10px rgba(0,0,0,.12);
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1;
+      white-space: nowrap;
+    }
+    @keyframes guided-zone-pulse {
+      0%, 24%, 100% { opacity: 1; }
+      10% { opacity: .28; }
+    }
+
+    /* B — Stacked Handoff: two durable top/bottom zones. */
+    .scan-design--stacked .scan-design__surface { display: flex; flex-direction: column; }
+    .stacked-idle {
+      flex: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(360px, 1fr);
+      align-items: center;
+      gap: 40px;
+      padding: 44px 64px;
+      background: var(--teal-light);
+    }
+    .stacked-idle__copy { display: grid; gap: 22px; }
+    .stacked-idle__media { height: min(50vh, 430px); }
+    .scan-design--stacked .scan-design__surface.stacked-active {
+      display: grid;
+      grid-template-rows: minmax(230px, .86fr) minmax(300px, 1.14fr);
+      min-height: 100%;
+    }
+    .stacked-active__scan {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      align-items: center;
+      gap: 26px;
+      padding: 28px 44px;
+      background: var(--teal-light);
+      border-bottom: 2px solid rgba(214,154,45,.35);
+    }
+    .stacked-active__scan-copy { display: grid; gap: 9px; }
+    .stacked-active__scan-title { color: var(--scan-ink); font-size: 44px; font-weight: 700; line-height: 1; }
+    .stacked-active__scan-sub { color: var(--teal-dark); font-size: 27px; font-weight: 700; line-height: 1; }
+    .stacked-active__animation { width: 230px; height: 160px; }
+    .stacked-active__controls { display: grid; justify-items: center; gap: 10px; }
+    .stacked-active__controls .scan-design__cancel { width: 100%; min-height: 58px; font-size: 29px; }
+    .stacked-active__auth {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      align-content: center;
+      align-items: center;
+      gap: 18px 26px;
+      padding: 34px 70px;
+      background: var(--white);
+    }
+    .stacked-active__auth-copy { display: grid; gap: 14px; }
+
+    /* C — Quiet White: Stacked Handoff structure with a quieter phone cue. */
+    .scan-design--minimal { padding-inline: clamp(20px, 6vw, 92px); }
+    .scan-design--minimal .scan-design__surface { box-shadow: none; border: 2px solid rgba(0,140,149,.10); }
+    .minimal-idle {
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .minimal-idle { gap: 30px; padding: 72px; }
+    .minimal-idle__symbol {
+      display: grid;
+      place-items: center;
+      width: 154px;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: var(--teal-light);
+    }
+    .minimal-idle__symbol img {
+      width: 74px;
+      height: 74px;
+      object-fit: contain;
+    }
+    .minimal-idle .scan-design__eyebrow {
+      font-size: 30px;
+      letter-spacing: .06em;
+    }
+    .minimal-idle .scan-design__title {
+      max-width: 680px;
+      font-size: clamp(64px, 7.2vmin, 80px);
+    }
+    .minimal-idle .scan-design__title span,
+    .minimal-idle .scan-design__support span { display: block; }
+    .minimal-idle .scan-design__support {
+      max-width: 650px;
+      font-size: clamp(32px, 3.6vmin, 40px);
+    }
+    .scan-design--minimal .scan-design__surface.quiet-active {
+      display: grid;
+      grid-template-rows: minmax(230px, .86fr) minmax(300px, 1.14fr);
+      min-height: 100%;
+      box-shadow: 0 10px 28px rgba(0, 110, 117, .09);
+    }
+    .quiet-active__scan {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: stretch;
+      gap: 18px;
+      padding: 28px 44px;
+      background: var(--teal-light);
+    }
+    .quiet-active__scan-copy {
+      display: grid;
+      place-items: center;
+      min-width: 0;
+      padding-inline: 16px;
+      text-align: center;
+    }
+    .quiet-active__scan-title {
+      color: var(--scan-ink);
+      font-size: 44px;
+      font-weight: 700;
+      line-height: 1;
+      text-wrap: balance;
+    }
+    .quiet-active__scan-title span { display: block; }
+    .quiet-active__controls {
+      display: grid;
+      justify-items: center;
+      align-content: center;
+      gap: 10px;
+      width: 344px;
+    }
+    .quiet-active__controls .scan-design__count {
+      width: 100%;
+      border-color: transparent;
+      background: var(--teal);
+      color: var(--white);
+    }
+    .quiet-active__controls .scan-design__cancel {
+      width: 100%;
+      min-height: 58px;
+      font-size: 29px;
+    }
+    .quiet-active__auth {
+      display: grid;
+      place-items: center;
+      padding: 34px 70px;
+      background: var(--white);
+      text-align: center;
+    }
+    .quiet-active__auth-copy {
+      display: grid;
+      justify-items: center;
+      gap: 30px;
+      width: 100%;
+    }
+    .quiet-active__auth-title {
+      max-width: 760px;
+      font-weight: 650;
+      line-height: .98;
+    }
+    .quiet-active__auth-title span,
+    .quiet-active__auth-title strong {
+      display: block;
+    }
+    .quiet-active__auth-title strong {
+      font-weight: 700;
+    }
+    .quiet-active__auth .scan-design__auth-fallback {
+      max-width: 720px;
+      font-weight: 650;
+    }
+
+    /* D — Continuous Flow: scan context and authentication stay side-by-side. */
+    .scan-design--flow .scan-design__surface { background: transparent; box-shadow: none; overflow: visible; }
+    .flow-idle {
+      width: min(100%, 900px);
+      min-height: 100%;
+      margin: auto;
+      display: grid;
+      grid-template-columns: minmax(320px, .9fr) minmax(0, 1.1fr);
+      align-items: center;
+      gap: 32px;
+      padding: 44px 58px;
+      border-radius: 32px;
+      background: rgba(255,255,255,.96);
+      box-shadow: 0 10px 28px rgba(0,110,117,.09);
+    }
+    .flow-idle__copy { display: grid; gap: 22px; }
+    .flow-idle__media { height: min(52vh, 430px); }
+    .flow-active {
+      position: relative;
+      min-height: 100%;
+      display: grid;
+      grid-template-columns: minmax(0, .88fr) minmax(0, 1.12fr);
+      gap: 28px;
+    }
+    .flow-active__scan,
+    .flow-active__auth {
+      min-width: 0;
+      border-radius: 28px;
+      box-shadow: 0 10px 28px rgba(0,110,117,.09);
+    }
+    .flow-active__scan {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 36px;
+      background: var(--teal-light);
+      text-align: center;
+    }
+    .flow-active__scan .scan-design__title { font-size: 46px; }
+    .flow-active__animation { width: 100%; height: 220px; }
+    .flow-active__auth {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      padding: 48px;
+      background: var(--white);
+      text-align: center;
+    }
+    .flow-active__arrow {
+      position: absolute;
+      top: 50%;
+      left: calc(44% + 14px);
+      z-index: 2;
+      display: grid;
+      place-items: center;
+      width: 58px;
+      aspect-ratio: 1;
+      border: 5px solid var(--foam);
+      border-radius: 50%;
+      background: var(--golden);
+      color: var(--white);
+      font-size: 40px;
+      font-weight: 700;
+      line-height: 1;
+      transform: translate(-50%, -50%);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .scan-design,
+      .guided-station__zone,
+      .minimal-idle__symbol::after { animation: none; }
+    }
+
+    /* Portrait keeps the same concepts, but stacks every wide composition. */
+    .app.is-portrait .scan-design { padding: 34px 24px 50px; }
+    .app.is-portrait .scan-design__surface { width: min(100%, 720px); }
+    .app.is-portrait .scan-design__title { font-size: 68px; }
+    .app.is-portrait .scan-design__support { font-size: 34px; }
+    .app.is-portrait .scan-design__auth-title { font-size: 56px; }
+    .app.is-portrait .scan-design__auth-fallback { font-size: 34px; }
+    .app.is-portrait .scan-design--guided .scan-design__surface.is-idle,
+    .app.is-portrait .stacked-idle,
+    .app.is-portrait .flow-idle {
+      grid-template-columns: 1fr;
+      align-content: center;
+      text-align: center;
+    }
+    .app.is-portrait .scan-design--guided .scan-design__surface.is-idle { padding: 64px 54px; }
+    .app.is-portrait .scan-design--guided .scan-design__surface.is-idle {
+      grid-template-rows: minmax(0, 1fr) auto minmax(0, 1fr);
+      align-content: stretch;
+      align-items: stretch;
+      gap: 0;
+    }
+    .app.is-portrait .scan-design--guided .guided-idle__copy {
+      display: contents;
+    }
+    .app.is-portrait .scan-design--guided .guided-idle__station-mark {
+      grid-row: 1;
+      place-self: center;
+      transform: translateY(-16px);
+    }
+    .app.is-portrait .scan-design--guided .guided-idle__copy .scan-design__title {
+      grid-row: 2;
+      align-self: center;
+      justify-self: stretch;
+    }
+    .app.is-portrait .scan-design--guided .guided-idle__media {
+      grid-row: 3;
+      align-self: center;
+      justify-self: stretch;
+      max-height: 100%;
+    }
+    .app.is-portrait .scan-design--guided .guided-idle__copy,
+    .app.is-portrait .stacked-idle__copy,
+    .app.is-portrait .flow-idle__copy { justify-items: center; }
+    .app.is-portrait .guided-idle__media,
+    .app.is-portrait .stacked-idle__media,
+    .app.is-portrait .flow-idle__media { height: 390px; min-height: 0; }
+    .app.is-portrait .guided-active { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+    .app.is-portrait .guided-active__status {
+      display: flex;
+      gap: 0;
+      padding: 25px 34px 27px;
+      border-right: 0;
+      border-bottom: 1px solid rgba(0, 140, 149, .12);
+    }
+    .app.is-portrait .guided-header { min-height: 124px; }
+    .app.is-portrait .guided-header__number { font-size: 74px; }
+    .app.is-portrait .guided-header__unit { font-size: 30px; }
+    .app.is-portrait .guided-header__context { font-size: 21px; }
+    .app.is-portrait .guided-header__confirmation { font-size: 20px; }
+    .app.is-portrait .guided-header--seam {
+      grid-template-columns: auto 1fr auto;
+      padding: 21px 28px 18px;
+    }
+    .app.is-portrait .guided-header--seam .guided-header__context {
+      padding-left: 20px;
+    }
+    .app.is-portrait .guided-header--rim {
+      grid-template-columns: 1fr auto 1fr;
+      padding: 16px 28px 25px;
+    }
+    .app.is-portrait .guided-header--register {
+      grid-template-columns: minmax(110px, auto) 1fr auto;
+      padding: 18px 28px 18px 32px;
+    }
+    .app.is-portrait .guided-header--register .guided-header__readout {
+      padding-right: 21px;
+    }
+    .app.is-portrait .guided-header--shelf {
+      padding: 18px 28px 21px;
+    }
+    .app.is-landscape .guided-header--seam,
+    .app.is-landscape .guided-header--rim,
+    .app.is-landscape .guided-header--register {
+      grid-template-columns: 1fr auto;
+      grid-template-areas: 'context confirm' 'readout readout';
+      align-content: center;
+      column-gap: 16px;
+      row-gap: 15px;
+      min-height: 150px;
+      padding: 22px 24px;
+    }
+    .app.is-landscape .guided-header--seam .guided-header__readout,
+    .app.is-landscape .guided-header--rim .guided-header__readout,
+    .app.is-landscape .guided-header--register .guided-header__readout {
+      grid-area: readout;
+      padding-right: 0;
+      border-right: 0;
+    }
+    .app.is-landscape .guided-header--seam .guided-header__context,
+    .app.is-landscape .guided-header--rim .guided-header__context,
+    .app.is-landscape .guided-header--register .guided-header__context {
+      grid-area: context;
+      justify-self: start;
+      padding-left: 0;
+      border-left: 0;
+    }
+    .app.is-landscape .guided-header--seam .guided-header__confirmation,
+    .app.is-landscape .guided-header--rim .guided-header__confirmation,
+    .app.is-landscape .guided-header--register .guided-header__confirmation {
+      grid-area: confirm;
+      justify-self: end;
+    }
+    .app.is-landscape .guided-header--rim .guided-header__readout {
+      justify-self: center;
+    }
+    /* 5–8 — Simple lockups: one sentence, quiet structure, one confirmation language.
+       Placed after the responsive rules so their sizing wins the cascade. */
+    .guided-header--simple {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      column-gap: 15px;
+      padding: 30px 34px 26px;
+    }
+    .guided-header--simple,
+    .app.is-portrait .guided-header--simple { min-height: 112px; }
+    .guided-header--simple .guided-header__readout { gap: 13px; }
+    .guided-header--simple .guided-header__number,
+    .app.is-portrait .guided-header--simple .guided-header__number {
+      font-size: 60px;
+      line-height: .9;
+    }
+    .guided-header--simple .guided-header__unit,
+    .app.is-portrait .guided-header--simple .guided-header__unit { font-size: 28px; }
+    .guided-header--simple .guided-header__context,
+    .app.is-portrait .guided-header--simple .guided-header__context { font-size: 28px; }
+    .guided-header--simple.is-added .guided-header__number {
+      animation: guided-count-registered 950ms ease-out both;
+    }
+    @keyframes guided-count-registered {
+      0%, 35% { color: var(--golden); }
+      100% { color: var(--teal-dark); }
+    }
+    .guided-header--simple .guided-header__confirmation {
+      position: absolute;
+      top: calc(50% - 14px);
+      right: 30px;
+    }
+    .guided-header--band {
+      background: rgba(221, 240, 238, .55);
+      border-bottom: 1px solid rgba(0, 140, 149, .14);
+    }
+    .guided-header--baseline { justify-content: flex-start; }
+    .guided-header--baseline::after {
+      content: '';
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 2px;
+      background: rgba(0, 140, 149, .35);
+    }
+    .guided-header--eyebrow {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      row-gap: 16px;
+      min-height: 152px;
+      padding: 28px 34px 24px;
+      border: 2px solid var(--scan-status-line);
+      border-radius: 18px;
+      background: var(--scan-status-surface);
+      text-align: center;
+    }
+    .guided-header--eyebrow .guided-header__readout {
+      width: 100%;
+      justify-content: center;
+      gap: 14px;
+    }
+    .guided-header--eyebrow .guided-header__number,
+    .app.is-portrait .guided-header--eyebrow .guided-header__number {
+      color: var(--scan-status-ink);
+      font-size: 74px;
+    }
+    .guided-header--eyebrow.is-added .guided-header__number {
+      animation: none;
+    }
+    .guided-header--eyebrow .guided-header__unit,
+    .app.is-portrait .guided-header--eyebrow .guided-header__unit {
+      color: var(--scan-status-ink);
+      font-size: 34px;
+    }
+    .guided-header__eyebrow {
+      position: relative;
+      z-index: 2;
+      color: var(--scan-status-blue);
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+    /* 9–10 — Static Ready stacks: the same kiosk-distance hierarchy
+       with either an inset surface or a full status-section tint. */
+    .guided-header--ready-card,
+    .guided-header--ready-band {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      row-gap: 16px;
+      min-height: 192px;
+      padding: 32px 34px 28px;
+      border: 0;
+      text-align: center;
+    }
+    .app.is-portrait .guided-header--simple.guided-header--ready-card,
+    .app.is-portrait .guided-header--simple.guided-header--ready-band,
+    .app.is-landscape .guided-header--simple.guided-header--ready-card,
+    .app.is-landscape .guided-header--simple.guided-header--ready-band {
+      min-height: 192px;
+      row-gap: 16px;
+    }
+    .guided-header--ready-card {
+      border-radius: 18px;
+      background: var(--scan-status-surface);
+    }
+    .guided-active__status--ready-card {
+      background: var(--white);
+      border: 0;
+    }
+    .app.is-portrait .guided-active__status--ready-card,
+    .app.is-landscape .guided-active__status--ready-card {
+      background: var(--white);
+      border: 0;
+    }
+    .guided-header--ready-band {
+      border-radius: 0;
+      background: transparent;
+    }
+    .guided-active__status--ready-band {
+      background: var(--scan-status-surface);
+      border-color: transparent;
+    }
+    .guided-header--ready-card .guided-header__readout,
+    .guided-header--ready-band .guided-header__readout {
+      width: 100%;
+      justify-content: center;
+      gap: 14px;
+    }
+    .guided-header--ready-card .guided-header__number,
+    .guided-header--ready-band .guided-header__number,
+    .app.is-portrait .guided-header--ready-card .guided-header__number,
+    .app.is-portrait .guided-header--ready-band .guided-header__number {
+      color: var(--scan-status-ink);
+      font-size: 74px;
+      animation: none;
+    }
+    .guided-header--ready-card .guided-header__number,
+    .app.is-portrait .guided-header--ready-card .guided-header__number {
+      font-size: 82px;
+      font-weight: 800;
+    }
+    .guided-header--ready-card .guided-header__unit,
+    .guided-header--ready-band .guided-header__unit,
+    .app.is-portrait .guided-header--ready-card .guided-header__unit,
+    .app.is-portrait .guided-header--ready-band .guided-header__unit {
+      color: var(--scan-status-ink);
+      font-size: 34px;
+    }
+    .guided-header--ready-card .guided-header__unit,
+    .app.is-portrait .guided-header--ready-card .guided-header__unit {
+      font-size: 40px;
+    }
+    .app.is-landscape .guided-header--simple {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      row-gap: 12px;
+      min-height: 140px;
+      text-align: center;
+    }
+    .app.is-landscape .guided-header--simple .guided-header__context { order: -1; }
+    .app.is-landscape .guided-header--baseline {
+      align-items: flex-start;
+      text-align: left;
+    }
+    .app.is-landscape .guided-header--simple .guided-header__confirmation {
+      top: 12px;
+      right: 16px;
+    }
+    .app.is-portrait .guided-active__animation { display: none; }
+    .app.is-portrait .guided-active__auth { padding: 42px 32px 40px; }
+    .app.is-portrait .guided-active__auth .scan-design__auth-title {
+      font-size: 62px;
+      line-height: 1.02;
+    }
+    .app.is-portrait .guided-active__auth .scan-design__auth-fallback {
+      font-size: 34px;
+    }
+    .app.is-portrait .guided-active__auth .scan-design__cancel {
+      min-width: 320px;
+      min-height: 72px;
+      font-size: 34px;
+    }
+    .app.is-portrait .guided-station { width: 100%; }
+    .app.is-portrait .guided-station__bubble { font-size: 25px; }
+    .app.is-portrait .stacked-active { grid-template-rows: auto 1fr; }
+    .app.is-portrait .stacked-active__scan { grid-template-columns: 1fr auto; }
+    .app.is-portrait .stacked-active__animation { display: none; }
+    .app.is-portrait .stacked-active__auth {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 56px 44px;
+    }
+    .app.is-portrait .minimal-idle { padding: 60px 42px; }
+    .app.is-portrait .minimal-idle .scan-design__title { font-size: clamp(50px, calc(12.4vw - 19px), 80px); }
+    .app.is-portrait .minimal-idle .scan-design__support { font-size: clamp(30px, 5vw, 40px); }
+    .app.is-portrait.is-tablet-preset .minimal-idle .scan-design__title { font-size: 80px; }
+    .app.is-portrait.is-tablet-preset .minimal-idle .scan-design__support { font-size: 40px; }
+    .app.is-portrait .quiet-active { grid-template-rows: auto 1fr; }
+    .app.is-portrait .quiet-active__scan { grid-template-columns: minmax(0, 1fr) auto; }
+    .app.is-portrait .quiet-active__auth {
+      padding: 48px 44px 56px;
+    }
+    .app.is-portrait .quiet-active__auth-title {
+      font-size: 68px;
+      line-height: .9;
+    }
+    .app.is-portrait .quiet-active__auth .scan-design__auth-fallback {
+      font-size: 40px;
+    }
+    .app.is-portrait .flow-active { grid-template-columns: 1fr; grid-template-rows: minmax(330px, .7fr) minmax(0, 1.3fr); }
+    .app.is-portrait .flow-active__scan {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      grid-template-areas: 'title title' 'count cancel';
+      align-content: center;
+      padding: 30px 36px;
+    }
+    .app.is-portrait .flow-active__scan .scan-design__title {
+      display: block;
+      grid-area: title;
+      font-size: 42px;
+    }
+    .app.is-portrait .flow-active__scan .scan-design__count { grid-area: count; }
+    .app.is-portrait .flow-active__scan .scan-design__cancel { grid-area: cancel; }
+    .app.is-portrait .flow-active__animation { display: none; }
+    .app.is-portrait .flow-active__arrow { top: 35%; left: 50%; transform: translate(-50%, -50%) rotate(90deg); }
+    .app.is-portrait .flow-active__auth { padding: 46px; }
+
+    @media (max-width: 900px) and (orientation: landscape) {
+      .scan-design { padding-inline: 16px; }
+      .scan-design__surface { border-radius: 18px; }
+      .guided-active__status { padding: 28px; }
+      .guided-active__animation { display: none; }
+      .guided-active__auth .scan-design__auth-title { font-size: 40px; }
+      .guided-active__auth .scan-design__auth-fallback { font-size: 25px; }
+      .guided-active__auth .guided-station { width: min(100%, 520px); }
+      .guided-active__auth .scan-design__cancel { min-height: 58px; }
+      .stacked-active__auth { padding-inline: 40px; }
+      .quiet-active__auth { padding-inline: 40px; }
+      .flow-active__auth { padding: 32px; }
     }
 
   </style>
@@ -4477,6 +5616,30 @@
           <div class="settings-col">
             <div class="settings-col__heading">Other Settings</div>
             <div class="settings-popover__field">
+              <span class="settings-popover__label">Scan screen design</span>
+              <select class="settings-popover__select" id="scanDesignSelect">
+                <option value="guided">A · Guided Station</option>
+                <option value="stacked">B · Stacked Handoff</option>
+                <option value="minimal">C · Quiet White</option>
+                <option value="flow">D · Continuous Flow</option>
+              </select>
+            </div>
+            <div class="settings-popover__field" id="guidedHeaderField">
+              <span class="settings-popover__label">A header style</span>
+              <select class="settings-popover__select" id="guidedHeaderSelect">
+                <option value="seam">1 · Scanner Seam</option>
+                <option value="rim">2 · Reusable Rim</option>
+                <option value="register">3 · Side Register</option>
+                <option value="shelf">4 · Handoff Shelf</option>
+                <option value="band">5 · Foam Band</option>
+                <option value="baseline">6 · Baseline Rule</option>
+                <option value="quiet">7 · Quiet Center</option>
+                <option value="eyebrow">8 · Eyebrow Stack</option>
+                <option value="ready-card">9 · Ready Card</option>
+                <option value="ready-band">10 · Full Blue Header</option>
+              </select>
+            </div>
+            <div class="settings-popover__field">
               <span class="settings-popover__label">College</span>
               <select class="settings-popover__select" id="collegeSelect">
                 <option value="pioneer">Pioneer State University</option>
@@ -4548,7 +5711,7 @@
     </div>
   </div>
 
-  <script src="core-v4.js"></script>
+  <script src="core-v4.js?v=20260702"></script>
   <script>
     /* ═══════════════════════════════════════════════════════════════
        Two-Buttons Variant — Render + Event Wiring
@@ -4569,7 +5732,6 @@
     const DEDUPE_MS = 450;
     const ACCESS_CODE = '1234';
     let lastScanTap = 0;
-    let v9StudentStep = false;
 
     /* ── Mockup / variant URL params ─────────────────── */
     const _urlParams = new URLSearchParams(window.location.search);
@@ -4578,6 +5740,18 @@
     const cleanMode = _urlParams.get('clean') === '1';
     const demoMode = _urlParams.get('demo') || '';
     const demoCount = parseInt(_urlParams.get('n'), 10) || 0;
+    const SCAN_DESIGNS = ['guided', 'stacked', 'minimal', 'flow'];
+    const requestedScanDesign = _urlParams.get('scanDesign') || '';
+    const storedScanDesign = window.localStorage.getItem('scanDesign') || '';
+    let scanDesign = SCAN_DESIGNS.includes(requestedScanDesign)
+      ? requestedScanDesign
+      : (SCAN_DESIGNS.includes(storedScanDesign) ? storedScanDesign : 'minimal');
+    const GUIDED_HEADERS = ['seam', 'rim', 'register', 'shelf', 'band', 'baseline', 'quiet', 'eyebrow', 'ready-card', 'ready-band'];
+    const requestedGuidedHeader = _urlParams.get('headerDesign') || '';
+    const storedGuidedHeader = window.localStorage.getItem('guidedHeaderDesign') || '';
+    let guidedHeaderDesign = GUIDED_HEADERS.includes(requestedGuidedHeader)
+      ? requestedGuidedHeader
+      : (GUIDED_HEADERS.includes(storedGuidedHeader) ? storedGuidedHeader : 'seam');
     if (kioskVariant && kioskVariant !== 'v1') appRoot.classList.add(`variant-${kioskVariant}`);
     appRoot.dataset.cardBorders = 'on';
     if (cleanMode) document.body.classList.add('clean-mode');
@@ -4780,6 +5954,244 @@
       // so nothing extra needed here
     };
 
+    function renderScanBrandStrip() {
+      return `
+        <div class="brand-strip">
+          <img class="brand-strip__logo" src="images/USEFULL-icons/USEFULL-Logo-Registered_Color.svg" alt="USEFULL" />
+          <div></div>
+          <div class="brand-strip__right"></div>
+        </div>
+      `;
+    }
+
+    function renderScanCount(containerUnitLower) {
+      return `
+        <div class="scan-design__count" role="status" aria-live="polite" aria-label="${containerCount} ${containerUnitLower} scanned">
+          <span class="scan-design__count-number">${containerCount}</span>
+          <span class="scan-design__count-label">${containerUnitLower} scanned</span>
+        </div>
+      `;
+    }
+
+    let guidedHeaderLastCount = 0;
+    function renderGuidedHeader(containerUnitLower) {
+      const statusAttrs = `role="status" aria-live="polite" aria-atomic="true" aria-label="${containerCount} ${containerUnitLower} scanned"`;
+      const justAdded = containerCount > guidedHeaderLastCount;
+      guidedHeaderLastCount = containerCount;
+      const d = guidedHeaderDesign;
+
+      if (['band', 'baseline', 'quiet', 'eyebrow', 'ready-card', 'ready-band'].includes(d)) {
+        const isReadyStack = ['eyebrow', 'ready-card', 'ready-band'].includes(d);
+        const isStaticReadyStack = ['ready-card', 'ready-band'].includes(d);
+        const addedClass = justAdded && !isStaticReadyStack ? ' is-added' : '';
+        const confirmation = justAdded && !isStaticReadyStack
+          ? `<span class="guided-header__confirmation" aria-hidden="true"><span>✓</span>Added</span>`
+          : '';
+        const context = isReadyStack
+          ? `<span class="guided-header__eyebrow">Ready for Checkout</span>`
+          : `<span class="guided-header__context">in this checkout</span>`;
+        return `
+          <div class="guided-header guided-header--simple guided-header--${d}${addedClass}" ${statusAttrs}>
+            ${isReadyStack ? context : ''}
+            <span class="guided-header__readout">
+              <span class="guided-header__number">${containerCount}</span>
+              <span class="guided-header__unit">${containerUnitLower}</span>
+            </span>
+            ${isReadyStack ? '' : context}
+            ${confirmation}
+          </div>
+        `;
+      }
+
+      return `
+        <div class="guided-header guided-header--${guidedHeaderDesign}" ${statusAttrs}>
+          <span class="guided-header__echo" aria-hidden="true"></span>
+          <span class="guided-header__readout">
+            <span class="guided-header__number">${containerCount}</span>
+            <span class="guided-header__unit">${containerUnitLower}</span>
+          </span>
+          <span class="guided-header__context">in this checkout</span>
+          <span class="guided-header__confirmation" aria-hidden="true"><span>✓</span>Added</span>
+        </div>
+      `;
+    }
+
+    function renderScanCancel() {
+      return `<button class="scan-design__cancel" id="scanDesignCancel" type="button">Cancel</button>`;
+    }
+
+    function renderScanNotice() {
+      return scanNoticeMessage ? `<div class="scan-design__notice" role="alert">${scanNoticeMessage}</div>` : '';
+    }
+
+    function renderStationMap(campusCard) {
+      return `
+        <div class="guided-station" aria-label="Checkout station scan and tap locations">
+          <img class="guided-station__image" src="images/illustrations/concept-art/checkout-station-kiosk.png" alt="USEFULL checkout station" />
+          <span class="guided-station__zone guided-station__zone--qr">
+            <span class="guided-station__dot"><img src="images/interface-icons/usefull-qr-icon-abstract.png" alt="" /></span>
+            <span class="guided-station__bubble">USEFULL QR</span>
+          </span>
+          <span class="guided-station__zone guided-station__zone--id">
+            <span class="guided-station__dot"><img src="images/interface-icons/Usefull-Icons-Golden_1_College.png" alt="" /></span>
+            <span class="guided-station__bubble">${campusCard}</span>
+          </span>
+          <span class="guided-station__zone guided-station__zone--card">
+            <span class="guided-station__dot"><img src="images/interface-icons/Usefull-Icons-Golden_1_CreditCard.png" alt="" /></span>
+            <span class="guided-station__bubble">Credit card</span>
+          </span>
+        </div>
+      `;
+    }
+
+    function renderScanExperience(branding, containerUnitLower) {
+      const animation = `<img class="scan-design__animation" src="images/illustrations/concept-art/checkout-station-kiosk-scan.gif" alt="Animated container scanning demonstration" />`;
+      const qrMark = `<div class="scan-design__qr-mark" aria-hidden="true"><img src="images/interface-icons/usefull-qr-icon-abstract.png" alt="" /></div>`;
+      const active = containerCount > 0;
+      if (!active) guidedHeaderLastCount = 0;
+      let content = '';
+
+      if (scanDesign === 'guided') {
+        content = active ? `
+          <div class="scan-design scan-design--guided is-active">
+            <section class="scan-design__surface guided-active">
+              <div class="guided-active__status guided-active__status--${guidedHeaderDesign}">
+                ${renderGuidedHeader(containerUnitLower)}
+                <div class="guided-active__animation">${animation}</div>
+              </div>
+              <div class="guided-active__auth">
+                <h2 class="scan-design__auth-title">Scan your <strong>USEFULL QR code</strong><span class="scan-design__auth-title-tail">to check out</span></h2>
+                <p class="scan-design__auth-fallback">No app? Tap your credit card.</p>
+                ${renderStationMap(branding.campusCard)}
+                ${renderScanCancel()}
+              </div>
+              ${renderScanNotice()}
+            </section>
+          </div>
+        ` : `
+          <div class="scan-design scan-design--guided is-idle">
+            <section class="scan-design__surface is-idle">
+              <div class="guided-idle__copy">
+                <div class="guided-idle__station-mark" aria-label="Checkout Station">
+                  <img
+                    class="guided-idle__station-icon"
+                    src="images/USEFULL-icons/USEFULL-Icon-Registered_Color.svg"
+                    alt=""
+                  />
+                  <span class="guided-idle__station-words" aria-hidden="true">
+                    <span class="guided-idle__station-word">Checkout</span>
+                    <span class="guided-idle__station-word">Station</span>
+                  </span>
+                </div>
+                <h1 class="scan-design__title">Scan a USEFULL container</h1>
+              </div>
+              <div class="guided-idle__media">${animation}</div>
+              ${renderScanNotice()}
+            </section>
+          </div>
+        `;
+      } else if (scanDesign === 'stacked') {
+        content = active ? `
+          <div class="scan-design scan-design--stacked is-active">
+            <section class="scan-design__surface stacked-active">
+              <div class="stacked-active__scan">
+                <div class="stacked-active__scan-copy">
+                  <h1 class="stacked-active__scan-title">Keep scanning containers</h1>
+                  <p class="stacked-active__scan-sub">The count updates automatically.</p>
+                </div>
+                <div class="stacked-active__animation">${animation}</div>
+                <div class="stacked-active__controls">${renderScanCount(containerUnitLower)}${renderScanCancel()}</div>
+              </div>
+              <div class="stacked-active__auth">
+                ${qrMark}
+                <div class="stacked-active__auth-copy">
+                  <h2 class="scan-design__auth-title">Scan your <strong>USEFULL QR code</strong> to check out</h2>
+                  <p class="scan-design__auth-fallback">No app? Tap your campus ID or credit card.</p>
+                </div>
+              </div>
+              ${renderScanNotice()}
+            </section>
+          </div>
+        ` : `
+          <div class="scan-design scan-design--stacked is-idle">
+            <section class="scan-design__surface stacked-idle">
+              <div class="stacked-idle__copy">
+                <div class="scan-design__eyebrow">Start here</div>
+                <h1 class="scan-design__title">Scan USEFULL containers</h1>
+                <p class="scan-design__support">Scan one container at a time.</p>
+              </div>
+              <div class="stacked-idle__media">${animation}</div>
+              ${renderScanNotice()}
+            </section>
+          </div>
+        `;
+      } else if (scanDesign === 'minimal') {
+        content = active ? `
+          <div class="scan-design scan-design--minimal is-active">
+            <section class="scan-design__surface quiet-active">
+              <div class="quiet-active__scan">
+                <div class="quiet-active__scan-copy">
+                  <h1 class="quiet-active__scan-title"><span>Keep</span><span>scanning</span><span>containers</span></h1>
+                </div>
+                <div class="quiet-active__controls">${renderScanCount(containerUnitLower)}${renderScanCancel()}</div>
+              </div>
+              <div class="quiet-active__auth">
+                <div class="quiet-active__auth-copy">
+                  <h2 class="scan-design__auth-title quiet-active__auth-title"><span>Scan your</span><strong>USEFULL QR code</strong><span>to check out</span></h2>
+                  <p class="scan-design__auth-fallback">No app? Tap your campus ID or credit card.</p>
+                </div>
+              </div>
+              ${renderScanNotice()}
+            </section>
+          </div>
+        ` : `
+          <div class="scan-design scan-design--minimal is-idle">
+            <section class="scan-design__surface minimal-idle">
+              <div class="minimal-idle__symbol"><img src="images/interface-icons/Usefull-Icons-Golden_1_Cup.png" alt="" /></div>
+              <div class="scan-design__eyebrow">Checkout station</div>
+              <h1 class="scan-design__title"><span>Scan a USEFULL</span><span>container</span></h1>
+              <p class="scan-design__support"><span>Hand your containers to</span><span>the cashier for scanning</span></p>
+              ${renderScanNotice()}
+            </section>
+          </div>
+        `;
+      } else {
+        content = active ? `
+          <div class="scan-design scan-design--flow is-active">
+            <section class="scan-design__surface flow-active">
+              <div class="flow-active__scan">
+                <h1 class="scan-design__title">More containers?</h1>
+                ${renderScanCount(containerUnitLower)}
+                <div class="flow-active__animation">${animation}</div>
+                ${renderScanCancel()}
+              </div>
+              <div class="flow-active__arrow" aria-hidden="true">›</div>
+              <div class="flow-active__auth">
+                ${qrMark}
+                <h2 class="scan-design__auth-title">Scan your <strong>USEFULL QR code</strong> to check out</h2>
+                <p class="scan-design__auth-fallback">No app? Tap your campus ID or credit card.</p>
+              </div>
+              ${renderScanNotice()}
+            </section>
+          </div>
+        ` : `
+          <div class="scan-design scan-design--flow is-idle">
+            <section class="scan-design__surface flow-idle">
+              <div class="flow-idle__media">${animation}</div>
+              <div class="flow-idle__copy">
+                <div class="scan-design__eyebrow">Begin checkout</div>
+                <h1 class="scan-design__title">Scan USEFULL containers</h1>
+                <p class="scan-design__support">Authentication appears after the first scan.</p>
+              </div>
+              ${renderScanNotice()}
+            </section>
+          </div>
+        `;
+      }
+
+      return renderScanBrandStrip() + content;
+    }
+
     /* ── Render (called by core.js on every state change) ── */
     window.render = function () {
       const b = getBrandingProfile();
@@ -4823,216 +6235,10 @@
       const creditCardIconHtml = `<div class="auth-role-icon auth-role-icon--card" aria-hidden="true">${creditCardIconSvg}</div>`;
       const cashierLabelHtml = `<div class="role-kicker role-kicker--cashier">Cashier</div>`;
       const studentLabelHtml = `<div class="role-kicker role-kicker--student">Student</div>`;
-      const variantActive = requestedKioskVariant && kioskVariant !== 'v1';
-      const isV8 = kioskVariant === 'v8';
-      const isV9 = kioskVariant === 'v9';
-      const usesV8RoleLabels = isV8 || isV9;
-
       switch (appState) {
         case STATE.SCAN:
-          if (containerCount === 0) v9StudentStep = false;
-          if (containerCount === 0) {
-            const idleTitle = isV9 ? "Scan USEFULL containers" : (isV8 ? "Scan Containers" : (variantActive ? "Scan QR codes on USEFULL containers" : "Scan user's containers"));
-            const isCombinedCardVariant = kioskVariant === 'v6' || kioskVariant === 'v7' || isV8;
-            if (isV9) {
-              screen.innerHTML = `
-                <div class="brand-strip">
-                  <img class="brand-strip__logo" src="images/USEFULL-icons/USEFULL-Logo-Registered_Color.svg" alt="USEFULL" />
-                  <div></div>
-                  <div class="brand-strip__right"></div>
-                </div>
-                <div class="scan-shell-v3 scan-shell-v3--v9-cashier">
-                  <div class="v9-cashier-stage">
-                    <section class="v9-cashier-card">
-                      ${chefIconHtml}
-                      ${cashierLabelHtml}
-                      <h1 class="v9-cashier-title">${idleTitle}</h1>
-                      <div class="v9-card-counter is-visible is-muted" aria-hidden="true">
-                        <div class="counter-pill counter-pill--v2">
-                          <div class="counter-pill__inner">
-                            <div class="counter-pill__count">0</div>
-                            <div class="counter-pill__label">containers scanned</div>
-                          </div>
-                        </div>
-                      </div>
-                      <img class="v9-cashier-image" src="images/illustrations/concept-art/checkout-station-kiosk-scan.gif" alt="Animated USEFULL checkout station scanner" />
-                      <div class="v9-cashier-actions">
-                        <button class="done-scanning-btn" type="button" disabled>Done scanning</button>
-                        <button class="v9-cancel-btn" type="button" disabled>Cancel</button>
-                      </div>
-                    </section>
-                  </div>
-                </div>
-              `;
-            } else if (isCombinedCardVariant) {
-              screen.innerHTML = `
-                <div class="brand-strip">
-                  <img class="brand-strip__logo" src="images/USEFULL-icons/USEFULL-Logo-Registered_Color.svg" alt="USEFULL" />
-                  <div></div>
-                  <div class="brand-strip__right"></div>
-                </div>
-                <div class="scan-shell-v3 scan-shell-v3--idle">
-                  <div class="chef-combined-card">
-                    ${chefIconHtml}
-                    ${usesV8RoleLabels ? cashierLabelHtml : ''}
-                    <h1 class="chef-combined-card__title">${idleTitle}</h1>
-                    <img class="chef-combined-card__image" src="images/illustrations/concept-art/checkout-station-kiosk-scan.gif" alt="Animated USEFULL checkout station scanner" />
-                  </div>
-                </div>
-              `;
-            } else if (variantActive) {
-              screen.innerHTML = `
-                <div class="brand-strip">
-                  <img class="brand-strip__logo" src="images/USEFULL-icons/USEFULL-Logo-Registered_Color.svg" alt="USEFULL" />
-                  <div></div>
-                  <div class="brand-strip__right"></div>
-                </div>
-                <div class="scan-shell-v3 scan-shell-v3--idle">
-                  <div class="chef-text-card">
-                    ${chefIconHtml}
-                    ${usesV8RoleLabels ? cashierLabelHtml : ''}
-                    <h1 class="scan-hero-v3__title">${idleTitle}</h1>
-                  </div>
-                  <div class="scan-card-v3 idle-scan-card">
-                    <div class="idle-scan-card__image-wrap">
-                      <img class="idle-scan-card__image" src="images/illustrations/concept-art/checkout-station-kiosk-scan.gif" alt="Animated USEFULL checkout station scanner" />
-                    </div>
-                  </div>
-                </div>
-              `;
-            } else {
-              screen.innerHTML = `
-                <div class="brand-strip">
-                  <img class="brand-strip__logo" src="images/USEFULL-icons/USEFULL-Logo-Registered_Color.svg" alt="USEFULL" />
-                  <div></div>
-                  <div class="brand-strip__right"></div>
-                </div>
-                <div class="scan-shell-v3 scan-shell-v3--idle">
-                  <div class="scan-hero-v3">
-                    <h1 class="scan-hero-v3__title">Scan user's containers</h1>
-                  </div>
-                  <div class="scan-card-v3 idle-scan-card">
-                    <div class="idle-scan-card__image-wrap">
-                      <img class="idle-scan-card__image" src="images/illustrations/concept-art/checkout-station-kiosk-scan.gif" alt="Animated USEFULL checkout station scanner" />
-                    </div>
-                  </div>
-                </div>
-              `;
-            }
-          } else {
-            const showV9StudentPage = isV9 && (v9StudentStep || demoMode === 'student');
-            if (showV9StudentPage) {
-              screen.innerHTML = `
-                <div class="brand-strip">
-                  <img class="brand-strip__logo" src="images/USEFULL-icons/USEFULL-Logo-Registered_Color.svg" alt="USEFULL" />
-                  <div></div>
-                  <div class="brand-strip__right">
-                  </div>
-                </div>
-                <div class="scan-shell-v3 scan-shell-v3--v9-student">
-                  <div class="v9-student-stage">
-                    <div class="scan-panel scan-panel--checkout">
-                      ${studentIconHtml}
-                      ${studentLabelHtml}
-                      <div class="v9-student-heading">
-                        <h1 class="scan-panel__text">Scan your<br>USEFULL QR code</h1>
-                        <p class="scan-panel__subtext">No app? Tap your campus<br>card or credit card</p>
-                      </div>
-                      <div class="counter-pill counter-pill--v2">
-                        <div class="counter-pill__inner">
-                          <div class="counter-pill__count is-pop">${containerCount}</div>
-                          <div class="counter-pill__label">${containerUnitLower} scanned</div>
-                        </div>
-                      </div>
-                      <div class="kiosk-zone">
-                        <div class="kiosk-zone__stage">
-                          <img class="kiosk-zone__img" src="images/illustrations/concept-art/checkout-station-kiosk.png" alt="USEFULL checkout station" />
-                          <span class="tap-qr"><img class="tap-qr__mark" src="images/interface-icons/usefull-qr-icon-abstract.png" alt="Abstract USEFULL scan icon" /></span>
-                          <span class="tap-label tap-label--qr">USEFULL QR</span>
-                          <img class="tap-dot tap-dot--campus" src="images/illustrations/concept-art/nfc_oval_golden.png" alt="" />
-                          <span class="tap-label tap-label--campus">${b.campusCard}</span>
-                          <img class="tap-dot tap-dot--credit" src="images/illustrations/concept-art/nfc_oval_golden.png" alt="" />
-                          <span class="tap-label tap-label--credit">Credit Card</span>
-                        </div>
-                      </div>
-                      <div class="v9-student-actions">
-                        <button class="v9-cancel-btn" id="v9CancelBtn" type="button">Cancel</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              `;
-            } else if (isV9) {
-              screen.innerHTML = `
-                <div class="brand-strip">
-                  <img class="brand-strip__logo" src="images/USEFULL-icons/USEFULL-Logo-Registered_Color.svg" alt="USEFULL" />
-                  <div></div>
-                  <div class="brand-strip__right">
-                  </div>
-                </div>
-                <div class="scan-shell-v3 scan-shell-v3--v9-cashier">
-                  <div class="v9-cashier-stage">
-                    <section class="v9-cashier-card">
-                      ${chefIconHtml}
-                      ${cashierLabelHtml}
-                      <h1 class="v9-cashier-title">Scan USEFULL containers</h1>
-                      <div class="v9-card-counter is-visible">
-                        <div class="counter-pill counter-pill--v2">
-                          <div class="counter-pill__inner">
-                            <div class="counter-pill__count is-pop">${containerCount}</div>
-                            <div class="counter-pill__label">${containerUnitLower} scanned</div>
-                          </div>
-                        </div>
-                      </div>
-                      <img class="v9-cashier-image" src="images/illustrations/concept-art/checkout-station-kiosk-scan.gif" alt="Animated USEFULL checkout station scanner" />
-                      <div class="v9-cashier-actions">
-                        <button class="done-scanning-btn" id="doneScanningBtn" type="button">Done scanning</button>
-                        <button class="v9-cancel-btn" id="v9CancelBtn" type="button">Cancel</button>
-                      </div>
-                    </section>
-                  </div>
-                </div>
-              `;
-            } else {
-              screen.innerHTML = `
-              <div class="brand-strip">
-                <img class="brand-strip__logo" src="images/USEFULL-icons/USEFULL-Logo-Registered_Color.svg" alt="USEFULL" />
-                <div></div>
-                <div class="brand-strip__right">
-                </div>
-              </div>
-              <div class="scan-layout scan-layout--v4">
-                <div class="scan-notice ${scanNoticeMessage ? 'is-visible' : ''}">${scanNoticeMessage || ''}</div>
-                <div class="scan-panel scan-panel--summary">
-                  ${chefIconHtml}
-                  ${usesV8RoleLabels ? cashierLabelHtml : ''}
-                  <div class="scan-panel__text">${isV8 ? 'Finish scanning containers' : (variantActive ? 'Finish scanning<br>containers' : 'Scan the rest of<br>your containers')}</div>
-                  <div class="counter-pill counter-pill--v2">
-                    <div class="counter-pill__inner">
-                      <div class="counter-pill__count is-pop">${containerCount}</div>
-                      <div class="counter-pill__label">${containerUnit} scanned</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="scan-panel scan-panel--checkout">
-                  ${studentIconHtml}
-                  ${usesV8RoleLabels ? studentLabelHtml : ''}
-                  <div class="scan-panel__text">Then, tap your ID or<br>credit card to check out</div>
-                  <div class="kiosk-zone">
-                    <div class="kiosk-zone__stage">
-                      <img class="kiosk-zone__img" src="images/illustrations/concept-art/checkout-station-kiosk.png" alt="USEFULL checkout station" />
-                      <img class="tap-dot tap-dot--campus" src="images/illustrations/concept-art/nfc_oval_golden.png" alt="" />
-                      <span class="tap-label tap-label--campus">${b.campusCard}</span>
-                      <img class="tap-dot tap-dot--credit" src="images/illustrations/concept-art/nfc_oval_golden.png" alt="" />
-                      <span class="tap-label tap-label--credit">Credit Card</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            `;
-            }
-            window.updateCountdownDisplay();
-          }
+          screen.innerHTML = renderScanExperience(b, containerUnitLower);
+          window.updateCountdownDisplay();
           break;
 
         case STATE.PROGRAM_OVERVIEW: {
@@ -5581,16 +6787,10 @@
       if (btnHID) btnHID.disabled = checkoutLocked || appState !== STATE.SCAN;
       if (btnStripe) btnStripe.disabled = checkoutLocked || appState !== STATE.SCAN;
 
-      const doneScanningBtn = document.getElementById('doneScanningBtn');
-      if (doneScanningBtn) {
-        doneScanningBtn.onclick = () => {
-          v9StudentStep = true;
-          window.render();
-          resetTimers();
-        };
-      }
       const v9CancelBtn = document.getElementById('v9CancelBtn');
       if (v9CancelBtn) v9CancelBtn.onclick = resetSession;
+      const scanDesignCancel = document.getElementById('scanDesignCancel');
+      if (scanDesignCancel) scanDesignCancel.onclick = resetSession;
 
       // Bind terms button wherever it appears
       const termsBtn = document.getElementById('termsBtn');
@@ -5696,6 +6896,27 @@
         window.render();
       };
 
+      const scanDesignSelect = document.getElementById('scanDesignSelect');
+      scanDesignSelect.value = scanDesign;
+      scanDesignSelect.onchange = (e) => {
+        if (!SCAN_DESIGNS.includes(e.target.value)) return;
+        scanDesign = e.target.value;
+        window.localStorage.setItem('scanDesign', scanDesign);
+        document.getElementById('guidedHeaderField').hidden = scanDesign !== 'guided';
+        if (appState === STATE.SCAN) window.render();
+      };
+
+      const guidedHeaderSelect = document.getElementById('guidedHeaderSelect');
+      const guidedHeaderField = document.getElementById('guidedHeaderField');
+      guidedHeaderSelect.value = guidedHeaderDesign;
+      guidedHeaderField.hidden = scanDesign !== 'guided';
+      guidedHeaderSelect.onchange = (e) => {
+        if (!GUIDED_HEADERS.includes(e.target.value)) return;
+        guidedHeaderDesign = e.target.value;
+        window.localStorage.setItem('guidedHeaderDesign', guidedHeaderDesign);
+        if (appState === STATE.SCAN) window.render();
+      };
+
       // Payment scenario dropdowns
       document.getElementById('campusScenarioSelect').onchange = (e) => {
         demoIdOutcome = e.target.value;
@@ -5757,7 +6978,6 @@
           containerCount = containerCount || 1;
           checkoutDate = checkoutDate || new Date();
           checkoutLocked = false;
-          v9StudentStep = true;
           appState = STATE.SCAN;
           window.render();
         } else if (val === 'program_overview_campus' || val === 'program_overview_credit') {
@@ -5823,6 +7043,7 @@
       function applyTabletPreset(tabletW, tabletH) {
         currentTabletPreset = { w: tabletW, h: tabletH };
         const app = document.getElementById('app');
+        app.classList.add('is-tablet-preset');
         const vw = window.innerWidth;
         const vh = window.innerHeight;
         const margin = 24;
@@ -5859,7 +7080,7 @@
         currentTabletPreset = null;
         const app = document.getElementById('app');
         app.style.cssText = '';
-        app.classList.remove('is-portrait', 'is-landscape');
+        app.classList.remove('is-portrait', 'is-landscape', 'is-tablet-preset');
         document.body.style.background = '';
         document.body.style.overflow = '';
         document.getElementById('portraitBtn').classList.remove('is-active');
@@ -5899,12 +7120,10 @@
           clearAccountLookupTimer && clearAccountLookupTimer();
           if ((demoMode === 'scanned' || demoMode === 'student') && demoCount > 0) {
             containerCount = demoCount;
-            v9StudentStep = demoMode === 'student';
             checkoutLocked = false;
             appState = STATE.SCAN;
           } else {
             containerCount = 0;
-            v9StudentStep = false;
             appState = STATE.SCAN;
           }
           window.render();
