@@ -1,0 +1,92 @@
+{
+  "name": "default-card-retap",
+  "version": 1,
+  "targetViewports": {
+    "portrait": { "width": 800, "height": 1280 },
+    "landscape": { "width": 1280, "height": 800 }
+  },
+  "copy": {
+    "decision": {
+      "title": "Update default card?",
+      "bodyTemplate": "Use {newBrand} *{newLast4} for future late or lost fees?",
+      "currentCardTemplate": "Current card: {currentBrand} *{currentLast4}",
+      "primaryAction": "Update card",
+      "secondaryAction": "Keep current card",
+      "cancelAction": "Cancel"
+    },
+    "waiting": {
+      "title": "Tap or insert your card",
+      "bodyTemplate": "Use {newBrand} *{newLast4} again to confirm.",
+      "cancelAction": "Cancel"
+    }
+  },
+  "tokens": {
+    "color": {
+      "teal": "#008C95",
+      "tealDark": "#006E75",
+      "gold": "#D69A2D",
+      "foam": "#DDF0EE",
+      "surface": "#F0F4F5",
+      "white": "#FFFFFF",
+      "slate": "#263238",
+      "slateLight": "#546E7A",
+      "readerTop": "#F7F8F8",
+      "readerBase": "#D8DEE1",
+      "readerLip": "#B5BEC3",
+      "tapMark": "#969DA6"
+    },
+    "font": {
+      "display": "League Spartan",
+      "body": "Proxima Nova",
+      "titleWeight": 700,
+      "buttonWeight": 700
+    },
+    "radius": {
+      "modalPortrait": 24,
+      "button": 8,
+      "iconTile": 18
+    }
+  },
+  "illustration": {
+    "viewBox": [0, 0, 430, 190],
+    "aspectRatio": 2.2631578947,
+    "containsRasterImages": false,
+    "readerPerspective": {
+      "axis": "x",
+      "yawDegrees": 0,
+      "rollDegrees": 0,
+      "description": "Pitched backward symmetrically; far edge narrower than near edge"
+    },
+    "motion": {
+      "durationMs": 1800,
+      "repeat": "infinite",
+      "cardTranslateX": [-10, -10, 12, 12, -10],
+      "keyTimes": [0, 0.18, 0.46, 0.72, 1],
+      "easing": [0.22, 1, 0.36, 1],
+      "signalOpacity": [0.18, 0.18, 1, 1, 0.18],
+      "signalDelayMs": [0, 160, 320],
+      "reducedMotion": "No animation; show neutral card position and all waves"
+    }
+  },
+  "states": {
+    "decision": {
+      "readerActive": false,
+      "actions": ["update", "keepCurrent", "cancel"]
+    },
+    "waitingForCard": {
+      "readerActive": true,
+      "actions": ["cancel"],
+      "forbiddenElements": ["second update button", "reader ready label", "spinner"]
+    }
+  },
+  "events": {
+    "update": "Start Stripe collection immediately, then show waitingForCard",
+    "keepCurrent": "Leave default card unchanged and complete checkout",
+    "cardPresented": "Validate/link the presented method, set it as default, and complete checkout",
+    "cancel": "On the decision screen, reset checkout. While waiting for a card, cancel the in-flight Stripe reader action, then reset checkout"
+  },
+  "prototypeOnly": {
+    "readerArtworkTapZone": "Tapping the visible reader illustration simulates card presentation and advances to success",
+    "includeInProduction": false
+  }
+}

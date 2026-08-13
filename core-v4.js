@@ -105,6 +105,7 @@ let prevCardLast4 = '5678';
 let notificationPreference = 'sms';
 let notificationEmail = '';
 let notificationSettingsMode = 'sms_only';
+let updateCardConfirmationPending = false;
 
 /* ── Timer state ───────────────────────────────────────────────── */
 
@@ -415,6 +416,7 @@ function resetSession() {
   notificationPreference = 'sms';
   notificationEmail = '';
   notificationSettingsMode = notificationSettingsMode || 'sms_only';
+  updateCardConfirmationPending = false;
   clearScanNotice(false);
   stopCountdown();
   clearSuccessTimer();
@@ -622,6 +624,7 @@ function advanceFromNotificationSettings() {
 function advanceFromOtpVerify() {
   const scenario = currentFlow?.scenario;
   if (scenario === CREDIT_SCENARIO.RETURN_DIFFERENT_CARD) {
+    updateCardConfirmationPending = false;
     setState(STATE.UPDATE_DEFAULT_CARD);
   } else {
     setState(STATE.SUCCESS_RETURNING);
@@ -629,7 +632,19 @@ function advanceFromOtpVerify() {
   }
 }
 
+function beginUpdateDefaultCardConfirmation() {
+  updateCardConfirmationPending = true;
+  window.render();
+  resetTimers();
+}
+
+function handleUpdateDefaultCardTap() {
+  if (appState !== STATE.UPDATE_DEFAULT_CARD || !updateCardConfirmationPending) return;
+  advanceFromUpdateDefaultCard();
+}
+
 function advanceFromUpdateDefaultCard() {
+  updateCardConfirmationPending = false;
   setState(STATE.SUCCESS_RETURNING);
   scheduleAutoReset(SUCCESS_RESET_MS);
 }
@@ -858,6 +873,15 @@ function jumpTo(stateName) {
       otpValue = '';
       identifierValue = identifierValue || '5551233456';
       currentFlow = currentFlow || { paymentMode: PAYMENT_MODE.CREDIT, scenario: creditScenario };
+      break;
+
+    case STATE.UPDATE_DEFAULT_CARD:
+      updateCardConfirmationPending = false;
+      activeUserName = activeUserName || 'Cody';
+      currentFlow = currentFlow || {
+        paymentMode: PAYMENT_MODE.CREDIT,
+        scenario: CREDIT_SCENARIO.RETURN_DIFFERENT_CARD,
+      };
       break;
 
     case STATE.SUCCESS_NEW:

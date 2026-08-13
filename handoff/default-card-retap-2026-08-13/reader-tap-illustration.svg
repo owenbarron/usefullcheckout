@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="430" height="190" viewBox="0 0 430 190" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">Tap or insert card at the reader</title>
+  <desc id="desc">A gold credit card moves toward a white card reader pitched backward in perspective.</desc>
+
+  <g id="card">
+    <animateTransform
+      attributeName="transform"
+      type="translate"
+      values="-10 0;-10 0;12 0;12 0;-10 0"
+      keyTimes="0;0.18;0.46;0.72;1"
+      dur="1.8s"
+      repeatCount="indefinite"
+    />
+    <rect x="24" y="55" width="172" height="104" rx="13" fill="#D69A2D" />
+    <rect x="43" y="76" width="34" height="25" rx="4" fill="#FFFFFF" fill-opacity=".86" />
+    <rect x="43" y="124" width="90" height="8" rx="4" fill="#FFFFFF" fill-opacity=".86" />
+  </g>
+
+  <g fill="none" stroke="#008C95" stroke-width="5" stroke-linecap="round">
+    <path d="M214 82c15 15 15 39 0 54">
+      <animate attributeName="opacity" values=".18;.18;1;1;.18" keyTimes="0;.28;.52;.72;1" dur="1.8s" repeatCount="indefinite" />
+    </path>
+    <path d="M232 66c24 24 24 63 0 87">
+      <animate attributeName="opacity" values=".18;.18;1;1;.18" keyTimes="0;.28;.52;.72;1" dur="1.8s" begin=".16s" repeatCount="indefinite" />
+    </path>
+    <path d="M251 50c33 33 33 85 0 118">
+      <animate attributeName="opacity" values=".18;.18;1;1;.18" keyTimes="0;.28;.52;.72;1" dur="1.8s" begin=".32s" repeatCount="indefinite" />
+    </path>
+  </g>
+
+  <g id="reader">
+    <ellipse cx="350" cy="158" rx="86" ry="14" fill="#233138" fill-opacity=".12" />
+    <path d="M269 116h162l3 29q2 16-15 18H281q-17-2-15-18l3-29Z" fill="#D8DEE1" stroke="#008C95" stroke-opacity=".38" stroke-width="2" />
+    <path d="M280 145q0 8 10 9h120q10-1 10-9" stroke="#B5BEC3" stroke-width="4" stroke-linecap="round" />
+    <path d="M306 35h88q14 0 19 14l19 67q5 18-14 20H282q-19-2-14-20l19-67q5-14 19-14Z" fill="#F7F8F8" stroke="#008C95" stroke-width="2.5" />
+
+    <g transform="translate(350 87) scale(1 .72)" fill="none" stroke="#969DA6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <ellipse cx="0" cy="0" rx="35" ry="23" />
+      <path d="M-20-8q8 8 0 16" />
+      <path d="M-14-12q12 12 0 24" />
+      <path d="M-7-15q15 15 0 30" />
+      <rect x="9" y="-14" width="19" height="13" rx="2" />
+      <path d="M17 8V-1q0-4 4-4t4 4v8l2-3q2-3 5 0l3 6q2 4-1 8l-3 4H15L3 12q-3-3 0-6 2-2 5 0l9 8Z" fill="#F7F8F8" />
+    </g>
+  </g>
+</svg>
