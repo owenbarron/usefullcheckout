@@ -2128,6 +2128,138 @@
     .app.is-auth-mode .update-card-actions .btn--cancel {
       margin-top: clamp(20px, 3.2vmin, 30px);
     }
+    .app.is-portrait.is-auth-mode .update-default-card {
+      width: min(100%, 724px);
+      min-height: 680px;
+      padding: 100px 48px 44px;
+      gap: 24px;
+      border-radius: 24px;
+    }
+    .app.is-portrait.is-auth-mode .update-default-card .auth-card__icon {
+      top: -44px;
+      width: 96px;
+      height: 96px;
+      border-radius: 18px;
+    }
+    .app.is-portrait.is-auth-mode .update-default-card .auth-card__title {
+      max-width: 660px;
+      font-size: 60px;
+      line-height: 1.02;
+    }
+    .app.is-portrait.is-auth-mode .update-default-card .auth-card__subtitle {
+      max-width: 640px;
+      font-size: 32px;
+      line-height: 1.22;
+    }
+    .app.is-portrait.is-auth-mode .update-default-card .sms-confirm-body {
+      max-width: 640px;
+      font-size: 31px;
+      line-height: 1.28;
+    }
+    .app.is-portrait.is-auth-mode .update-default-card .auth-action-stack {
+      width: 100%;
+      max-width: 640px;
+      gap: 12px;
+    }
+    .app.is-portrait.is-auth-mode .update-default-card .auth-action-stack .btn {
+      min-height: 76px;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 40px;
+      line-height: 1;
+    }
+    .app.is-portrait.is-auth-mode .update-default-card .auth-action-stack .btn--cancel {
+      min-height: 68px;
+      font-size: 38px;
+    }
+    .card-present-visual {
+      width: min(100%, 430px);
+      color: var(--teal);
+    }
+    .card-present-visual svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      overflow: visible;
+    }
+    .card-present-visual__reader-shadow {
+      fill: rgba(35, 49, 56, 0.12);
+    }
+    .card-present-visual__reader {
+      cursor: pointer;
+      pointer-events: all;
+    }
+    .card-present-visual__reader-base {
+      fill: #d8dee1;
+      stroke: rgba(0, 140, 149, 0.38);
+      stroke-width: 2;
+    }
+    .card-present-visual__reader-lip {
+      fill: none;
+      stroke: #b5bec3;
+      stroke-linecap: round;
+      stroke-width: 4;
+    }
+    .card-present-visual__reader-top {
+      fill: #f7f8f8;
+      stroke: var(--teal);
+      stroke-width: 2.5;
+    }
+    .card-present-visual__tap-mark {
+      fill: none;
+      stroke: #969da6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 2.2;
+    }
+    .card-present-visual__tap-hand {
+      fill: #f7f8f8;
+    }
+    .card-present-visual__card {
+      transform-origin: center;
+      animation: present-card 1.8s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+    }
+    .card-present-visual__card-body {
+      fill: var(--golden);
+    }
+    .card-present-visual__card-detail {
+      fill: rgba(255, 255, 255, 0.86);
+    }
+    .card-present-visual__signal {
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-width: 5;
+      animation: reader-signal 1.8s ease-out infinite;
+    }
+    .card-present-visual__signal--two {
+      animation-delay: 0.16s;
+    }
+    .card-present-visual__signal--three {
+      animation-delay: 0.32s;
+    }
+    .update-card-actions--waiting {
+      padding-top: 0;
+    }
+    .app.is-auth-mode .update-card-actions--waiting .btn--cancel {
+      margin-top: 0;
+    }
+    @keyframes present-card {
+      0%, 18% { transform: translateX(-10px); }
+      46%, 72% { transform: translateX(12px); }
+      100% { transform: translateX(-10px); }
+    }
+    @keyframes reader-signal {
+      0%, 28% { opacity: 0.18; }
+      52%, 72% { opacity: 1; }
+      100% { opacity: 0.18; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .card-present-visual__card,
+      .card-present-visual__signal {
+        animation: none;
+      }
+    }
     .auth-card__card-display {
       font-family: 'League Spartan', sans-serif;
       font-size: clamp(28px, 6.5vmin, 52px);
@@ -6600,27 +6732,72 @@
         }
 
         case STATE.UPDATE_DEFAULT_CARD: {
+          const cardPresentVisual = `
+            <div class="card-present-visual" role="img" aria-label="Move your card toward the card reader">
+              <svg viewBox="0 0 430 190" aria-hidden="true">
+                <g class="card-present-visual__card">
+                  <rect class="card-present-visual__card-body" x="24" y="55" width="172" height="104" rx="13" />
+                  <rect class="card-present-visual__card-detail" x="43" y="76" width="34" height="25" rx="4" />
+                  <rect class="card-present-visual__card-detail" x="43" y="124" width="90" height="8" rx="4" />
+                </g>
+                <path class="card-present-visual__signal card-present-visual__signal--one" d="M214 82c15 15 15 39 0 54" />
+                <path class="card-present-visual__signal card-present-visual__signal--two" d="M232 66c24 24 24 63 0 87" />
+                <path class="card-present-visual__signal card-present-visual__signal--three" d="M251 50c33 33 33 85 0 118" />
+                <g class="card-present-visual__reader" aria-hidden="true">
+                  <ellipse class="card-present-visual__reader-shadow" cx="350" cy="158" rx="86" ry="14" />
+                  <path class="card-present-visual__reader-base" d="M269 116h162l3 29q2 16-15 18H281q-17-2-15-18l3-29Z" />
+                  <path class="card-present-visual__reader-lip" d="M280 145q0 8 10 9h120q10-1 10-9" />
+                  <path class="card-present-visual__reader-top" d="M306 35h88q14 0 19 14l19 67q5 18-14 20H282q-19-2-14-20l19-67q5-14 19-14Z" />
+                  <g class="card-present-visual__tap-mark" transform="translate(350 87) scale(1 .72)">
+                    <ellipse cx="0" cy="0" rx="35" ry="23" />
+                    <path d="M-20-8q8 8 0 16" />
+                    <path d="M-14-12q12 12 0 24" />
+                    <path d="M-7-15q15 15 0 30" />
+                    <rect x="9" y="-14" width="19" height="13" rx="2" />
+                    <path class="card-present-visual__tap-hand" d="M17 8V-1q0-4 4-4t4 4v8l2-3q2-3 5 0l3 6q2 4-1 8l-3 4H15L3 12q-3-3 0-6 2-2 5 0l9 8Z" />
+                  </g>
+                </g>
+              </svg>
+            </div>
+          `;
+          const updateCardContent = updateCardConfirmationPending
+            ? `
+                <div class="auth-card__title" id="cardReaderPromptTitle">Tap or insert your card</div>
+                <div class="auth-card__subtitle">Use ${cardBrand} *${cardLast4} again to confirm.</div>
+                ${cardPresentVisual}
+                <div class="auth-action-stack update-card-actions update-card-actions--waiting">
+                  <button class="btn btn--cancel" id="cancelBtn" type="button">Cancel</button>
+                </div>
+              `
+            : `
+                <div class="auth-card__title">Update default card?</div>
+                <div class="auth-card__subtitle">Use ${cardBrand} *${cardLast4} for future late or lost fees?</div>
+                <div class="sms-confirm-body">Current card: ${prevCardBrand} *${prevCardLast4}</div>
+                <div class="auth-action-stack sms-confirm-btns update-card-actions">
+                  <button class="btn btn--primary" id="updateCardBtn" type="button">Update card</button>
+                  <button class="btn btn--secondary" id="skipUpdateBtn" type="button">Keep current card</button>
+                  <button class="btn btn--cancel" id="cancelBtn" type="button">Cancel</button>
+                </div>
+              `;
           screen.innerHTML = `
             <div class="brand-strip">
               <img class="brand-strip__logo" src="images/USEFULL-icons/USEFULL-Logo-Registered_Color.svg" alt="USEFULL" />
             </div>
             <div class="id-entry-layout">
-              <div class="auth-card auth-card--method auth-flow-card auth-wide-card">
+              <div class="auth-card auth-card--method auth-flow-card auth-wide-card update-default-card" ${updateCardConfirmationPending ? 'aria-labelledby="cardReaderPromptTitle"' : ''}>
                 ${creditCardIconHtml}
-                <div class="auth-card__title">Update default card?</div>
-                <div class="auth-card__subtitle">Would you like to save ${cardBrand} *${cardLast4} as the default card for USEFULL late &amp; lost fees?</div>
-                <div class="sms-confirm-body">Your current default card is ${prevCardBrand} *${prevCardLast4}</div>
-                <div class="auth-action-stack sms-confirm-btns update-card-actions">
-                  <button class="btn btn--primary" id="updateCardBtn" type="button">Update</button>
-                  <button class="btn btn--secondary" id="skipUpdateBtn" type="button">Don't Update</button>
-                  <button class="btn btn--cancel" id="cancelBtn" type="button">Cancel</button>
-                </div>
+                ${updateCardContent}
               </div>
             </div>
           `;
-          document.getElementById('updateCardBtn').onclick = () => advanceFromUpdateDefaultCard();
-          document.getElementById('skipUpdateBtn').onclick = () => advanceFromUpdateDefaultCard();
-          document.getElementById('cancelBtn').onclick = resetSession;
+          const updateCardBtn = document.getElementById('updateCardBtn');
+          if (updateCardBtn) updateCardBtn.onclick = () => beginUpdateDefaultCardConfirmation();
+          const readerTapZone = document.querySelector('.card-present-visual__reader');
+          if (readerTapZone) readerTapZone.onclick = () => handleUpdateDefaultCardTap();
+          const skipUpdateBtn = document.getElementById('skipUpdateBtn');
+          if (skipUpdateBtn) skipUpdateBtn.onclick = () => advanceFromUpdateDefaultCard();
+          const cancelBtn = document.getElementById('cancelBtn');
+          if (cancelBtn) cancelBtn.onclick = resetSession;
           break;
         }
 
@@ -6783,9 +6960,13 @@
       const btnScan = document.getElementById('btnScanContainer');
       const btnHID = document.getElementById('btnTapHID');
       const btnStripe = document.getElementById('btnTapStripe');
+      const waitingForCardConfirmation =
+        appState === STATE.UPDATE_DEFAULT_CARD && updateCardConfirmationPending;
       if (btnScan) btnScan.disabled = checkoutLocked || appState !== STATE.SCAN;
       if (btnHID) btnHID.disabled = checkoutLocked || appState !== STATE.SCAN;
-      if (btnStripe) btnStripe.disabled = checkoutLocked || appState !== STATE.SCAN;
+      if (btnStripe) {
+        btnStripe.disabled = !waitingForCardConfirmation && (checkoutLocked || appState !== STATE.SCAN);
+      }
 
       const v9CancelBtn = document.getElementById('v9CancelBtn');
       if (v9CancelBtn) v9CancelBtn.onclick = resetSession;
@@ -6825,6 +7006,10 @@
         const now = Date.now();
         if (now - lastIdTap < DEDUPE_MS) return;
         lastIdTap = now;
+        if (appState === STATE.UPDATE_DEFAULT_CARD && updateCardConfirmationPending) {
+          handleUpdateDefaultCardTap();
+          return;
+        }
         if (!canUseHotspots()) return;
         paymentMode = PAYMENT_MODE.CREDIT;
         creditScenario = document.getElementById('creditScenarioSelect').value;
