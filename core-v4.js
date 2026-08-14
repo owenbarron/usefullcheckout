@@ -872,13 +872,20 @@ function jumpTo(stateName) {
     case STATE.OTP_VERIFY:
       otpValue = '';
       identifierValue = identifierValue || '5551233456';
-      currentFlow = currentFlow || { paymentMode: PAYMENT_MODE.CREDIT, scenario: creditScenario };
+      activeUserName = activeUserName || 'Cody';
+      // The standalone OTP jump represents the different-card returning-user
+      // path. Do not inherit a stale flow from whichever screen was open first.
+      currentFlow = {
+        paymentMode: PAYMENT_MODE.CREDIT,
+        scenario: CREDIT_SCENARIO.RETURN_DIFFERENT_CARD,
+      };
       break;
 
     case STATE.UPDATE_DEFAULT_CARD:
       updateCardConfirmationPending = false;
       activeUserName = activeUserName || 'Cody';
-      currentFlow = currentFlow || {
+      // Debug jumps must be deterministic even after testing another scenario.
+      currentFlow = {
         paymentMode: PAYMENT_MODE.CREDIT,
         scenario: CREDIT_SCENARIO.RETURN_DIFFERENT_CARD,
       };
